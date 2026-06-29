@@ -1,0 +1,196 @@
+   1              	 .syntax unified
+   2              	 .cpu cortex-m4
+   3              	 .eabi_attribute 27,3
+   4              	 .fpu fpv4-sp-d16
+   5              	 .eabi_attribute 20,1
+   6              	 .eabi_attribute 21,1
+   7              	 .eabi_attribute 23,3
+   8              	 .eabi_attribute 24,1
+   9              	 .eabi_attribute 25,1
+  10              	 .eabi_attribute 26,1
+  11              	 .eabi_attribute 30,6
+  12              	 .eabi_attribute 34,1
+  13              	 .eabi_attribute 18,4
+  14              	 .thumb
+  15              	 .file "main.c"
+  16              	 .text
+  17              	.Ltext0:
+  18              	 .cfi_sections .debug_frame
+  19              	 .section .text.CCU41_1_IRQHandler,"ax",%progbits
+  20              	 .align 2
+  21              	 .global CCU41_1_IRQHandler
+  22              	 .thumb
+  23              	 .thumb_func
+  25              	CCU41_1_IRQHandler:
+  26              	.LFB536:
+  27              	 .file 1 "../sources/main.c"
+   1:../sources/main.c **** #include "DAVE.h"
+   2:../sources/main.c **** #include "app.h"
+   3:../sources/main.c **** #include "led.h"
+   4:../sources/main.c **** #include "can_app.h"
+   5:../sources/main.c **** 
+   6:../sources/main.c **** void TIMER_0_InterruptHandler(void)
+   7:../sources/main.c **** {
+  28              	 .loc 1 7 0
+  29              	 .cfi_startproc
+  30              	 
+  31              	 
+  32 0000 80B5     	 push {r7,lr}
+  33              	.LCFI0:
+  34              	 .cfi_def_cfa_offset 8
+  35              	 .cfi_offset 7,-8
+  36              	 .cfi_offset 14,-4
+  37 0002 00AF     	 add r7,sp,#0
+  38              	.LCFI1:
+  39              	 .cfi_def_cfa_register 7
+   8:../sources/main.c ****     static uint8_t can_counter = 0;
+   9:../sources/main.c **** 
+  10:../sources/main.c ****     LED_TimerTask();
+  40              	 .loc 1 10 0
+  41 0004 FFF7FEFF 	 bl LED_TimerTask
+  11:../sources/main.c **** 
+  12:../sources/main.c ****     can_counter++;
+  42              	 .loc 1 12 0
+  43 0008 074B     	 ldr r3,.L3
+  44 000a 1B78     	 ldrb r3,[r3]
+  45 000c 0133     	 adds r3,r3,#1
+  46 000e DAB2     	 uxtb r2,r3
+  47 0010 054B     	 ldr r3,.L3
+  48 0012 1A70     	 strb r2,[r3]
+  13:../sources/main.c **** 
+  14:../sources/main.c ****     if(can_counter >= 5)
+  49              	 .loc 1 14 0
+  50 0014 044B     	 ldr r3,.L3
+  51 0016 1B78     	 ldrb r3,[r3]
+  52 0018 042B     	 cmp r3,#4
+  53 001a 04D9     	 bls .L1
+  15:../sources/main.c ****     {
+  16:../sources/main.c ****         can_counter = 0;
+  54              	 .loc 1 16 0
+  55 001c 024B     	 ldr r3,.L3
+  56 001e 0022     	 movs r2,#0
+  57 0020 1A70     	 strb r2,[r3]
+  17:../sources/main.c ****         APP_CAN_RequestTx();
+  58              	 .loc 1 17 0
+  59 0022 FFF7FEFF 	 bl APP_CAN_RequestTx
+  60              	.L1:
+  18:../sources/main.c ****     }
+  19:../sources/main.c **** }
+  61              	 .loc 1 19 0
+  62 0026 80BD     	 pop {r7,pc}
+  63              	.L4:
+  64              	 .align 2
+  65              	.L3:
+  66 0028 00000000 	 .word can_counter.11018
+  67              	 .cfi_endproc
+  68              	.LFE536:
+  70              	 .section .text.ERU1_0_IRQHandler,"ax",%progbits
+  71              	 .align 2
+  72              	 .global ERU1_0_IRQHandler
+  73              	 .thumb
+  74              	 .thumb_func
+  76              	ERU1_0_IRQHandler:
+  77              	.LFB537:
+  20:../sources/main.c **** 
+  21:../sources/main.c **** void PIN_INTERRUPT_0_InterruptHandler(void)
+  22:../sources/main.c **** {
+  78              	 .loc 1 22 0
+  79              	 .cfi_startproc
+  80              	 
+  81              	 
+  82 0000 80B5     	 push {r7,lr}
+  83              	.LCFI2:
+  84              	 .cfi_def_cfa_offset 8
+  85              	 .cfi_offset 7,-8
+  86              	 .cfi_offset 14,-4
+  87 0002 00AF     	 add r7,sp,#0
+  88              	.LCFI3:
+  89              	 .cfi_def_cfa_register 7
+  23:../sources/main.c ****     LED_ButtonTask();
+  90              	 .loc 1 23 0
+  91 0004 FFF7FEFF 	 bl LED_ButtonTask
+  24:../sources/main.c **** }
+  92              	 .loc 1 24 0
+  93 0008 80BD     	 pop {r7,pc}
+  94              	 .cfi_endproc
+  95              	.LFE537:
+  97 000a 00BF     	 .section .text.main,"ax",%progbits
+  98              	 .align 2
+  99              	 .global main
+ 100              	 .thumb
+ 101              	 .thumb_func
+ 103              	main:
+ 104              	.LFB538:
+  25:../sources/main.c **** 
+  26:../sources/main.c **** int main(void)
+  27:../sources/main.c **** {
+ 105              	 .loc 1 27 0
+ 106              	 .cfi_startproc
+ 107              	 
+ 108              	 
+ 109 0000 80B5     	 push {r7,lr}
+ 110              	.LCFI4:
+ 111              	 .cfi_def_cfa_offset 8
+ 112              	 .cfi_offset 7,-8
+ 113              	 .cfi_offset 14,-4
+ 114 0002 00AF     	 add r7,sp,#0
+ 115              	.LCFI5:
+ 116              	 .cfi_def_cfa_register 7
+  28:../sources/main.c ****     if (DAVE_Init() != DAVE_STATUS_SUCCESS)
+ 117              	 .loc 1 28 0
+ 118 0004 FFF7FEFF 	 bl DAVE_Init
+ 119 0008 0346     	 mov r3,r0
+ 120 000a 002B     	 cmp r3,#0
+ 121 000c 00D0     	 beq .L7
+ 122              	.L8:
+  29:../sources/main.c ****         while(1);
+ 123              	 .loc 1 29 0 discriminator 1
+ 124 000e FEE7     	 b .L8
+ 125              	.L7:
+  30:../sources/main.c **** 
+  31:../sources/main.c ****     APP_Init();
+ 126              	 .loc 1 31 0
+ 127 0010 FFF7FEFF 	 bl APP_Init
+ 128              	.L9:
+  32:../sources/main.c **** 
+  33:../sources/main.c ****     while(1)
+  34:../sources/main.c ****     {
+  35:../sources/main.c ****         APP_Run();
+ 129              	 .loc 1 35 0 discriminator 1
+ 130 0014 FFF7FEFF 	 bl APP_Run
+  36:../sources/main.c ****     }
+ 131              	 .loc 1 36 0 discriminator 1
+ 132 0018 FCE7     	 b .L9
+ 133              	 .cfi_endproc
+ 134              	.LFE538:
+ 136 001a 00BF     	 .section .bss.can_counter.11018,"aw",%nobits
+ 139              	can_counter.11018:
+ 140 0000 00       	 .space 1
+ 141              	 .text
+ 142              	.Letext0:
+ 143              	 .file 2 "c:\\infineon\\tools\\dave ide\\4.5.0.202105191637\\eclipse\\arm-gcc-49\\arm-none-eabi\\include\\machine\\_default_types.h"
+ 144              	 .file 3 "c:\\infineon\\tools\\dave ide\\4.5.0.202105191637\\eclipse\\arm-gcc-49\\arm-none-eabi\\include\\stdint.h"
+ 145              	 .file 4 "C:/Infineon/Tools/DAVE IDE/4.5.0.202105191637/eclipse/workspace/SISEM_2026_2DA_08_A/Libraries/CMSIS/Include/cmsis_gcc.h"
+ 146              	 .file 5 "C:/Infineon/Tools/DAVE IDE/4.5.0.202105191637/eclipse/workspace/SISEM_2026_2DA_08_A/Libraries/CMSIS/Include/core_cm4.h"
+ 147              	 .file 6 "C:/Infineon/Tools/DAVE IDE/4.5.0.202105191637/eclipse/workspace/SISEM_2026_2DA_08_A/Libraries/CMSIS/Infineon/XMC4200_series/Include/system_XMC4200.h"
+ 148              	 .file 7 "C:/Infineon/Tools/DAVE IDE/4.5.0.202105191637/eclipse/workspace/SISEM_2026_2DA_08_A/Dave/Generated/DAVE.h"
+DEFINED SYMBOLS
+                            *ABS*:00000000 main.c
+    {standard input}:20     .text.CCU41_1_IRQHandler:00000000 $t
+    {standard input}:25     .text.CCU41_1_IRQHandler:00000000 CCU41_1_IRQHandler
+    {standard input}:66     .text.CCU41_1_IRQHandler:00000028 $d
+    {standard input}:139    .bss.can_counter.11018:00000000 can_counter.11018
+    {standard input}:71     .text.ERU1_0_IRQHandler:00000000 $t
+    {standard input}:76     .text.ERU1_0_IRQHandler:00000000 ERU1_0_IRQHandler
+    {standard input}:98     .text.main:00000000 $t
+    {standard input}:103    .text.main:00000000 main
+    {standard input}:140    .bss.can_counter.11018:00000000 $d
+                     .debug_frame:00000010 $d
+
+UNDEFINED SYMBOLS
+LED_TimerTask
+APP_CAN_RequestTx
+LED_ButtonTask
+DAVE_Init
+APP_Init
+APP_Run

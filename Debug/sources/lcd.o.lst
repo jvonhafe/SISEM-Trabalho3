@@ -1,0 +1,1058 @@
+   1              	 .syntax unified
+   2              	 .cpu cortex-m4
+   3              	 .eabi_attribute 27,3
+   4              	 .fpu fpv4-sp-d16
+   5              	 .eabi_attribute 20,1
+   6              	 .eabi_attribute 21,1
+   7              	 .eabi_attribute 23,3
+   8              	 .eabi_attribute 24,1
+   9              	 .eabi_attribute 25,1
+  10              	 .eabi_attribute 26,1
+  11              	 .eabi_attribute 30,6
+  12              	 .eabi_attribute 34,1
+  13              	 .eabi_attribute 18,4
+  14              	 .thumb
+  15              	 .file "lcd.c"
+  16              	 .text
+  17              	.Ltext0:
+  18              	 .cfi_sections .debug_frame
+  19              	 .section .bss.lcd_page,"aw",%nobits
+  22              	lcd_page:
+  23 0000 00       	 .space 1
+  24              	 .section .text.LCD_Send_Cmd,"ax",%progbits
+  25              	 .align 2
+  26              	 .global LCD_Send_Cmd
+  27              	 .thumb
+  28              	 .thumb_func
+  30              	LCD_Send_Cmd:
+  31              	.LFB536:
+  32              	 .file 1 "../sources/lcd.c"
+   1:../sources/lcd.c **** #include "lcd.h"
+   2:../sources/lcd.c **** 
+   3:../sources/lcd.c **** #include "aht10.h"
+   4:../sources/lcd.c **** #include <stdio.h>
+   5:../sources/lcd.c **** #include <stdlib.h>
+   6:../sources/lcd.c **** #include "can_app.h"
+   7:../sources/lcd.c **** 
+   8:../sources/lcd.c **** extern I2C_MASTER_t I2C_MASTER_0;
+   9:../sources/lcd.c **** 
+  10:../sources/lcd.c **** static uint8_t lcd_page = 0;
+  11:../sources/lcd.c **** 
+  12:../sources/lcd.c **** void LCD_Send_Cmd (char cmd)
+  13:../sources/lcd.c **** {
+  33              	 .loc 1 13 0
+  34              	 .cfi_startproc
+  35              	 
+  36              	 
+  37 0000 90B5     	 push {r4,r7,lr}
+  38              	.LCFI0:
+  39              	 .cfi_def_cfa_offset 12
+  40              	 .cfi_offset 4,-12
+  41              	 .cfi_offset 7,-8
+  42              	 .cfi_offset 14,-4
+  43 0002 89B0     	 sub sp,sp,#36
+  44              	.LCFI1:
+  45              	 .cfi_def_cfa_offset 48
+  46 0004 02AF     	 add r7,sp,#8
+  47              	.LCFI2:
+  48              	 .cfi_def_cfa 7,40
+  49 0006 0346     	 mov r3,r0
+  50 0008 FB71     	 strb r3,[r7,#7]
+  14:../sources/lcd.c ****   char data_u, data_l;
+  15:../sources/lcd.c **** 	uint8_t data_t[4];
+  16:../sources/lcd.c **** 	data_u = (cmd&0xf0);
+  51              	 .loc 1 16 0
+  52 000a FB79     	 ldrb r3,[r7,#7]
+  53 000c 23F00F03 	 bic r3,r3,#15
+  54 0010 FB75     	 strb r3,[r7,#23]
+  17:../sources/lcd.c **** 	data_l = ((cmd<<4)&0xf0);
+  55              	 .loc 1 17 0
+  56 0012 FB79     	 ldrb r3,[r7,#7]
+  57 0014 1B01     	 lsls r3,r3,#4
+  58 0016 BB75     	 strb r3,[r7,#22]
+  18:../sources/lcd.c **** 	data_t[0] = data_u|0x0C;
+  59              	 .loc 1 18 0
+  60 0018 FB7D     	 ldrb r3,[r7,#23]
+  61 001a 43F00C03 	 orr r3,r3,#12
+  62 001e DBB2     	 uxtb r3,r3
+  63 0020 3B74     	 strb r3,[r7,#16]
+  19:../sources/lcd.c **** 	data_t[1] = data_u|0x08;
+  64              	 .loc 1 19 0
+  65 0022 FB7D     	 ldrb r3,[r7,#23]
+  66 0024 43F00803 	 orr r3,r3,#8
+  67 0028 DBB2     	 uxtb r3,r3
+  68 002a 7B74     	 strb r3,[r7,#17]
+  20:../sources/lcd.c **** 	data_t[2] = data_l|0x0C;
+  69              	 .loc 1 20 0
+  70 002c BB7D     	 ldrb r3,[r7,#22]
+  71 002e 43F00C03 	 orr r3,r3,#12
+  72 0032 DBB2     	 uxtb r3,r3
+  73 0034 BB74     	 strb r3,[r7,#18]
+  21:../sources/lcd.c **** 	data_t[3] = data_l|0x08;
+  74              	 .loc 1 21 0
+  75 0036 BB7D     	 ldrb r3,[r7,#22]
+  76 0038 43F00803 	 orr r3,r3,#8
+  77 003c DBB2     	 uxtb r3,r3
+  78 003e FB74     	 strb r3,[r7,#19]
+  22:../sources/lcd.c **** 
+  23:../sources/lcd.c **** 	I2C_MASTER_Transmit(&I2C_MASTER_0,
+  79              	 .loc 1 23 0
+  80 0040 07F11004 	 add r4,r7,#16
+  81 0044 0423     	 movs r3,#4
+  82 0046 0093     	 str r3,[sp]
+  83 0048 0123     	 movs r3,#1
+  84 004a 0193     	 str r3,[sp,#4]
+  85 004c 0948     	 ldr r0,.L4
+  86 004e 0121     	 movs r1,#1
+  87 0050 4E22     	 movs r2,#78
+  88 0052 2346     	 mov r3,r4
+  89 0054 FFF7FEFF 	 bl I2C_MASTER_Transmit
+  90              	.LBB2:
+  24:../sources/lcd.c **** 						true,
+  25:../sources/lcd.c **** 						SLAVE_ADDRESS_LCD,
+  26:../sources/lcd.c **** 						(uint8_t *) data_t,
+  27:../sources/lcd.c **** 						4,
+  28:../sources/lcd.c **** 						true);
+  29:../sources/lcd.c **** 
+  30:../sources/lcd.c **** 	for(volatile uint32_t i = 0; i < 20000; i++);
+  91              	 .loc 1 30 0
+  92 0058 0023     	 movs r3,#0
+  93 005a FB60     	 str r3,[r7,#12]
+  94 005c 02E0     	 b .L2
+  95              	.L3:
+  96              	 .loc 1 30 0 is_stmt 0 discriminator 3
+  97 005e FB68     	 ldr r3,[r7,#12]
+  98 0060 0133     	 adds r3,r3,#1
+  99 0062 FB60     	 str r3,[r7,#12]
+ 100              	.L2:
+ 101              	 .loc 1 30 0 discriminator 1
+ 102 0064 FB68     	 ldr r3,[r7,#12]
+ 103 0066 44F61F62 	 movw r2,#19999
+ 104 006a 9342     	 cmp r3,r2
+ 105 006c F7D9     	 bls .L3
+ 106              	.LBE2:
+  31:../sources/lcd.c **** }
+ 107              	 .loc 1 31 0 is_stmt 1
+ 108 006e 1C37     	 adds r7,r7,#28
+ 109              	.LCFI3:
+ 110              	 .cfi_def_cfa_offset 12
+ 111 0070 BD46     	 mov sp,r7
+ 112              	.LCFI4:
+ 113              	 .cfi_def_cfa_register 13
+ 114              	 
+ 115 0072 90BD     	 pop {r4,r7,pc}
+ 116              	.L5:
+ 117              	 .align 2
+ 118              	.L4:
+ 119 0074 00000000 	 .word I2C_MASTER_0
+ 120              	 .cfi_endproc
+ 121              	.LFE536:
+ 123              	 .section .text.LCD_Send_Data,"ax",%progbits
+ 124              	 .align 2
+ 125              	 .global LCD_Send_Data
+ 126              	 .thumb
+ 127              	 .thumb_func
+ 129              	LCD_Send_Data:
+ 130              	.LFB537:
+  32:../sources/lcd.c **** 
+  33:../sources/lcd.c **** void LCD_Send_Data (char data)
+  34:../sources/lcd.c **** {
+ 131              	 .loc 1 34 0
+ 132              	 .cfi_startproc
+ 133              	 
+ 134              	 
+ 135 0000 90B5     	 push {r4,r7,lr}
+ 136              	.LCFI5:
+ 137              	 .cfi_def_cfa_offset 12
+ 138              	 .cfi_offset 4,-12
+ 139              	 .cfi_offset 7,-8
+ 140              	 .cfi_offset 14,-4
+ 141 0002 89B0     	 sub sp,sp,#36
+ 142              	.LCFI6:
+ 143              	 .cfi_def_cfa_offset 48
+ 144 0004 02AF     	 add r7,sp,#8
+ 145              	.LCFI7:
+ 146              	 .cfi_def_cfa 7,40
+ 147 0006 0346     	 mov r3,r0
+ 148 0008 FB71     	 strb r3,[r7,#7]
+  35:../sources/lcd.c **** 	char data_u, data_l;
+  36:../sources/lcd.c **** 	uint8_t data_t[4];
+  37:../sources/lcd.c **** 	data_u = (data&0xf0);
+ 149              	 .loc 1 37 0
+ 150 000a FB79     	 ldrb r3,[r7,#7]
+ 151 000c 23F00F03 	 bic r3,r3,#15
+ 152 0010 FB75     	 strb r3,[r7,#23]
+  38:../sources/lcd.c **** 	data_l = ((data<<4)&0xf0);
+ 153              	 .loc 1 38 0
+ 154 0012 FB79     	 ldrb r3,[r7,#7]
+ 155 0014 1B01     	 lsls r3,r3,#4
+ 156 0016 BB75     	 strb r3,[r7,#22]
+  39:../sources/lcd.c **** 	data_t[0] = data_u|0x0D;
+ 157              	 .loc 1 39 0
+ 158 0018 FB7D     	 ldrb r3,[r7,#23]
+ 159 001a 43F00D03 	 orr r3,r3,#13
+ 160 001e DBB2     	 uxtb r3,r3
+ 161 0020 3B74     	 strb r3,[r7,#16]
+  40:../sources/lcd.c **** 	data_t[1] = data_u|0x09;
+ 162              	 .loc 1 40 0
+ 163 0022 FB7D     	 ldrb r3,[r7,#23]
+ 164 0024 43F00903 	 orr r3,r3,#9
+ 165 0028 DBB2     	 uxtb r3,r3
+ 166 002a 7B74     	 strb r3,[r7,#17]
+  41:../sources/lcd.c **** 	data_t[2] = data_l|0x0D;
+ 167              	 .loc 1 41 0
+ 168 002c BB7D     	 ldrb r3,[r7,#22]
+ 169 002e 43F00D03 	 orr r3,r3,#13
+ 170 0032 DBB2     	 uxtb r3,r3
+ 171 0034 BB74     	 strb r3,[r7,#18]
+  42:../sources/lcd.c **** 	data_t[3] = data_l|0x09;
+ 172              	 .loc 1 42 0
+ 173 0036 BB7D     	 ldrb r3,[r7,#22]
+ 174 0038 43F00903 	 orr r3,r3,#9
+ 175 003c DBB2     	 uxtb r3,r3
+ 176 003e FB74     	 strb r3,[r7,#19]
+  43:../sources/lcd.c **** 
+  44:../sources/lcd.c **** 	I2C_MASTER_Transmit(&I2C_MASTER_0,
+ 177              	 .loc 1 44 0
+ 178 0040 07F11004 	 add r4,r7,#16
+ 179 0044 0423     	 movs r3,#4
+ 180 0046 0093     	 str r3,[sp]
+ 181 0048 0123     	 movs r3,#1
+ 182 004a 0193     	 str r3,[sp,#4]
+ 183 004c 0948     	 ldr r0,.L9
+ 184 004e 0121     	 movs r1,#1
+ 185 0050 4E22     	 movs r2,#78
+ 186 0052 2346     	 mov r3,r4
+ 187 0054 FFF7FEFF 	 bl I2C_MASTER_Transmit
+ 188              	.LBB3:
+  45:../sources/lcd.c **** 						true,
+  46:../sources/lcd.c **** 						SLAVE_ADDRESS_LCD,
+  47:../sources/lcd.c **** 						(uint8_t *) data_t,
+  48:../sources/lcd.c **** 						4,
+  49:../sources/lcd.c **** 						true);
+  50:../sources/lcd.c **** 
+  51:../sources/lcd.c **** 	for(volatile uint32_t i = 0; i < 20000; i++);
+ 189              	 .loc 1 51 0
+ 190 0058 0023     	 movs r3,#0
+ 191 005a FB60     	 str r3,[r7,#12]
+ 192 005c 02E0     	 b .L7
+ 193              	.L8:
+ 194              	 .loc 1 51 0 is_stmt 0 discriminator 3
+ 195 005e FB68     	 ldr r3,[r7,#12]
+ 196 0060 0133     	 adds r3,r3,#1
+ 197 0062 FB60     	 str r3,[r7,#12]
+ 198              	.L7:
+ 199              	 .loc 1 51 0 discriminator 1
+ 200 0064 FB68     	 ldr r3,[r7,#12]
+ 201 0066 44F61F62 	 movw r2,#19999
+ 202 006a 9342     	 cmp r3,r2
+ 203 006c F7D9     	 bls .L8
+ 204              	.LBE3:
+  52:../sources/lcd.c **** }
+ 205              	 .loc 1 52 0 is_stmt 1
+ 206 006e 1C37     	 adds r7,r7,#28
+ 207              	.LCFI8:
+ 208              	 .cfi_def_cfa_offset 12
+ 209 0070 BD46     	 mov sp,r7
+ 210              	.LCFI9:
+ 211              	 .cfi_def_cfa_register 13
+ 212              	 
+ 213 0072 90BD     	 pop {r4,r7,pc}
+ 214              	.L10:
+ 215              	 .align 2
+ 216              	.L9:
+ 217 0074 00000000 	 .word I2C_MASTER_0
+ 218              	 .cfi_endproc
+ 219              	.LFE537:
+ 221              	 .section .text.LCD_Clear,"ax",%progbits
+ 222              	 .align 2
+ 223              	 .global LCD_Clear
+ 224              	 .thumb
+ 225              	 .thumb_func
+ 227              	LCD_Clear:
+ 228              	.LFB538:
+  53:../sources/lcd.c **** 
+  54:../sources/lcd.c **** void LCD_Clear (void)
+  55:../sources/lcd.c **** {
+ 229              	 .loc 1 55 0
+ 230              	 .cfi_startproc
+ 231              	 
+ 232              	 
+ 233 0000 80B5     	 push {r7,lr}
+ 234              	.LCFI10:
+ 235              	 .cfi_def_cfa_offset 8
+ 236              	 .cfi_offset 7,-8
+ 237              	 .cfi_offset 14,-4
+ 238 0002 00AF     	 add r7,sp,#0
+ 239              	.LCFI11:
+ 240              	 .cfi_def_cfa_register 7
+  56:../sources/lcd.c **** 	LCD_Send_Cmd (0x01);
+ 241              	 .loc 1 56 0
+ 242 0004 0120     	 movs r0,#1
+ 243 0006 FFF7FEFF 	 bl LCD_Send_Cmd
+  57:../sources/lcd.c **** }
+ 244              	 .loc 1 57 0
+ 245 000a 80BD     	 pop {r7,pc}
+ 246              	 .cfi_endproc
+ 247              	.LFE538:
+ 249              	 .section .text.LCD_Set_Cursor,"ax",%progbits
+ 250              	 .align 2
+ 251              	 .global LCD_Set_Cursor
+ 252              	 .thumb
+ 253              	 .thumb_func
+ 255              	LCD_Set_Cursor:
+ 256              	.LFB539:
+  58:../sources/lcd.c **** 
+  59:../sources/lcd.c **** void LCD_Set_Cursor(int row, int col)
+  60:../sources/lcd.c **** {
+ 257              	 .loc 1 60 0
+ 258              	 .cfi_startproc
+ 259              	 
+ 260              	 
+ 261 0000 80B5     	 push {r7,lr}
+ 262              	.LCFI12:
+ 263              	 .cfi_def_cfa_offset 8
+ 264              	 .cfi_offset 7,-8
+ 265              	 .cfi_offset 14,-4
+ 266 0002 82B0     	 sub sp,sp,#8
+ 267              	.LCFI13:
+ 268              	 .cfi_def_cfa_offset 16
+ 269 0004 00AF     	 add r7,sp,#0
+ 270              	.LCFI14:
+ 271              	 .cfi_def_cfa_register 7
+ 272 0006 7860     	 str r0,[r7,#4]
+ 273 0008 3960     	 str r1,[r7]
+  61:../sources/lcd.c ****     switch (row)
+ 274              	 .loc 1 61 0
+ 275 000a 7B68     	 ldr r3,[r7,#4]
+ 276 000c 002B     	 cmp r3,#0
+ 277 000e 02D0     	 beq .L14
+ 278 0010 012B     	 cmp r3,#1
+ 279 0012 05D0     	 beq .L15
+ 280 0014 09E0     	 b .L13
+ 281              	.L14:
+  62:../sources/lcd.c ****     {
+  63:../sources/lcd.c ****         case 0:
+  64:../sources/lcd.c ****             col |= 0x80;
+ 282              	 .loc 1 64 0
+ 283 0016 3B68     	 ldr r3,[r7]
+ 284 0018 43F08003 	 orr r3,r3,#128
+ 285 001c 3B60     	 str r3,[r7]
+  65:../sources/lcd.c ****             break;
+ 286              	 .loc 1 65 0
+ 287 001e 04E0     	 b .L13
+ 288              	.L15:
+  66:../sources/lcd.c **** 
+  67:../sources/lcd.c ****         case 1:
+  68:../sources/lcd.c ****             col |= 0xC0;
+ 289              	 .loc 1 68 0
+ 290 0020 3B68     	 ldr r3,[r7]
+ 291 0022 43F0C003 	 orr r3,r3,#192
+ 292 0026 3B60     	 str r3,[r7]
+  69:../sources/lcd.c ****             break;
+ 293              	 .loc 1 69 0
+ 294 0028 00BF     	 nop
+ 295              	.L13:
+  70:../sources/lcd.c ****     }
+  71:../sources/lcd.c **** 
+  72:../sources/lcd.c ****     LCD_Send_Cmd(col);
+ 296              	 .loc 1 72 0
+ 297 002a 3B68     	 ldr r3,[r7]
+ 298 002c DBB2     	 uxtb r3,r3
+ 299 002e 1846     	 mov r0,r3
+ 300 0030 FFF7FEFF 	 bl LCD_Send_Cmd
+  73:../sources/lcd.c **** }
+ 301              	 .loc 1 73 0
+ 302 0034 0837     	 adds r7,r7,#8
+ 303              	.LCFI15:
+ 304              	 .cfi_def_cfa_offset 8
+ 305 0036 BD46     	 mov sp,r7
+ 306              	.LCFI16:
+ 307              	 .cfi_def_cfa_register 13
+ 308              	 
+ 309 0038 80BD     	 pop {r7,pc}
+ 310              	 .cfi_endproc
+ 311              	.LFE539:
+ 313 003a 00BF     	 .section .text.LCD_Init,"ax",%progbits
+ 314              	 .align 2
+ 315              	 .global LCD_Init
+ 316              	 .thumb
+ 317              	 .thumb_func
+ 319              	LCD_Init:
+ 320              	.LFB540:
+  74:../sources/lcd.c **** 
+  75:../sources/lcd.c **** 
+  76:../sources/lcd.c **** void LCD_Init(void)
+  77:../sources/lcd.c **** {
+ 321              	 .loc 1 77 0
+ 322              	 .cfi_startproc
+ 323              	 
+ 324              	 
+ 325 0000 80B5     	 push {r7,lr}
+ 326              	.LCFI17:
+ 327              	 .cfi_def_cfa_offset 8
+ 328              	 .cfi_offset 7,-8
+ 329              	 .cfi_offset 14,-4
+ 330 0002 82B0     	 sub sp,sp,#8
+ 331              	.LCFI18:
+ 332              	 .cfi_def_cfa_offset 16
+ 333 0004 00AF     	 add r7,sp,#0
+ 334              	.LCFI19:
+ 335              	 .cfi_def_cfa_register 7
+  78:../sources/lcd.c ****     LCD_Send_Cmd(0x33);
+ 336              	 .loc 1 78 0
+ 337 0006 3320     	 movs r0,#51
+ 338 0008 FFF7FEFF 	 bl LCD_Send_Cmd
+  79:../sources/lcd.c ****     LCD_Send_Cmd(0x32);
+ 339              	 .loc 1 79 0
+ 340 000c 3220     	 movs r0,#50
+ 341 000e FFF7FEFF 	 bl LCD_Send_Cmd
+  80:../sources/lcd.c **** 
+  81:../sources/lcd.c ****     LCD_Send_Cmd(0x28);
+ 342              	 .loc 1 81 0
+ 343 0012 2820     	 movs r0,#40
+ 344 0014 FFF7FEFF 	 bl LCD_Send_Cmd
+  82:../sources/lcd.c **** 
+  83:../sources/lcd.c ****     LCD_Send_Cmd(0x0C);
+ 345              	 .loc 1 83 0
+ 346 0018 0C20     	 movs r0,#12
+ 347 001a FFF7FEFF 	 bl LCD_Send_Cmd
+  84:../sources/lcd.c **** 
+  85:../sources/lcd.c ****     LCD_Send_Cmd(0x01);
+ 348              	 .loc 1 85 0
+ 349 001e 0120     	 movs r0,#1
+ 350 0020 FFF7FEFF 	 bl LCD_Send_Cmd
+  86:../sources/lcd.c **** 
+  87:../sources/lcd.c ****     LCD_Send_Cmd(0x06);
+ 351              	 .loc 1 87 0
+ 352 0024 0620     	 movs r0,#6
+ 353 0026 FFF7FEFF 	 bl LCD_Send_Cmd
+  88:../sources/lcd.c **** 
+  89:../sources/lcd.c ****     LCD_SetPage(1);
+ 354              	 .loc 1 89 0
+ 355 002a 0120     	 movs r0,#1
+ 356 002c FFF7FEFF 	 bl LCD_SetPage
+ 357              	.LBB4:
+  90:../sources/lcd.c **** 
+  91:../sources/lcd.c ****     for(volatile uint32_t i = 0; i < 300000; i++);
+ 358              	 .loc 1 91 0
+ 359 0030 0023     	 movs r3,#0
+ 360 0032 7B60     	 str r3,[r7,#4]
+ 361 0034 02E0     	 b .L17
+ 362              	.L18:
+ 363              	 .loc 1 91 0 is_stmt 0 discriminator 3
+ 364 0036 7B68     	 ldr r3,[r7,#4]
+ 365 0038 0133     	 adds r3,r3,#1
+ 366 003a 7B60     	 str r3,[r7,#4]
+ 367              	.L17:
+ 368              	 .loc 1 91 0 discriminator 1
+ 369 003c 7B68     	 ldr r3,[r7,#4]
+ 370 003e 034A     	 ldr r2,.L19
+ 371 0040 9342     	 cmp r3,r2
+ 372 0042 F8D9     	 bls .L18
+ 373              	.LBE4:
+  92:../sources/lcd.c **** }
+ 374              	 .loc 1 92 0 is_stmt 1
+ 375 0044 0837     	 adds r7,r7,#8
+ 376              	.LCFI20:
+ 377              	 .cfi_def_cfa_offset 8
+ 378 0046 BD46     	 mov sp,r7
+ 379              	.LCFI21:
+ 380              	 .cfi_def_cfa_register 13
+ 381              	 
+ 382 0048 80BD     	 pop {r7,pc}
+ 383              	.L20:
+ 384 004a 00BF     	 .align 2
+ 385              	.L19:
+ 386 004c DF930400 	 .word 299999
+ 387              	 .cfi_endproc
+ 388              	.LFE540:
+ 390              	 .section .text.LCD_Send_String,"ax",%progbits
+ 391              	 .align 2
+ 392              	 .global LCD_Send_String
+ 393              	 .thumb
+ 394              	 .thumb_func
+ 396              	LCD_Send_String:
+ 397              	.LFB541:
+  93:../sources/lcd.c **** 
+  94:../sources/lcd.c **** void LCD_Send_String(char *str)
+  95:../sources/lcd.c **** {
+ 398              	 .loc 1 95 0
+ 399              	 .cfi_startproc
+ 400              	 
+ 401              	 
+ 402 0000 80B5     	 push {r7,lr}
+ 403              	.LCFI22:
+ 404              	 .cfi_def_cfa_offset 8
+ 405              	 .cfi_offset 7,-8
+ 406              	 .cfi_offset 14,-4
+ 407 0002 84B0     	 sub sp,sp,#16
+ 408              	.LCFI23:
+ 409              	 .cfi_def_cfa_offset 24
+ 410 0004 00AF     	 add r7,sp,#0
+ 411              	.LCFI24:
+ 412              	 .cfi_def_cfa_register 7
+ 413 0006 7860     	 str r0,[r7,#4]
+  96:../sources/lcd.c ****     while (*str)
+ 414              	 .loc 1 96 0
+ 415 0008 11E0     	 b .L22
+ 416              	.L25:
+  97:../sources/lcd.c ****     {
+  98:../sources/lcd.c ****         LCD_Send_Data(*str++);
+ 417              	 .loc 1 98 0
+ 418 000a 7B68     	 ldr r3,[r7,#4]
+ 419 000c 5A1C     	 adds r2,r3,#1
+ 420 000e 7A60     	 str r2,[r7,#4]
+ 421 0010 1B78     	 ldrb r3,[r3]
+ 422 0012 1846     	 mov r0,r3
+ 423 0014 FFF7FEFF 	 bl LCD_Send_Data
+ 424              	.LBB5:
+  99:../sources/lcd.c **** 
+ 100:../sources/lcd.c ****         for (volatile uint32_t i = 0; i < 5000; i++);
+ 425              	 .loc 1 100 0
+ 426 0018 0023     	 movs r3,#0
+ 427 001a FB60     	 str r3,[r7,#12]
+ 428 001c 02E0     	 b .L23
+ 429              	.L24:
+ 430              	 .loc 1 100 0 is_stmt 0 discriminator 3
+ 431 001e FB68     	 ldr r3,[r7,#12]
+ 432 0020 0133     	 adds r3,r3,#1
+ 433 0022 FB60     	 str r3,[r7,#12]
+ 434              	.L23:
+ 435              	 .loc 1 100 0 discriminator 1
+ 436 0024 FB68     	 ldr r3,[r7,#12]
+ 437 0026 41F28732 	 movw r2,#4999
+ 438 002a 9342     	 cmp r3,r2
+ 439 002c F7D9     	 bls .L24
+ 440              	.L22:
+ 441              	.LBE5:
+  96:../sources/lcd.c ****     {
+ 442              	 .loc 1 96 0 is_stmt 1
+ 443 002e 7B68     	 ldr r3,[r7,#4]
+ 444 0030 1B78     	 ldrb r3,[r3]
+ 445 0032 002B     	 cmp r3,#0
+ 446 0034 E9D1     	 bne .L25
+ 101:../sources/lcd.c ****     }
+ 102:../sources/lcd.c **** }
+ 447              	 .loc 1 102 0
+ 448 0036 1037     	 adds r7,r7,#16
+ 449              	.LCFI25:
+ 450              	 .cfi_def_cfa_offset 8
+ 451 0038 BD46     	 mov sp,r7
+ 452              	.LCFI26:
+ 453              	 .cfi_def_cfa_register 13
+ 454              	 
+ 455 003a 80BD     	 pop {r7,pc}
+ 456              	 .cfi_endproc
+ 457              	.LFE541:
+ 459              	 .section .text.LCD_Task,"ax",%progbits
+ 460              	 .align 2
+ 461              	 .global LCD_Task
+ 462              	 .thumb
+ 463              	 .thumb_func
+ 465              	LCD_Task:
+ 466              	.LFB542:
+ 103:../sources/lcd.c **** 
+ 104:../sources/lcd.c **** void LCD_Task(void)
+ 105:../sources/lcd.c **** {
+ 467              	 .loc 1 105 0
+ 468              	 .cfi_startproc
+ 469              	 
+ 470              	 
+ 471 0000 80B5     	 push {r7,lr}
+ 472              	.LCFI27:
+ 473              	 .cfi_def_cfa_offset 8
+ 474              	 .cfi_offset 7,-8
+ 475              	 .cfi_offset 14,-4
+ 476 0002 00AF     	 add r7,sp,#0
+ 477              	.LCFI28:
+ 478              	 .cfi_def_cfa_register 7
+ 106:../sources/lcd.c ****     static uint32_t counter = 0;
+ 107:../sources/lcd.c **** 
+ 108:../sources/lcd.c ****     counter++;
+ 479              	 .loc 1 108 0
+ 480 0004 0F4B     	 ldr r3,.L30
+ 481 0006 1B68     	 ldr r3,[r3]
+ 482 0008 0133     	 adds r3,r3,#1
+ 483 000a 0E4A     	 ldr r2,.L30
+ 484 000c 1360     	 str r3,[r2]
+ 109:../sources/lcd.c **** 
+ 110:../sources/lcd.c ****     if(counter >= 500000)
+ 485              	 .loc 1 110 0
+ 486 000e 0D4B     	 ldr r3,.L30
+ 487 0010 1B68     	 ldr r3,[r3]
+ 488 0012 0D4A     	 ldr r2,.L30+4
+ 489 0014 9342     	 cmp r3,r2
+ 490 0016 13D9     	 bls .L26
+ 111:../sources/lcd.c ****     {
+ 112:../sources/lcd.c ****         counter = 0;
+ 491              	 .loc 1 112 0
+ 492 0018 0A4B     	 ldr r3,.L30
+ 493 001a 0022     	 movs r2,#0
+ 494 001c 1A60     	 str r2,[r3]
+ 113:../sources/lcd.c **** 
+ 114:../sources/lcd.c ****         if(aht10.valid)
+ 495              	 .loc 1 114 0
+ 496 001e 0B4B     	 ldr r3,.L30+8
+ 497 0020 1B7A     	 ldrb r3,[r3,#8]
+ 498 0022 002B     	 cmp r3,#0
+ 499 0024 0CD0     	 beq .L26
+ 115:../sources/lcd.c ****         {
+ 116:../sources/lcd.c ****         	switch(lcd_page)
+ 500              	 .loc 1 116 0
+ 501 0026 0A4B     	 ldr r3,.L30+12
+ 502 0028 1B78     	 ldrb r3,[r3]
+ 503 002a 002B     	 cmp r3,#0
+ 504 002c 02D0     	 beq .L28
+ 505 002e 012B     	 cmp r3,#1
+ 506 0030 03D0     	 beq .L29
+ 507 0032 05E0     	 b .L26
+ 508              	.L28:
+ 117:../sources/lcd.c ****         	{
+ 118:../sources/lcd.c ****         	    case 0:
+ 119:../sources/lcd.c **** 
+ 120:../sources/lcd.c ****         	        LCD_ShowTemperatureHumidity();
+ 509              	 .loc 1 120 0
+ 510 0034 FFF7FEFF 	 bl LCD_ShowTemperatureHumidity
+ 121:../sources/lcd.c **** 
+ 122:../sources/lcd.c ****         	        break;
+ 511              	 .loc 1 122 0
+ 512 0038 02E0     	 b .L26
+ 513              	.L29:
+ 123:../sources/lcd.c **** 
+ 124:../sources/lcd.c ****         	    case 1:
+ 125:../sources/lcd.c **** 
+ 126:../sources/lcd.c ****         	        LCD_ShowCAN();
+ 514              	 .loc 1 126 0
+ 515 003a FFF7FEFF 	 bl LCD_ShowCAN
+ 127:../sources/lcd.c **** 
+ 128:../sources/lcd.c ****         	        break;
+ 516              	 .loc 1 128 0
+ 517 003e 00BF     	 nop
+ 518              	.L26:
+ 129:../sources/lcd.c ****         	}
+ 130:../sources/lcd.c ****         }
+ 131:../sources/lcd.c ****     }
+ 132:../sources/lcd.c **** }
+ 519              	 .loc 1 132 0
+ 520 0040 80BD     	 pop {r7,pc}
+ 521              	.L31:
+ 522 0042 00BF     	 .align 2
+ 523              	.L30:
+ 524 0044 00000000 	 .word counter.12211
+ 525 0048 1FA10700 	 .word 499999
+ 526 004c 00000000 	 .word aht10
+ 527 0050 00000000 	 .word lcd_page
+ 528              	 .cfi_endproc
+ 529              	.LFE542:
+ 531              	 .section .rodata
+ 532              	 .align 2
+ 533              	.LC0:
+ 534 0000 54656D70 	 .ascii "Temp:%d.%02dC\000"
+ 534      3A25642E 
+ 534      25303264 
+ 534      4300
+ 535 000e 0000     	 .align 2
+ 536              	.LC1:
+ 537 0010 48756D20 	 .ascii "Hum :%d.%02d%%\000"
+ 537      3A25642E 
+ 537      25303264 
+ 537      252500
+ 538              	 .section .text.LCD_ShowTemperatureHumidity,"ax",%progbits
+ 539              	 .align 2
+ 540              	 .global LCD_ShowTemperatureHumidity
+ 541              	 .thumb
+ 542              	 .thumb_func
+ 544              	LCD_ShowTemperatureHumidity:
+ 545              	.LFB543:
+ 133:../sources/lcd.c **** 
+ 134:../sources/lcd.c **** void LCD_ShowTemperatureHumidity(void)
+ 135:../sources/lcd.c **** {
+ 546              	 .loc 1 135 0
+ 547              	 .cfi_startproc
+ 548              	 
+ 549              	 
+ 550 0000 90B5     	 push {r4,r7,lr}
+ 551              	.LCFI29:
+ 552              	 .cfi_def_cfa_offset 12
+ 553              	 .cfi_offset 4,-12
+ 554              	 .cfi_offset 7,-8
+ 555              	 .cfi_offset 14,-4
+ 556 0002 89B0     	 sub sp,sp,#36
+ 557              	.LCFI30:
+ 558              	 .cfi_def_cfa_offset 48
+ 559 0004 00AF     	 add r7,sp,#0
+ 560              	.LCFI31:
+ 561              	 .cfi_def_cfa_register 7
+ 136:../sources/lcd.c ****     char line[17];
+ 137:../sources/lcd.c **** 
+ 138:../sources/lcd.c ****     int temp = (int)(aht10.temperature * 100);
+ 562              	 .loc 1 138 0
+ 563 0006 324B     	 ldr r3,.L33
+ 564 0008 D3ED007A 	 flds s15,[r3]
+ 565 000c 9FED317A 	 flds s14,.L33+4
+ 566 0010 67EE877A 	 fmuls s15,s15,s14
+ 567 0014 FDEEE77A 	 ftosizs s15,s15
+ 568 0018 17EE903A 	 fmrs r3,s15
+ 569 001c FB61     	 str r3,[r7,#28]
+ 139:../sources/lcd.c ****     int hum  = (int)(aht10.humidity * 100);
+ 570              	 .loc 1 139 0
+ 571 001e 2C4B     	 ldr r3,.L33
+ 572 0020 D3ED017A 	 flds s15,[r3,#4]
+ 573 0024 9FED2B7A 	 flds s14,.L33+4
+ 574 0028 67EE877A 	 fmuls s15,s15,s14
+ 575 002c FDEEE77A 	 ftosizs s15,s15
+ 576 0030 17EE903A 	 fmrs r3,s15
+ 577 0034 BB61     	 str r3,[r7,#24]
+ 140:../sources/lcd.c **** 
+ 141:../sources/lcd.c ****     LCD_Set_Cursor(0,0);
+ 578              	 .loc 1 141 0
+ 579 0036 0020     	 movs r0,#0
+ 580 0038 0021     	 movs r1,#0
+ 581 003a FFF7FEFF 	 bl LCD_Set_Cursor
+ 142:../sources/lcd.c **** 
+ 143:../sources/lcd.c ****     LCD_Set_Cursor(0,0);
+ 582              	 .loc 1 143 0
+ 583 003e 0020     	 movs r0,#0
+ 584 0040 0021     	 movs r1,#0
+ 585 0042 FFF7FEFF 	 bl LCD_Set_Cursor
+ 144:../sources/lcd.c ****     sprintf(line, "Temp:%d.%02dC",
+ 586              	 .loc 1 144 0
+ 587 0046 FB69     	 ldr r3,[r7,#28]
+ 588 0048 234A     	 ldr r2,.L33+8
+ 589 004a 82FB0312 	 smull r1,r2,r2,r3
+ 590 004e 5211     	 asrs r2,r2,#5
+ 591 0050 DB17     	 asrs r3,r3,#31
+ 592 0052 D41A     	 subs r4,r2,r3
+ 145:../sources/lcd.c ****             temp / 100,
+ 146:../sources/lcd.c ****             abs(temp % 100));
+ 593              	 .loc 1 146 0
+ 594 0054 FA69     	 ldr r2,[r7,#28]
+ 595 0056 204B     	 ldr r3,.L33+8
+ 596 0058 83FB0213 	 smull r1,r3,r3,r2
+ 597 005c 5911     	 asrs r1,r3,#5
+ 598 005e D317     	 asrs r3,r2,#31
+ 599 0060 CB1A     	 subs r3,r1,r3
+ 600 0062 6421     	 movs r1,#100
+ 601 0064 01FB03F3 	 mul r3,r1,r3
+ 602 0068 D31A     	 subs r3,r2,r3
+ 144:../sources/lcd.c ****     sprintf(line, "Temp:%d.%02dC",
+ 603              	 .loc 1 144 0
+ 604 006a 002B     	 cmp r3,#0
+ 605 006c B8BF     	 it lt
+ 606 006e 5B42     	 rsblt r3,r3,#0
+ 607 0070 3A1D     	 adds r2,r7,#4
+ 608 0072 1046     	 mov r0,r2
+ 609 0074 1949     	 ldr r1,.L33+12
+ 610 0076 2246     	 mov r2,r4
+ 611 0078 FFF7FEFF 	 bl sprintf
+ 147:../sources/lcd.c ****     LCD_Send_String(line);
+ 612              	 .loc 1 147 0
+ 613 007c 3B1D     	 adds r3,r7,#4
+ 614 007e 1846     	 mov r0,r3
+ 615 0080 FFF7FEFF 	 bl LCD_Send_String
+ 148:../sources/lcd.c **** 
+ 149:../sources/lcd.c ****     LCD_Set_Cursor(1,0);
+ 616              	 .loc 1 149 0
+ 617 0084 0120     	 movs r0,#1
+ 618 0086 0021     	 movs r1,#0
+ 619 0088 FFF7FEFF 	 bl LCD_Set_Cursor
+ 150:../sources/lcd.c ****     sprintf(line, "Hum :%d.%02d%%",
+ 620              	 .loc 1 150 0
+ 621 008c BB69     	 ldr r3,[r7,#24]
+ 622 008e 124A     	 ldr r2,.L33+8
+ 623 0090 82FB0312 	 smull r1,r2,r2,r3
+ 624 0094 5211     	 asrs r2,r2,#5
+ 625 0096 DB17     	 asrs r3,r3,#31
+ 626 0098 D41A     	 subs r4,r2,r3
+ 151:../sources/lcd.c ****             hum / 100,
+ 152:../sources/lcd.c ****             abs(hum % 100));
+ 627              	 .loc 1 152 0
+ 628 009a BA69     	 ldr r2,[r7,#24]
+ 629 009c 0E4B     	 ldr r3,.L33+8
+ 630 009e 83FB0213 	 smull r1,r3,r3,r2
+ 631 00a2 5911     	 asrs r1,r3,#5
+ 632 00a4 D317     	 asrs r3,r2,#31
+ 633 00a6 CB1A     	 subs r3,r1,r3
+ 634 00a8 6421     	 movs r1,#100
+ 635 00aa 01FB03F3 	 mul r3,r1,r3
+ 636 00ae D31A     	 subs r3,r2,r3
+ 150:../sources/lcd.c ****     sprintf(line, "Hum :%d.%02d%%",
+ 637              	 .loc 1 150 0
+ 638 00b0 002B     	 cmp r3,#0
+ 639 00b2 B8BF     	 it lt
+ 640 00b4 5B42     	 rsblt r3,r3,#0
+ 641 00b6 3A1D     	 adds r2,r7,#4
+ 642 00b8 1046     	 mov r0,r2
+ 643 00ba 0949     	 ldr r1,.L33+16
+ 644 00bc 2246     	 mov r2,r4
+ 645 00be FFF7FEFF 	 bl sprintf
+ 153:../sources/lcd.c ****     LCD_Send_String(line);
+ 646              	 .loc 1 153 0
+ 647 00c2 3B1D     	 adds r3,r7,#4
+ 648 00c4 1846     	 mov r0,r3
+ 649 00c6 FFF7FEFF 	 bl LCD_Send_String
+ 154:../sources/lcd.c **** }
+ 650              	 .loc 1 154 0
+ 651 00ca 2437     	 adds r7,r7,#36
+ 652              	.LCFI32:
+ 653              	 .cfi_def_cfa_offset 12
+ 654 00cc BD46     	 mov sp,r7
+ 655              	.LCFI33:
+ 656              	 .cfi_def_cfa_register 13
+ 657              	 
+ 658 00ce 90BD     	 pop {r4,r7,pc}
+ 659              	.L34:
+ 660              	 .align 2
+ 661              	.L33:
+ 662 00d0 00000000 	 .word aht10
+ 663 00d4 0000C842 	 .word 1120403456
+ 664 00d8 1F85EB51 	 .word 1374389535
+ 665 00dc 00000000 	 .word .LC0
+ 666 00e0 10000000 	 .word .LC1
+ 667              	 .cfi_endproc
+ 668              	.LFE543:
+ 670              	 .section .rodata
+ 671 001f 00       	 .align 2
+ 672              	.LC2:
+ 673 0020 43414E3A 	 .ascii "CAN:%4u\000"
+ 673      25347500 
+ 674              	 .align 2
+ 675              	.LC3:
+ 676 0028 52583A20 	 .ascii "RX: OK\000"
+ 676      4F4B00
+ 677 002f 00       	 .align 2
+ 678              	.LC4:
+ 679 0030 43414E20 	 .ascii "CAN RX\000"
+ 679      525800
+ 680 0037 00       	 .align 2
+ 681              	.LC5:
+ 682 0038 57616974 	 .ascii "Waiting...\000"
+ 682      696E672E 
+ 682      2E2E00
+ 683 0043 00       	 .section .text.LCD_ShowCAN,"ax",%progbits
+ 684              	 .align 2
+ 685              	 .global LCD_ShowCAN
+ 686              	 .thumb
+ 687              	 .thumb_func
+ 689              	LCD_ShowCAN:
+ 690              	.LFB544:
+ 155:../sources/lcd.c **** 
+ 156:../sources/lcd.c **** void LCD_ShowCAN(void)
+ 157:../sources/lcd.c **** {
+ 691              	 .loc 1 157 0
+ 692              	 .cfi_startproc
+ 693              	 
+ 694              	 
+ 695 0000 80B5     	 push {r7,lr}
+ 696              	.LCFI34:
+ 697              	 .cfi_def_cfa_offset 8
+ 698              	 .cfi_offset 7,-8
+ 699              	 .cfi_offset 14,-4
+ 700 0002 86B0     	 sub sp,sp,#24
+ 701              	.LCFI35:
+ 702              	 .cfi_def_cfa_offset 32
+ 703 0004 00AF     	 add r7,sp,#0
+ 704              	.LCFI36:
+ 705              	 .cfi_def_cfa_register 7
+ 158:../sources/lcd.c ****     char line[17];
+ 159:../sources/lcd.c **** 
+ 160:../sources/lcd.c ****     LCD_Set_Cursor(0,0);
+ 706              	 .loc 1 160 0
+ 707 0006 0020     	 movs r0,#0
+ 708 0008 0021     	 movs r1,#0
+ 709 000a FFF7FEFF 	 bl LCD_Set_Cursor
+ 161:../sources/lcd.c **** 
+ 162:../sources/lcd.c ****     sprintf(line,"CAN:%4u",can_rx_id);
+ 710              	 .loc 1 162 0
+ 711 000e 154B     	 ldr r3,.L38
+ 712 0010 1B88     	 ldrh r3,[r3]
+ 713 0012 9BB2     	 uxth r3,r3
+ 714 0014 1A46     	 mov r2,r3
+ 715 0016 3B1D     	 adds r3,r7,#4
+ 716 0018 1846     	 mov r0,r3
+ 717 001a 1349     	 ldr r1,.L38+4
+ 718 001c FFF7FEFF 	 bl sprintf
+ 163:../sources/lcd.c ****     LCD_Send_String(line);
+ 719              	 .loc 1 163 0
+ 720 0020 3B1D     	 adds r3,r7,#4
+ 721 0022 1846     	 mov r0,r3
+ 722 0024 FFF7FEFF 	 bl LCD_Send_String
+ 164:../sources/lcd.c **** 
+ 165:../sources/lcd.c ****     LCD_Set_Cursor(1,0);
+ 723              	 .loc 1 165 0
+ 724 0028 0120     	 movs r0,#1
+ 725 002a 0021     	 movs r1,#0
+ 726 002c FFF7FEFF 	 bl LCD_Set_Cursor
+ 166:../sources/lcd.c **** 
+ 167:../sources/lcd.c ****     if(can_rx_flag)
+ 727              	 .loc 1 167 0
+ 728 0030 0E4B     	 ldr r3,.L38+8
+ 729 0032 1B78     	 ldrb r3,[r3]
+ 730 0034 DBB2     	 uxtb r3,r3
+ 731 0036 002B     	 cmp r3,#0
+ 732 0038 03D0     	 beq .L36
+ 168:../sources/lcd.c ****     {
+ 169:../sources/lcd.c ****         LCD_Send_String("RX: OK");
+ 733              	 .loc 1 169 0
+ 734 003a 0D48     	 ldr r0,.L38+12
+ 735 003c FFF7FEFF 	 bl LCD_Send_String
+ 736 0040 0DE0     	 b .L35
+ 737              	.L36:
+ 170:../sources/lcd.c ****     }
+ 171:../sources/lcd.c ****     else
+ 172:../sources/lcd.c ****     {
+ 173:../sources/lcd.c ****     	LCD_Set_Cursor(0,0);
+ 738              	 .loc 1 173 0
+ 739 0042 0020     	 movs r0,#0
+ 740 0044 0021     	 movs r1,#0
+ 741 0046 FFF7FEFF 	 bl LCD_Set_Cursor
+ 174:../sources/lcd.c ****     	LCD_Send_String("CAN RX");
+ 742              	 .loc 1 174 0
+ 743 004a 0A48     	 ldr r0,.L38+16
+ 744 004c FFF7FEFF 	 bl LCD_Send_String
+ 175:../sources/lcd.c **** 
+ 176:../sources/lcd.c ****     	LCD_Set_Cursor(1,0);
+ 745              	 .loc 1 176 0
+ 746 0050 0120     	 movs r0,#1
+ 747 0052 0021     	 movs r1,#0
+ 748 0054 FFF7FEFF 	 bl LCD_Set_Cursor
+ 177:../sources/lcd.c ****         LCD_Send_String("Waiting...");
+ 749              	 .loc 1 177 0
+ 750 0058 0748     	 ldr r0,.L38+20
+ 751 005a FFF7FEFF 	 bl LCD_Send_String
+ 752              	.L35:
+ 178:../sources/lcd.c ****     }
+ 179:../sources/lcd.c **** }
+ 753              	 .loc 1 179 0
+ 754 005e 1837     	 adds r7,r7,#24
+ 755              	.LCFI37:
+ 756              	 .cfi_def_cfa_offset 8
+ 757 0060 BD46     	 mov sp,r7
+ 758              	.LCFI38:
+ 759              	 .cfi_def_cfa_register 13
+ 760              	 
+ 761 0062 80BD     	 pop {r7,pc}
+ 762              	.L39:
+ 763              	 .align 2
+ 764              	.L38:
+ 765 0064 00000000 	 .word can_rx_id
+ 766 0068 20000000 	 .word .LC2
+ 767 006c 00000000 	 .word can_rx_flag
+ 768 0070 28000000 	 .word .LC3
+ 769 0074 30000000 	 .word .LC4
+ 770 0078 38000000 	 .word .LC5
+ 771              	 .cfi_endproc
+ 772              	.LFE544:
+ 774              	 .section .text.LCD_SetPage,"ax",%progbits
+ 775              	 .align 2
+ 776              	 .global LCD_SetPage
+ 777              	 .thumb
+ 778              	 .thumb_func
+ 780              	LCD_SetPage:
+ 781              	.LFB545:
+ 180:../sources/lcd.c **** 
+ 181:../sources/lcd.c **** void LCD_SetPage(uint8_t page)
+ 182:../sources/lcd.c **** {
+ 782              	 .loc 1 182 0
+ 783              	 .cfi_startproc
+ 784              	 
+ 785              	 
+ 786              	 
+ 787 0000 80B4     	 push {r7}
+ 788              	.LCFI39:
+ 789              	 .cfi_def_cfa_offset 4
+ 790              	 .cfi_offset 7,-4
+ 791 0002 83B0     	 sub sp,sp,#12
+ 792              	.LCFI40:
+ 793              	 .cfi_def_cfa_offset 16
+ 794 0004 00AF     	 add r7,sp,#0
+ 795              	.LCFI41:
+ 796              	 .cfi_def_cfa_register 7
+ 797 0006 0346     	 mov r3,r0
+ 798 0008 FB71     	 strb r3,[r7,#7]
+ 183:../sources/lcd.c ****     lcd_page = page;
+ 799              	 .loc 1 183 0
+ 800 000a 044A     	 ldr r2,.L41
+ 801 000c FB79     	 ldrb r3,[r7,#7]
+ 802 000e 1370     	 strb r3,[r2]
+ 184:../sources/lcd.c **** }
+ 803              	 .loc 1 184 0
+ 804 0010 0C37     	 adds r7,r7,#12
+ 805              	.LCFI42:
+ 806              	 .cfi_def_cfa_offset 4
+ 807 0012 BD46     	 mov sp,r7
+ 808              	.LCFI43:
+ 809              	 .cfi_def_cfa_register 13
+ 810              	 
+ 811 0014 5DF8047B 	 ldr r7,[sp],#4
+ 812              	.LCFI44:
+ 813              	 .cfi_restore 7
+ 814              	 .cfi_def_cfa_offset 0
+ 815 0018 7047     	 bx lr
+ 816              	.L42:
+ 817 001a 00BF     	 .align 2
+ 818              	.L41:
+ 819 001c 00000000 	 .word lcd_page
+ 820              	 .cfi_endproc
+ 821              	.LFE545:
+ 823              	 .section .bss.counter.12211,"aw",%nobits
+ 824              	 .align 2
+ 827              	counter.12211:
+ 828 0000 00000000 	 .space 4
+ 829              	 .text
+ 830              	.Letext0:
+ 831              	 .file 2 "c:\\infineon\\tools\\dave ide\\4.5.0.202105191637\\eclipse\\arm-gcc-49\\arm-none-eabi\\include\\machine\\_default_types.h"
+ 832              	 .file 3 "c:\\infineon\\tools\\dave ide\\4.5.0.202105191637\\eclipse\\arm-gcc-49\\arm-none-eabi\\include\\stdint.h"
+ 833              	 .file 4 "C:/Infineon/Tools/DAVE IDE/4.5.0.202105191637/eclipse/workspace/SISEM_2026_2DA_08_A/Libraries/CMSIS/Infineon/XMC4200_series/Include/XMC4200.h"
+ 834              	 .file 5 "C:/Infineon/Tools/DAVE IDE/4.5.0.202105191637/eclipse/workspace/SISEM_2026_2DA_08_A/Libraries/XMCLib/inc/xmc_usic.h"
+ 835              	 .file 6 "C:/Infineon/Tools/DAVE IDE/4.5.0.202105191637/eclipse/workspace/SISEM_2026_2DA_08_A/Libraries/XMCLib/inc/xmc_i2c.h"
+ 836              	 .file 7 "C:/Infineon/Tools/DAVE IDE/4.5.0.202105191637/eclipse/workspace/SISEM_2026_2DA_08_A/Dave/Generated/I2C_MASTER/i2c_master.h"
+ 837              	 .file 8 "C:/Infineon/Tools/DAVE IDE/4.5.0.202105191637/eclipse/workspace/SISEM_2026_2DA_08_A/headers/aht10.h"
+ 838              	 .file 9 "C:/Infineon/Tools/DAVE IDE/4.5.0.202105191637/eclipse/workspace/SISEM_2026_2DA_08_A/Libraries/CMSIS/Include/cmsis_gcc.h"
+ 839              	 .file 10 "C:/Infineon/Tools/DAVE IDE/4.5.0.202105191637/eclipse/workspace/SISEM_2026_2DA_08_A/Libraries/CMSIS/Include/core_cm4.h"
+ 840              	 .file 11 "C:/Infineon/Tools/DAVE IDE/4.5.0.202105191637/eclipse/workspace/SISEM_2026_2DA_08_A/Libraries/CMSIS/Infineon/XMC4200_series/Include/system_XMC4200.h"
+ 841              	 .file 12 "C:/Infineon/Tools/DAVE IDE/4.5.0.202105191637/eclipse/workspace/SISEM_2026_2DA_08_A/headers/can_app.h"
+DEFINED SYMBOLS
+                            *ABS*:00000000 lcd.c
+    {standard input}:22     .bss.lcd_page:00000000 lcd_page
+    {standard input}:23     .bss.lcd_page:00000000 $d
+    {standard input}:25     .text.LCD_Send_Cmd:00000000 $t
+    {standard input}:30     .text.LCD_Send_Cmd:00000000 LCD_Send_Cmd
+    {standard input}:119    .text.LCD_Send_Cmd:00000074 $d
+    {standard input}:124    .text.LCD_Send_Data:00000000 $t
+    {standard input}:129    .text.LCD_Send_Data:00000000 LCD_Send_Data
+    {standard input}:217    .text.LCD_Send_Data:00000074 $d
+    {standard input}:222    .text.LCD_Clear:00000000 $t
+    {standard input}:227    .text.LCD_Clear:00000000 LCD_Clear
+    {standard input}:250    .text.LCD_Set_Cursor:00000000 $t
+    {standard input}:255    .text.LCD_Set_Cursor:00000000 LCD_Set_Cursor
+    {standard input}:314    .text.LCD_Init:00000000 $t
+    {standard input}:319    .text.LCD_Init:00000000 LCD_Init
+    {standard input}:780    .text.LCD_SetPage:00000000 LCD_SetPage
+    {standard input}:386    .text.LCD_Init:0000004c $d
+    {standard input}:391    .text.LCD_Send_String:00000000 $t
+    {standard input}:396    .text.LCD_Send_String:00000000 LCD_Send_String
+    {standard input}:460    .text.LCD_Task:00000000 $t
+    {standard input}:465    .text.LCD_Task:00000000 LCD_Task
+    {standard input}:544    .text.LCD_ShowTemperatureHumidity:00000000 LCD_ShowTemperatureHumidity
+    {standard input}:689    .text.LCD_ShowCAN:00000000 LCD_ShowCAN
+    {standard input}:524    .text.LCD_Task:00000044 $d
+    {standard input}:827    .bss.counter.12211:00000000 counter.12211
+    {standard input}:532    .rodata:00000000 $d
+    {standard input}:539    .text.LCD_ShowTemperatureHumidity:00000000 $t
+    {standard input}:662    .text.LCD_ShowTemperatureHumidity:000000d0 $d
+    {standard input}:684    .text.LCD_ShowCAN:00000000 $t
+    {standard input}:765    .text.LCD_ShowCAN:00000064 $d
+    {standard input}:775    .text.LCD_SetPage:00000000 $t
+    {standard input}:819    .text.LCD_SetPage:0000001c $d
+    {standard input}:824    .bss.counter.12211:00000000 $d
+                     .debug_frame:00000010 $d
+
+UNDEFINED SYMBOLS
+I2C_MASTER_Transmit
+I2C_MASTER_0
+aht10
+sprintf
+can_rx_id
+can_rx_flag

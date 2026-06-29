@@ -1,0 +1,134 @@
+   1              	 .syntax unified
+   2              	 .cpu cortex-m4
+   3              	 .eabi_attribute 27,3
+   4              	 .fpu fpv4-sp-d16
+   5              	 .eabi_attribute 20,1
+   6              	 .eabi_attribute 21,1
+   7              	 .eabi_attribute 23,3
+   8              	 .eabi_attribute 24,1
+   9              	 .eabi_attribute 25,1
+  10              	 .eabi_attribute 26,1
+  11              	 .eabi_attribute 30,6
+  12              	 .eabi_attribute 34,1
+  13              	 .eabi_attribute 18,4
+  14              	 .thumb
+  15              	 .file "app.c"
+  16              	 .text
+  17              	.Ltext0:
+  18              	 .cfi_sections .debug_frame
+  19              	 .section .text.APP_Init,"ax",%progbits
+  20              	 .align 2
+  21              	 .global APP_Init
+  22              	 .thumb
+  23              	 .thumb_func
+  25              	APP_Init:
+  26              	.LFB536:
+  27              	 .file 1 "../sources/app.c"
+   1:../sources/app.c **** #include "app.h"
+   2:../sources/app.c **** #include "uart.h"
+   3:../sources/app.c **** #include "adc.h"
+   4:../sources/app.c **** #include "led.h"
+   5:../sources/app.c **** #include "aht10.h"
+   6:../sources/app.c **** #include "can_app.h"
+   7:../sources/app.c **** #include "lcd.h"
+   8:../sources/app.c **** 
+   9:../sources/app.c **** void APP_Init(void)
+  10:../sources/app.c **** {
+  28              	 .loc 1 10 0
+  29              	 .cfi_startproc
+  30              	 
+  31              	 
+  32 0000 80B5     	 push {r7,lr}
+  33              	.LCFI0:
+  34              	 .cfi_def_cfa_offset 8
+  35              	 .cfi_offset 7,-8
+  36              	 .cfi_offset 14,-4
+  37 0002 00AF     	 add r7,sp,#0
+  38              	.LCFI1:
+  39              	 .cfi_def_cfa_register 7
+  11:../sources/app.c ****     LED_Init();
+  40              	 .loc 1 11 0
+  41 0004 FFF7FEFF 	 bl LED_Init
+  12:../sources/app.c **** 
+  13:../sources/app.c ****     APP_UART_Init();
+  42              	 .loc 1 13 0
+  43 0008 FFF7FEFF 	 bl APP_UART_Init
+  14:../sources/app.c **** 
+  15:../sources/app.c ****     APP_AHT10_Init();
+  44              	 .loc 1 15 0
+  45 000c FFF7FEFF 	 bl APP_AHT10_Init
+  16:../sources/app.c **** 
+  17:../sources/app.c ****     LCD_Init();
+  46              	 .loc 1 17 0
+  47 0010 FFF7FEFF 	 bl LCD_Init
+  18:../sources/app.c **** }
+  48              	 .loc 1 18 0
+  49 0014 80BD     	 pop {r7,pc}
+  50              	 .cfi_endproc
+  51              	.LFE536:
+  53 0016 00BF     	 .section .text.APP_Run,"ax",%progbits
+  54              	 .align 2
+  55              	 .global APP_Run
+  56              	 .thumb
+  57              	 .thumb_func
+  59              	APP_Run:
+  60              	.LFB537:
+  19:../sources/app.c **** 
+  20:../sources/app.c **** void APP_Run(void)
+  21:../sources/app.c **** {
+  61              	 .loc 1 21 0
+  62              	 .cfi_startproc
+  63              	 
+  64              	 
+  65 0000 80B5     	 push {r7,lr}
+  66              	.LCFI2:
+  67              	 .cfi_def_cfa_offset 8
+  68              	 .cfi_offset 7,-8
+  69              	 .cfi_offset 14,-4
+  70 0002 00AF     	 add r7,sp,#0
+  71              	.LCFI3:
+  72              	 .cfi_def_cfa_register 7
+  22:../sources/app.c ****     ADC_Update();
+  73              	 .loc 1 22 0
+  74 0004 FFF7FEFF 	 bl ADC_Update
+  23:../sources/app.c **** 
+  24:../sources/app.c ****     APP_UART_Task();
+  75              	 .loc 1 24 0
+  76 0008 FFF7FEFF 	 bl APP_UART_Task
+  25:../sources/app.c **** 
+  26:../sources/app.c ****     LCD_Task();
+  77              	 .loc 1 26 0
+  78 000c FFF7FEFF 	 bl LCD_Task
+  27:../sources/app.c **** 
+  28:../sources/app.c ****     APP_CAN_Task();
+  79              	 .loc 1 28 0
+  80 0010 FFF7FEFF 	 bl APP_CAN_Task
+  29:../sources/app.c **** }
+  81              	 .loc 1 29 0
+  82 0014 80BD     	 pop {r7,pc}
+  83              	 .cfi_endproc
+  84              	.LFE537:
+  86 0016 00BF     	 .text
+  87              	.Letext0:
+  88              	 .file 2 "c:\\infineon\\tools\\dave ide\\4.5.0.202105191637\\eclipse\\arm-gcc-49\\arm-none-eabi\\include\\machine\\_default_types.h"
+  89              	 .file 3 "c:\\infineon\\tools\\dave ide\\4.5.0.202105191637\\eclipse\\arm-gcc-49\\arm-none-eabi\\include\\stdint.h"
+  90              	 .file 4 "C:/Infineon/Tools/DAVE IDE/4.5.0.202105191637/eclipse/workspace/SISEM_2026_2DA_08_A/Libraries/CMSIS/Include/cmsis_gcc.h"
+  91              	 .file 5 "C:/Infineon/Tools/DAVE IDE/4.5.0.202105191637/eclipse/workspace/SISEM_2026_2DA_08_A/Libraries/CMSIS/Include/core_cm4.h"
+  92              	 .file 6 "C:/Infineon/Tools/DAVE IDE/4.5.0.202105191637/eclipse/workspace/SISEM_2026_2DA_08_A/Libraries/CMSIS/Infineon/XMC4200_series/Include/system_XMC4200.h"
+DEFINED SYMBOLS
+                            *ABS*:00000000 app.c
+    {standard input}:20     .text.APP_Init:00000000 $t
+    {standard input}:25     .text.APP_Init:00000000 APP_Init
+    {standard input}:54     .text.APP_Run:00000000 $t
+    {standard input}:59     .text.APP_Run:00000000 APP_Run
+                     .debug_frame:00000010 $d
+
+UNDEFINED SYMBOLS
+LED_Init
+APP_UART_Init
+APP_AHT10_Init
+LCD_Init
+ADC_Update
+APP_UART_Task
+LCD_Task
+APP_CAN_Task

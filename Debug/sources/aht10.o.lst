@@ -1,0 +1,467 @@
+   1              	 .syntax unified
+   2              	 .cpu cortex-m4
+   3              	 .eabi_attribute 27,3
+   4              	 .fpu fpv4-sp-d16
+   5              	 .eabi_attribute 20,1
+   6              	 .eabi_attribute 21,1
+   7              	 .eabi_attribute 23,3
+   8              	 .eabi_attribute 24,1
+   9              	 .eabi_attribute 25,1
+  10              	 .eabi_attribute 26,1
+  11              	 .eabi_attribute 30,6
+  12              	 .eabi_attribute 34,1
+  13              	 .eabi_attribute 18,4
+  14              	 .thumb
+  15              	 .file "aht10.c"
+  16              	 .text
+  17              	.Ltext0:
+  18              	 .cfi_sections .debug_frame
+  19              	 .global aht10
+  20              	 .section .bss.aht10,"aw",%nobits
+  21              	 .align 2
+  24              	aht10:
+  25 0000 00000000 	 .space 12
+  25      00000000 
+  25      00000000 
+  26              	 .section .rodata
+  27              	 .align 2
+  28              	.LC0:
+  29 0000 E1       	 .byte -31
+  30 0001 08       	 .byte 8
+  31 0002 00       	 .byte 0
+  32              	 .section .text.APP_AHT10_Init,"ax",%progbits
+  33              	 .align 2
+  34              	 .global APP_AHT10_Init
+  35              	 .thumb
+  36              	 .thumb_func
+  38              	APP_AHT10_Init:
+  39              	.LFB536:
+  40              	 .file 1 "../sources/aht10.c"
+   1:../sources/aht10.c **** #include "aht10.h"
+   2:../sources/aht10.c **** 
+   3:../sources/aht10.c **** #define AHT10_ADDR 0x38
+   4:../sources/aht10.c **** 
+   5:../sources/aht10.c **** APP_AHT10_t aht10 = {0};
+   6:../sources/aht10.c **** 
+   7:../sources/aht10.c **** void APP_AHT10_Init(void)
+   8:../sources/aht10.c **** {
+  41              	 .loc 1 8 0
+  42              	 .cfi_startproc
+  43              	 
+  44              	 
+  45 0000 90B5     	 push {r4,r7,lr}
+  46              	.LCFI0:
+  47              	 .cfi_def_cfa_offset 12
+  48              	 .cfi_offset 4,-12
+  49              	 .cfi_offset 7,-8
+  50              	 .cfi_offset 14,-4
+  51 0002 87B0     	 sub sp,sp,#28
+  52              	.LCFI1:
+  53              	 .cfi_def_cfa_offset 40
+  54 0004 02AF     	 add r7,sp,#8
+  55              	.LCFI2:
+  56              	 .cfi_def_cfa 7,32
+   9:../sources/aht10.c ****     uint8_t reset_cmd = 0xBA;
+  57              	 .loc 1 9 0
+  58 0006 BA23     	 movs r3,#186
+  59 0008 FB73     	 strb r3,[r7,#15]
+  10:../sources/aht10.c ****     uint8_t init_cmd[3] = {0xE1, 0x08, 0x00};
+  60              	 .loc 1 10 0
+  61 000a 1B4A     	 ldr r2,.L6
+  62 000c 07F10C03 	 add r3,r7,#12
+  63 0010 1188     	 ldrh r1,[r2]
+  64 0012 9278     	 ldrb r2,[r2,#2]
+  65 0014 1980     	 strh r1,[r3]
+  66 0016 9A70     	 strb r2,[r3,#2]
+  11:../sources/aht10.c **** 
+  12:../sources/aht10.c ****     /* Reset */
+  13:../sources/aht10.c ****     I2C_MASTER_Transmit(&I2C_MASTER_0,
+  67              	 .loc 1 13 0
+  68 0018 07F10F04 	 add r4,r7,#15
+  69 001c 0123     	 movs r3,#1
+  70 001e 0093     	 str r3,[sp]
+  71 0020 0123     	 movs r3,#1
+  72 0022 0193     	 str r3,[sp,#4]
+  73 0024 1548     	 ldr r0,.L6+4
+  74 0026 0121     	 movs r1,#1
+  75 0028 7022     	 movs r2,#112
+  76 002a 2346     	 mov r3,r4
+  77 002c FFF7FEFF 	 bl I2C_MASTER_Transmit
+  78              	.LBB2:
+  14:../sources/aht10.c ****                         true,
+  15:../sources/aht10.c ****                         (AHT10_ADDR << 1),
+  16:../sources/aht10.c ****                         &reset_cmd,
+  17:../sources/aht10.c ****                         1,
+  18:../sources/aht10.c ****                         true);
+  19:../sources/aht10.c **** 
+  20:../sources/aht10.c ****     for(volatile uint32_t i = 0; i < 300000; i++);
+  79              	 .loc 1 20 0
+  80 0030 0023     	 movs r3,#0
+  81 0032 BB60     	 str r3,[r7,#8]
+  82 0034 02E0     	 b .L2
+  83              	.L3:
+  84              	 .loc 1 20 0 is_stmt 0 discriminator 3
+  85 0036 BB68     	 ldr r3,[r7,#8]
+  86 0038 0133     	 adds r3,r3,#1
+  87 003a BB60     	 str r3,[r7,#8]
+  88              	.L2:
+  89              	 .loc 1 20 0 discriminator 1
+  90 003c BB68     	 ldr r3,[r7,#8]
+  91 003e 104A     	 ldr r2,.L6+8
+  92 0040 9342     	 cmp r3,r2
+  93 0042 F8D9     	 bls .L3
+  94              	.LBE2:
+  21:../sources/aht10.c **** 
+  22:../sources/aht10.c ****     /* Init / Calibrate */
+  23:../sources/aht10.c ****     I2C_MASTER_Transmit(&I2C_MASTER_0,
+  95              	 .loc 1 23 0 is_stmt 1
+  96 0044 07F10C04 	 add r4,r7,#12
+  97 0048 0323     	 movs r3,#3
+  98 004a 0093     	 str r3,[sp]
+  99 004c 0123     	 movs r3,#1
+ 100 004e 0193     	 str r3,[sp,#4]
+ 101 0050 0A48     	 ldr r0,.L6+4
+ 102 0052 0121     	 movs r1,#1
+ 103 0054 7022     	 movs r2,#112
+ 104 0056 2346     	 mov r3,r4
+ 105 0058 FFF7FEFF 	 bl I2C_MASTER_Transmit
+ 106              	.LBB3:
+  24:../sources/aht10.c ****                         true,
+  25:../sources/aht10.c ****                         (AHT10_ADDR << 1),
+  26:../sources/aht10.c ****                         init_cmd,
+  27:../sources/aht10.c ****                         3,
+  28:../sources/aht10.c ****                         true);
+  29:../sources/aht10.c **** 
+  30:../sources/aht10.c ****     for(volatile uint32_t i = 0; i < 300000; i++);
+ 107              	 .loc 1 30 0
+ 108 005c 0023     	 movs r3,#0
+ 109 005e 7B60     	 str r3,[r7,#4]
+ 110 0060 02E0     	 b .L4
+ 111              	.L5:
+ 112              	 .loc 1 30 0 is_stmt 0 discriminator 3
+ 113 0062 7B68     	 ldr r3,[r7,#4]
+ 114 0064 0133     	 adds r3,r3,#1
+ 115 0066 7B60     	 str r3,[r7,#4]
+ 116              	.L4:
+ 117              	 .loc 1 30 0 discriminator 1
+ 118 0068 7B68     	 ldr r3,[r7,#4]
+ 119 006a 054A     	 ldr r2,.L6+8
+ 120 006c 9342     	 cmp r3,r2
+ 121 006e F8D9     	 bls .L5
+ 122              	.LBE3:
+  31:../sources/aht10.c **** }
+ 123              	 .loc 1 31 0 is_stmt 1
+ 124 0070 1437     	 adds r7,r7,#20
+ 125              	.LCFI3:
+ 126              	 .cfi_def_cfa_offset 12
+ 127 0072 BD46     	 mov sp,r7
+ 128              	.LCFI4:
+ 129              	 .cfi_def_cfa_register 13
+ 130              	 
+ 131 0074 90BD     	 pop {r4,r7,pc}
+ 132              	.L7:
+ 133 0076 00BF     	 .align 2
+ 134              	.L6:
+ 135 0078 00000000 	 .word .LC0
+ 136 007c 00000000 	 .word I2C_MASTER_0
+ 137 0080 DF930400 	 .word 299999
+ 138              	 .cfi_endproc
+ 139              	.LFE536:
+ 141              	 .section .rodata
+ 142 0003 00       	 .align 2
+ 143              	.LC1:
+ 144 0004 AC       	 .byte -84
+ 145 0005 33       	 .byte 51
+ 146 0006 00       	 .byte 0
+ 147 0007 00       	 .section .text.APP_AHT10_Read,"ax",%progbits
+ 148              	 .align 2
+ 149              	 .global APP_AHT10_Read
+ 150              	 .thumb
+ 151              	 .thumb_func
+ 153              	APP_AHT10_Read:
+ 154              	.LFB537:
+  32:../sources/aht10.c **** 
+  33:../sources/aht10.c **** uint8_t APP_AHT10_Read(void)
+  34:../sources/aht10.c **** {
+ 155              	 .loc 1 34 0
+ 156              	 .cfi_startproc
+ 157              	 
+ 158              	 
+ 159 0000 90B5     	 push {r4,r7,lr}
+ 160              	.LCFI5:
+ 161              	 .cfi_def_cfa_offset 12
+ 162              	 .cfi_offset 4,-12
+ 163              	 .cfi_offset 7,-8
+ 164              	 .cfi_offset 14,-4
+ 165 0002 8DB0     	 sub sp,sp,#52
+ 166              	.LCFI6:
+ 167              	 .cfi_def_cfa_offset 64
+ 168 0004 04AF     	 add r7,sp,#16
+ 169              	.LCFI7:
+ 170              	 .cfi_def_cfa 7,48
+  35:../sources/aht10.c ****     uint8_t cmd[3] = {0xAC, 0x33, 0x00};
+ 171              	 .loc 1 35 0
+ 172 0006 434A     	 ldr r2,.L17
+ 173 0008 07F11003 	 add r3,r7,#16
+ 174 000c 1188     	 ldrh r1,[r2]
+ 175 000e 9278     	 ldrb r2,[r2,#2]
+ 176 0010 1980     	 strh r1,[r3]
+ 177 0012 9A70     	 strb r2,[r3,#2]
+  36:../sources/aht10.c ****     uint8_t data[6];
+  37:../sources/aht10.c ****     uint8_t tries = 10;
+ 178              	 .loc 1 37 0
+ 179 0014 0A23     	 movs r3,#10
+ 180 0016 FB77     	 strb r3,[r7,#31]
+  38:../sources/aht10.c **** 
+  39:../sources/aht10.c ****     /* Start measurement */
+  40:../sources/aht10.c ****     if(I2C_MASTER_Transmit(&I2C_MASTER_0,
+ 181              	 .loc 1 40 0
+ 182 0018 07F11004 	 add r4,r7,#16
+ 183 001c 0323     	 movs r3,#3
+ 184 001e 0093     	 str r3,[sp]
+ 185 0020 0123     	 movs r3,#1
+ 186 0022 0193     	 str r3,[sp,#4]
+ 187 0024 3C48     	 ldr r0,.L17+4
+ 188 0026 0121     	 movs r1,#1
+ 189 0028 7022     	 movs r2,#112
+ 190 002a 2346     	 mov r3,r4
+ 191 002c FFF7FEFF 	 bl I2C_MASTER_Transmit
+ 192 0030 0346     	 mov r3,r0
+ 193 0032 002B     	 cmp r3,#0
+ 194 0034 01D0     	 beq .L9
+  41:../sources/aht10.c ****                            true,
+  42:../sources/aht10.c ****                            (AHT10_ADDR << 1),
+  43:../sources/aht10.c ****                            cmd,
+  44:../sources/aht10.c ****                            3,
+  45:../sources/aht10.c ****                            true) != I2C_MASTER_STATUS_SUCCESS)
+  46:../sources/aht10.c ****     {
+  47:../sources/aht10.c ****         return 0;
+ 195              	 .loc 1 47 0
+ 196 0036 0023     	 movs r3,#0
+ 197 0038 68E0     	 b .L16
+ 198              	.L9:
+ 199              	.LBB4:
+  48:../sources/aht10.c ****     }
+  49:../sources/aht10.c **** 
+  50:../sources/aht10.c ****     do
+  51:../sources/aht10.c ****     {
+  52:../sources/aht10.c ****         for(volatile uint32_t i = 0; i < 250000; i++);
+ 200              	 .loc 1 52 0
+ 201 003a 0023     	 movs r3,#0
+ 202 003c 7B60     	 str r3,[r7,#4]
+ 203 003e 02E0     	 b .L11
+ 204              	.L12:
+ 205              	 .loc 1 52 0 is_stmt 0 discriminator 3
+ 206 0040 7B68     	 ldr r3,[r7,#4]
+ 207 0042 0133     	 adds r3,r3,#1
+ 208 0044 7B60     	 str r3,[r7,#4]
+ 209              	.L11:
+ 210              	 .loc 1 52 0 discriminator 1
+ 211 0046 7B68     	 ldr r3,[r7,#4]
+ 212 0048 344A     	 ldr r2,.L17+8
+ 213 004a 9342     	 cmp r3,r2
+ 214 004c F8D9     	 bls .L12
+ 215              	.LBE4:
+  53:../sources/aht10.c **** 
+  54:../sources/aht10.c ****         if(I2C_MASTER_Receive(&I2C_MASTER_0,
+ 216              	 .loc 1 54 0 is_stmt 1
+ 217 004e 07F10804 	 add r4,r7,#8
+ 218 0052 0623     	 movs r3,#6
+ 219 0054 0093     	 str r3,[sp]
+ 220 0056 0123     	 movs r3,#1
+ 221 0058 0193     	 str r3,[sp,#4]
+ 222 005a 0123     	 movs r3,#1
+ 223 005c 0293     	 str r3,[sp,#8]
+ 224 005e 2E48     	 ldr r0,.L17+4
+ 225 0060 0121     	 movs r1,#1
+ 226 0062 7022     	 movs r2,#112
+ 227 0064 2346     	 mov r3,r4
+ 228 0066 FFF7FEFF 	 bl I2C_MASTER_Receive
+ 229 006a 0346     	 mov r3,r0
+ 230 006c 002B     	 cmp r3,#0
+ 231 006e 01D0     	 beq .L13
+  55:../sources/aht10.c ****                               true,
+  56:../sources/aht10.c ****                               (AHT10_ADDR << 1),
+  57:../sources/aht10.c ****                               data,
+  58:../sources/aht10.c ****                               6,
+  59:../sources/aht10.c ****                               true,
+  60:../sources/aht10.c ****                               true) != I2C_MASTER_STATUS_SUCCESS)
+  61:../sources/aht10.c ****         {
+  62:../sources/aht10.c ****             return 0;
+ 232              	 .loc 1 62 0
+ 233 0070 0023     	 movs r3,#0
+ 234 0072 4BE0     	 b .L16
+ 235              	.L13:
+  63:../sources/aht10.c ****         }
+  64:../sources/aht10.c **** 
+  65:../sources/aht10.c ****         tries--;
+ 236              	 .loc 1 65 0
+ 237 0074 FB7F     	 ldrb r3,[r7,#31]
+ 238 0076 013B     	 subs r3,r3,#1
+ 239 0078 FB77     	 strb r3,[r7,#31]
+  66:../sources/aht10.c **** 
+  67:../sources/aht10.c ****     } while((data[0] & 0x80) && tries);
+ 240              	 .loc 1 67 0
+ 241 007a 3B7A     	 ldrb r3,[r7,#8]
+ 242 007c DBB2     	 uxtb r3,r3
+ 243 007e 5BB2     	 sxtb r3,r3
+ 244 0080 002B     	 cmp r3,#0
+ 245 0082 02DA     	 bge .L14
+ 246              	 .loc 1 67 0 is_stmt 0 discriminator 1
+ 247 0084 FB7F     	 ldrb r3,[r7,#31]
+ 248 0086 002B     	 cmp r3,#0
+ 249 0088 D7D1     	 bne .L9
+ 250              	.L14:
+  68:../sources/aht10.c **** 
+  69:../sources/aht10.c ****     if(tries == 0)
+ 251              	 .loc 1 69 0 is_stmt 1
+ 252 008a FB7F     	 ldrb r3,[r7,#31]
+ 253 008c 002B     	 cmp r3,#0
+ 254 008e 01D1     	 bne .L15
+  70:../sources/aht10.c ****     {
+  71:../sources/aht10.c ****         return 0;
+ 255              	 .loc 1 71 0
+ 256 0090 0023     	 movs r3,#0
+ 257 0092 3BE0     	 b .L16
+ 258              	.L15:
+  72:../sources/aht10.c ****     }
+  73:../sources/aht10.c **** 
+  74:../sources/aht10.c ****     uint32_t raw_hum =
+  75:../sources/aht10.c ****         ((uint32_t)data[1] << 12) |
+ 259              	 .loc 1 75 0
+ 260 0094 7B7A     	 ldrb r3,[r7,#9]
+ 261 0096 1A03     	 lsls r2,r3,#12
+  76:../sources/aht10.c ****         ((uint32_t)data[2] << 4)  |
+ 262              	 .loc 1 76 0
+ 263 0098 BB7A     	 ldrb r3,[r7,#10]
+ 264 009a 1B01     	 lsls r3,r3,#4
+  75:../sources/aht10.c ****         ((uint32_t)data[2] << 4)  |
+ 265              	 .loc 1 75 0
+ 266 009c 1343     	 orrs r3,r3,r2
+  77:../sources/aht10.c ****         ((uint32_t)data[3] >> 4);
+ 267              	 .loc 1 77 0
+ 268 009e FA7A     	 ldrb r2,[r7,#11]
+ 269 00a0 1209     	 lsrs r2,r2,#4
+ 270 00a2 D2B2     	 uxtb r2,r2
+  74:../sources/aht10.c ****         ((uint32_t)data[1] << 12) |
+ 271              	 .loc 1 74 0
+ 272 00a4 1343     	 orrs r3,r3,r2
+ 273 00a6 BB61     	 str r3,[r7,#24]
+  78:../sources/aht10.c **** 
+  79:../sources/aht10.c ****     uint32_t raw_temp =
+  80:../sources/aht10.c ****         ((uint32_t)(data[3] & 0x0F) << 16) |
+ 274              	 .loc 1 80 0
+ 275 00a8 FB7A     	 ldrb r3,[r7,#11]
+ 276 00aa 03F00F03 	 and r3,r3,#15
+ 277 00ae 1A04     	 lsls r2,r3,#16
+  81:../sources/aht10.c ****         ((uint32_t)data[4] << 8) |
+ 278              	 .loc 1 81 0
+ 279 00b0 3B7B     	 ldrb r3,[r7,#12]
+ 280 00b2 1B02     	 lsls r3,r3,#8
+  80:../sources/aht10.c ****         ((uint32_t)data[4] << 8) |
+ 281              	 .loc 1 80 0
+ 282 00b4 1343     	 orrs r3,r3,r2
+  82:../sources/aht10.c ****         ((uint32_t)data[5]);
+ 283              	 .loc 1 82 0
+ 284 00b6 7A7B     	 ldrb r2,[r7,#13]
+  79:../sources/aht10.c ****         ((uint32_t)(data[3] & 0x0F) << 16) |
+ 285              	 .loc 1 79 0
+ 286 00b8 1343     	 orrs r3,r3,r2
+ 287 00ba 7B61     	 str r3,[r7,#20]
+  83:../sources/aht10.c **** 
+  84:../sources/aht10.c ****     aht10.humidity =
+  85:../sources/aht10.c ****         ((float)raw_hum * 100.0f) / 1048576.0f;
+ 288              	 .loc 1 85 0
+ 289 00bc BB69     	 ldr r3,[r7,#24]
+ 290 00be 07EE903A 	 fmsr s15,r3
+ 291 00c2 F8EE677A 	 fuitos s15,s15
+ 292 00c6 9FED167A 	 flds s14,.L17+12
+ 293 00ca 67EE877A 	 fmuls s15,s15,s14
+ 294 00ce 9FED157A 	 flds s14,.L17+16
+ 295 00d2 C7EE877A 	 fdivs s15,s15,s14
+  84:../sources/aht10.c ****         ((float)raw_hum * 100.0f) / 1048576.0f;
+ 296              	 .loc 1 84 0
+ 297 00d6 144B     	 ldr r3,.L17+20
+ 298 00d8 C3ED017A 	 fsts s15,[r3,#4]
+  86:../sources/aht10.c **** 
+  87:../sources/aht10.c ****     aht10.temperature =
+  88:../sources/aht10.c ****         ((float)raw_temp * 200.0f) / 1048576.0f - 50.0f;
+ 299              	 .loc 1 88 0
+ 300 00dc 7B69     	 ldr r3,[r7,#20]
+ 301 00de 07EE903A 	 fmsr s15,r3
+ 302 00e2 F8EE677A 	 fuitos s15,s15
+ 303 00e6 9FED117A 	 flds s14,.L17+24
+ 304 00ea 67EE877A 	 fmuls s15,s15,s14
+ 305 00ee 9FED0D7A 	 flds s14,.L17+16
+ 306 00f2 C7EE877A 	 fdivs s15,s15,s14
+ 307 00f6 9FED0E7A 	 flds s14,.L17+28
+ 308 00fa 77EEC77A 	 fsubs s15,s15,s14
+  87:../sources/aht10.c ****         ((float)raw_temp * 200.0f) / 1048576.0f - 50.0f;
+ 309              	 .loc 1 87 0
+ 310 00fe 0A4B     	 ldr r3,.L17+20
+ 311 0100 C3ED007A 	 fsts s15,[r3]
+  89:../sources/aht10.c **** 
+  90:../sources/aht10.c ****     aht10.valid = 1;
+ 312              	 .loc 1 90 0
+ 313 0104 084B     	 ldr r3,.L17+20
+ 314 0106 0122     	 movs r2,#1
+ 315 0108 1A72     	 strb r2,[r3,#8]
+  91:../sources/aht10.c **** 
+  92:../sources/aht10.c ****     return 1;
+ 316              	 .loc 1 92 0
+ 317 010a 0123     	 movs r3,#1
+ 318              	.L16:
+  93:../sources/aht10.c **** }
+ 319              	 .loc 1 93 0 discriminator 1
+ 320 010c 1846     	 mov r0,r3
+ 321 010e 2437     	 adds r7,r7,#36
+ 322              	.LCFI8:
+ 323              	 .cfi_def_cfa_offset 12
+ 324 0110 BD46     	 mov sp,r7
+ 325              	.LCFI9:
+ 326              	 .cfi_def_cfa_register 13
+ 327              	 
+ 328 0112 90BD     	 pop {r4,r7,pc}
+ 329              	.L18:
+ 330              	 .align 2
+ 331              	.L17:
+ 332 0114 04000000 	 .word .LC1
+ 333 0118 00000000 	 .word I2C_MASTER_0
+ 334 011c 8FD00300 	 .word 249999
+ 335 0120 0000C842 	 .word 1120403456
+ 336 0124 00008049 	 .word 1233125376
+ 337 0128 00000000 	 .word aht10
+ 338 012c 00004843 	 .word 1128792064
+ 339 0130 00004842 	 .word 1112014848
+ 340              	 .cfi_endproc
+ 341              	.LFE537:
+ 343              	 .text
+ 344              	.Letext0:
+ 345              	 .file 2 "c:\\infineon\\tools\\dave ide\\4.5.0.202105191637\\eclipse\\arm-gcc-49\\arm-none-eabi\\include\\machine\\_default_types.h"
+ 346              	 .file 3 "c:\\infineon\\tools\\dave ide\\4.5.0.202105191637\\eclipse\\arm-gcc-49\\arm-none-eabi\\include\\stdint.h"
+ 347              	 .file 4 "C:/Infineon/Tools/DAVE IDE/4.5.0.202105191637/eclipse/workspace/SISEM_2026_2DA_08_A/Libraries/CMSIS/Infineon/XMC4200_series/Include/XMC4200.h"
+ 348              	 .file 5 "C:/Infineon/Tools/DAVE IDE/4.5.0.202105191637/eclipse/workspace/SISEM_2026_2DA_08_A/Libraries/XMCLib/inc/xmc_usic.h"
+ 349              	 .file 6 "C:/Infineon/Tools/DAVE IDE/4.5.0.202105191637/eclipse/workspace/SISEM_2026_2DA_08_A/Libraries/XMCLib/inc/xmc_i2c.h"
+ 350              	 .file 7 "C:/Infineon/Tools/DAVE IDE/4.5.0.202105191637/eclipse/workspace/SISEM_2026_2DA_08_A/Dave/Generated/I2C_MASTER/i2c_master.h"
+ 351              	 .file 8 "C:/Infineon/Tools/DAVE IDE/4.5.0.202105191637/eclipse/workspace/SISEM_2026_2DA_08_A/headers/aht10.h"
+ 352              	 .file 9 "C:/Infineon/Tools/DAVE IDE/4.5.0.202105191637/eclipse/workspace/SISEM_2026_2DA_08_A/Libraries/CMSIS/Include/cmsis_gcc.h"
+ 353              	 .file 10 "C:/Infineon/Tools/DAVE IDE/4.5.0.202105191637/eclipse/workspace/SISEM_2026_2DA_08_A/Libraries/CMSIS/Include/core_cm4.h"
+ 354              	 .file 11 "C:/Infineon/Tools/DAVE IDE/4.5.0.202105191637/eclipse/workspace/SISEM_2026_2DA_08_A/Libraries/CMSIS/Infineon/XMC4200_series/Include/system_XMC4200.h"
+ 355              	 .file 12 "C:/Infineon/Tools/DAVE IDE/4.5.0.202105191637/eclipse/workspace/SISEM_2026_2DA_08_A/Dave/Generated/I2C_MASTER/i2c_master_extern.h"
+DEFINED SYMBOLS
+                            *ABS*:00000000 aht10.c
+    {standard input}:24     .bss.aht10:00000000 aht10
+    {standard input}:21     .bss.aht10:00000000 $d
+    {standard input}:27     .rodata:00000000 $d
+    {standard input}:33     .text.APP_AHT10_Init:00000000 $t
+    {standard input}:38     .text.APP_AHT10_Init:00000000 APP_AHT10_Init
+    {standard input}:135    .text.APP_AHT10_Init:00000078 $d
+    {standard input}:148    .text.APP_AHT10_Read:00000000 $t
+    {standard input}:153    .text.APP_AHT10_Read:00000000 APP_AHT10_Read
+    {standard input}:332    .text.APP_AHT10_Read:00000114 $d
+                     .debug_frame:00000010 $d
+
+UNDEFINED SYMBOLS
+I2C_MASTER_Transmit
+I2C_MASTER_0
+I2C_MASTER_Receive
