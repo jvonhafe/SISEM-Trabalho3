@@ -1,0 +1,657 @@
+   1              	 .syntax unified
+   2              	 .cpu cortex-m4
+   3              	 .eabi_attribute 27,3
+   4              	 .fpu fpv4-sp-d16
+   5              	 .eabi_attribute 20,1
+   6              	 .eabi_attribute 21,1
+   7              	 .eabi_attribute 23,3
+   8              	 .eabi_attribute 24,1
+   9              	 .eabi_attribute 25,1
+  10              	 .eabi_attribute 26,1
+  11              	 .eabi_attribute 30,4
+  12              	 .eabi_attribute 34,1
+  13              	 .eabi_attribute 18,4
+  14              	 .thumb
+  15              	 .file "xmc_hrpwm.c"
+  16              	 .section .text.XMC_HRPWM_lDelay,"ax",%progbits
+  17              	 .align 1
+  18              	 .thumb
+  19              	 .thumb_func
+  21              	XMC_HRPWM_lDelay:
+  22              	 
+  23              	 
+  24              	 
+  25 0000 82B0     	 sub sp,sp,#8
+  26 0002 0023     	 movs r3,#0
+  27              	.L4:
+  28 0004 0193     	 str r3,[sp,#4]
+  29 0006 019B     	 ldr r3,[sp,#4]
+  30 0008 B3F5964F 	 cmp r3,#19200
+  31 000c 03D8     	 bhi .L6
+  32              	
+  33 000e 00BF     	 nop
+  34              	
+  35              	 .thumb
+  36 0010 019B     	 ldr r3,[sp,#4]
+  37 0012 0133     	 adds r3,r3,#1
+  38 0014 F6E7     	 b .L4
+  39              	.L6:
+  40 0016 02B0     	 add sp,sp,#8
+  41              	 
+  42 0018 7047     	 bx lr
+  44              	 .section .text.XMC_HRPWM_Init,"ax",%progbits
+  45              	 .align 1
+  46              	 .global XMC_HRPWM_Init
+  47              	 .thumb
+  48              	 .thumb_func
+  50              	XMC_HRPWM_Init:
+  51              	 
+  52              	 
+  53 0000 10B5     	 push {r4,lr}
+  54 0002 0446     	 mov r4,r0
+  55 0004 4FF40000 	 mov r0,#8388608
+  56 0008 FFF7FEFF 	 bl XMC_SCU_RESET_AssertPeripheralReset
+  57 000c 4FF40000 	 mov r0,#8388608
+  58 0010 FFF7FEFF 	 bl XMC_SCU_RESET_DeassertPeripheralReset
+  59 0014 4FF40000 	 mov r0,#8388608
+  60 0018 FFF7FEFF 	 bl XMC_SCU_CLOCK_UngatePeripheralClock
+  61 001c 44F64E23 	 movw r3,#19022
+  62 0020 6361     	 str r3,[r4,#20]
+  63 0022 2368     	 ldr r3,[r4]
+  64 0024 43F48073 	 orr r3,r3,#256
+  65 0028 2360     	 str r3,[r4]
+  66 002a 1F4B     	 ldr r3,.L28
+  67 002c 1A68     	 ldr r2,[r3]
+  68 002e 501C     	 adds r0,r2,#1
+  69 0030 1CBF     	 itt ne
+  70 0032 1E49     	 ldrne r1,.L28+4
+  71 0034 0A60     	 strne r2,[r1]
+  72 0036 5A68     	 ldr r2,[r3,#4]
+  73 0038 511C     	 adds r1,r2,#1
+  74 003a 1CBF     	 itt ne
+  75 003c 1C49     	 ldrne r1,.L28+8
+  76 003e 0A60     	 strne r2,[r1]
+  77 0040 9B68     	 ldr r3,[r3,#8]
+  78 0042 5A1C     	 adds r2,r3,#1
+  79 0044 1CBF     	 itt ne
+  80 0046 1B4A     	 ldrne r2,.L28+12
+  81 0048 1360     	 strne r3,[r2]
+  82 004a 3F23     	 movs r3,#63
+  83 004c 2362     	 str r3,[r4,#32]
+  84 004e FFF7FEFF 	 bl XMC_SCU_CLOCK_GetCcuClockFrequency
+  85 0052 194B     	 ldr r3,.L28+16
+  86 0054 194A     	 ldr r2,.L28+20
+  87 0056 0344     	 add r3,r3,r0
+  88 0058 9342     	 cmp r3,r2
+  89 005a 0AD9     	 bls .L14
+  90 005c 184B     	 ldr r3,.L28+24
+  91 005e 194A     	 ldr r2,.L28+28
+  92 0060 0344     	 add r3,r3,r0
+  93 0062 9342     	 cmp r3,r2
+  94 0064 07D9     	 bls .L15
+  95 0066 184B     	 ldr r3,.L28+32
+  96 0068 0344     	 add r3,r3,r0
+  97 006a 9342     	 cmp r3,r2
+  98 006c 05D9     	 bls .L16
+  99              	.L13:
+ 100 006e 0220     	 movs r0,#2
+ 101 0070 10BD     	 pop {r4,pc}
+ 102              	.L14:
+ 103 0072 0322     	 movs r2,#3
+ 104 0074 02E0     	 b .L11
+ 105              	.L15:
+ 106 0076 0222     	 movs r2,#2
+ 107 0078 00E0     	 b .L11
+ 108              	.L16:
+ 109 007a 0122     	 movs r2,#1
+ 110              	.L11:
+ 111 007c 236E     	 ldr r3,[r4,#96]
+ 112 007e 43EA0243 	 orr r3,r3,r2,lsl#16
+ 113 0082 2366     	 str r3,[r4,#96]
+ 114 0084 236E     	 ldr r3,[r4,#96]
+ 115 0086 43F00103 	 orr r3,r3,#1
+ 116 008a 2366     	 str r3,[r4,#96]
+ 117 008c FFF7FEFF 	 bl XMC_HRPWM_lDelay
+ 118 0090 6369     	 ldr r3,[r4,#20]
+ 119 0092 43F48023 	 orr r3,r3,#262144
+ 120 0096 6361     	 str r3,[r4,#20]
+ 121 0098 FFF7FEFF 	 bl XMC_HRPWM_lDelay
+ 122 009c 236F     	 ldr r3,[r4,#112]
+ 123 009e DB07     	 lsls r3,r3,#31
+ 124 00a0 E5D5     	 bpl .L13
+ 125 00a2 0020     	 movs r0,#0
+ 126 00a4 10BD     	 pop {r4,pc}
+ 127              	.L29:
+ 128 00a6 00BF     	 .align 2
+ 129              	.L28:
+ 130 00a8 00000000 	 .word g_hrpwm_char_data
+ 131 00ac 400A0240 	 .word 1073875520
+ 132 00b0 400B0240 	 .word 1073875776
+ 133 00b4 400C0240 	 .word 1073876032
+ 134 00b8 7FE2D3FB 	 .word -70000001
+ 135 00bc 7FC3C901 	 .word 29999999
+ 136 00c0 FF1E0AFA 	 .word -100000001
+ 137 00c4 7FF0FA02 	 .word 49999999
+ 138 00c8 7F2E0FF7 	 .word -150000001
+ 140              	 .section .text.XMC_HRPWM_EnableGlobalHR,"ax",%progbits
+ 141              	 .align 1
+ 142              	 .global XMC_HRPWM_EnableGlobalHR
+ 143              	 .thumb
+ 144              	 .thumb_func
+ 146              	XMC_HRPWM_EnableGlobalHR:
+ 147              	 
+ 148              	 
+ 149              	 
+ 150 0000 4369     	 ldr r3,[r0,#20]
+ 151 0002 43F48023 	 orr r3,r3,#262144
+ 152 0006 4361     	 str r3,[r0,#20]
+ 153 0008 FFF7FEBF 	 b XMC_HRPWM_lDelay
+ 155              	 .section .text.XMC_HRPWM_DisableGlobalHR,"ax",%progbits
+ 156              	 .align 1
+ 157              	 .global XMC_HRPWM_DisableGlobalHR
+ 158              	 .thumb
+ 159              	 .thumb_func
+ 161              	XMC_HRPWM_DisableGlobalHR:
+ 162              	 
+ 163              	 
+ 164              	 
+ 165 0000 4369     	 ldr r3,[r0,#20]
+ 166 0002 23F48023 	 bic r3,r3,#262144
+ 167 0006 4361     	 str r3,[r0,#20]
+ 168 0008 7047     	 bx lr
+ 170              	 .section .text.XMC_HRPWM_GetHRGenReadyStatus,"ax",%progbits
+ 171              	 .align 1
+ 172              	 .global XMC_HRPWM_GetHRGenReadyStatus
+ 173              	 .thumb
+ 174              	 .thumb_func
+ 176              	XMC_HRPWM_GetHRGenReadyStatus:
+ 177              	 
+ 178              	 
+ 179              	 
+ 180 0000 006F     	 ldr r0,[r0,#112]
+ 181 0002 0030     	 adds r0,r0,#0
+ 182 0004 18BF     	 it ne
+ 183 0006 0120     	 movne r0,#1
+ 184 0008 7047     	 bx lr
+ 186              	 .section .text.XMC_HRPWM_HRC_Init,"ax",%progbits
+ 187              	 .align 1
+ 188              	 .global XMC_HRPWM_HRC_Init
+ 189              	 .thumb
+ 190              	 .thumb_func
+ 192              	XMC_HRPWM_HRC_Init:
+ 193              	 
+ 194              	 
+ 195              	 
+ 196 0000 0B68     	 ldr r3,[r1]
+ 197 0002 0360     	 str r3,[r0]
+ 198 0004 4B68     	 ldr r3,[r1,#4]
+ 199 0006 4360     	 str r3,[r0,#4]
+ 200 0008 7047     	 bx lr
+ 202              	 .section .text.XMC_HRPWM_HRC_ConfigSourceSelect0,"ax",%progbits
+ 203              	 .align 1
+ 204              	 .global XMC_HRPWM_HRC_ConfigSourceSelect0
+ 205              	 .thumb
+ 206              	 .thumb_func
+ 208              	XMC_HRPWM_HRC_ConfigSourceSelect0:
+ 209              	 
+ 210              	 
+ 211 0000 0368     	 ldr r3,[r0]
+ 212 0002 0A78     	 ldrb r2,[r1]
+ 213 0004 23F00303 	 bic r3,r3,#3
+ 214 0008 0360     	 str r3,[r0]
+ 215 000a 0368     	 ldr r3,[r0]
+ 216 000c 1343     	 orrs r3,r3,r2
+ 217 000e 0360     	 str r3,[r0]
+ 218 0010 4B78     	 ldrb r3,[r1,#1]
+ 219 0012 8A78     	 ldrb r2,[r1,#2]
+ 220 0014 012B     	 cmp r3,#1
+ 221 0016 0ABF     	 itet eq
+ 222 0018 CB78     	 ldrbeq r3,[r1,#3]
+ 223 001a 0023     	 movne r3,#0
+ 224 001c 43F04003 	 orreq r3,r3,#64
+ 225 0020 012A     	 cmp r2,#1
+ 226 0022 04BF     	 itt eq
+ 227 0024 0A79     	 ldrbeq r2,[r1,#4]
+ 228 0026 43EAC203 	 orreq r3,r3,r2,lsl#3
+ 229 002a CA79     	 ldrb r2,[r1,#7]
+ 230 002c 10B5     	 push {r4,lr}
+ 231 002e 8C79     	 ldrb r4,[r1,#6]
+ 232 0030 4FEA0232 	 lsl r2,r2,#12
+ 233 0034 42EA8422 	 orr r2,r2,r4,lsl#10
+ 234 0038 8468     	 ldr r4,[r0,#8]
+ 235 003a 4FEA1444 	 lsr r4,r4,#16
+ 236 003e 4FEA0444 	 lsl r4,r4,#16
+ 237 0042 8460     	 str r4,[r0,#8]
+ 238 0044 8468     	 ldr r4,[r0,#8]
+ 239 0046 08BF     	 it eq
+ 240 0048 43F48073 	 orreq r3,r3,#256
+ 241 004c 2243     	 orrs r2,r2,r4
+ 242 004e 1343     	 orrs r3,r3,r2
+ 243 0050 8360     	 str r3,[r0,#8]
+ 244 0052 C268     	 ldr r2,[r0,#12]
+ 245 0054 4B79     	 ldrb r3,[r1,#5]
+ 246 0056 097A     	 ldrb r1,[r1,#8]
+ 247 0058 22F48032 	 bic r2,r2,#65536
+ 248 005c 22F00702 	 bic r2,r2,#7
+ 249 0060 C260     	 str r2,[r0,#12]
+ 250 0062 C268     	 ldr r2,[r0,#12]
+ 251 0064 1343     	 orrs r3,r3,r2
+ 252 0066 43EA0143 	 orr r3,r3,r1,lsl#16
+ 253 006a C360     	 str r3,[r0,#12]
+ 254 006c 10BD     	 pop {r4,pc}
+ 256              	 .section .text.XMC_HRPWM_HRC_ConfigSourceSelect1,"ax",%progbits
+ 257              	 .align 1
+ 258              	 .global XMC_HRPWM_HRC_ConfigSourceSelect1
+ 259              	 .thumb
+ 260              	 .thumb_func
+ 262              	XMC_HRPWM_HRC_ConfigSourceSelect1:
+ 263              	 
+ 264              	 
+ 265 0000 0368     	 ldr r3,[r0]
+ 266 0002 0A78     	 ldrb r2,[r1]
+ 267 0004 23F00C03 	 bic r3,r3,#12
+ 268 0008 0360     	 str r3,[r0]
+ 269 000a 0368     	 ldr r3,[r0]
+ 270 000c 43EA8203 	 orr r3,r3,r2,lsl#2
+ 271 0010 0360     	 str r3,[r0]
+ 272 0012 4B78     	 ldrb r3,[r1,#1]
+ 273 0014 8A78     	 ldrb r2,[r1,#2]
+ 274 0016 012B     	 cmp r3,#1
+ 275 0018 03BF     	 ittte eq
+ 276 001a CB78     	 ldrbeq r3,[r1,#3]
+ 277 001c 1B04     	 lsleq r3,r3,#16
+ 278 001e 43F48003 	 orreq r3,r3,#4194304
+ 279 0022 0023     	 movne r3,#0
+ 280 0024 012A     	 cmp r2,#1
+ 281 0026 04BF     	 itt eq
+ 282 0028 0A79     	 ldrbeq r2,[r1,#4]
+ 283 002a 43EAC243 	 orreq r3,r3,r2,lsl#19
+ 284 002e CA79     	 ldrb r2,[r1,#7]
+ 285 0030 10B5     	 push {r4,lr}
+ 286 0032 8C79     	 ldrb r4,[r1,#6]
+ 287 0034 4FEA0272 	 lsl r2,r2,#28
+ 288 0038 42EA8462 	 orr r2,r2,r4,lsl#26
+ 289 003c 8468     	 ldr r4,[r0,#8]
+ 290 003e A4B2     	 uxth r4,r4
+ 291 0040 8460     	 str r4,[r0,#8]
+ 292 0042 8468     	 ldr r4,[r0,#8]
+ 293 0044 08BF     	 it eq
+ 294 0046 43F08073 	 orreq r3,r3,#16777216
+ 295 004a 2243     	 orrs r2,r2,r4
+ 296 004c 1343     	 orrs r3,r3,r2
+ 297 004e 8360     	 str r3,[r0,#8]
+ 298 0050 0B7A     	 ldrb r3,[r1,#8]
+ 299 0052 4A79     	 ldrb r2,[r1,#5]
+ 300 0054 5B04     	 lsls r3,r3,#17
+ 301 0056 43EAC203 	 orr r3,r3,r2,lsl#3
+ 302 005a C268     	 ldr r2,[r0,#12]
+ 303 005c 22F40032 	 bic r2,r2,#131072
+ 304 0060 22F03802 	 bic r2,r2,#56
+ 305 0064 C260     	 str r2,[r0,#12]
+ 306 0066 C268     	 ldr r2,[r0,#12]
+ 307 0068 1343     	 orrs r3,r3,r2
+ 308 006a C360     	 str r3,[r0,#12]
+ 309 006c 10BD     	 pop {r4,pc}
+ 311              	 .section .text.XMC_HRPWM_CSG_Init,"ax",%progbits
+ 312              	 .align 1
+ 313              	 .global XMC_HRPWM_CSG_Init
+ 314              	 .thumb
+ 315              	 .thumb_func
+ 317              	XMC_HRPWM_CSG_Init:
+ 318              	 
+ 319              	 
+ 320              	 
+ 321 0000 8B68     	 ldr r3,[r1,#8]
+ 322 0002 4362     	 str r3,[r0,#36]
+ 323 0004 0B69     	 ldr r3,[r1,#16]
+ 324 0006 8361     	 str r3,[r0,#24]
+ 325 0008 4B69     	 ldr r3,[r1,#20]
+ 326 000a 4361     	 str r3,[r0,#20]
+ 327 000c CB69     	 ldr r3,[r1,#28]
+ 328 000e C361     	 str r3,[r0,#28]
+ 329 0010 4B7E     	 ldrb r3,[r1,#25]
+ 330 0012 0A7B     	 ldrb r2,[r1,#12]
+ 331 0014 9B07     	 lsls r3,r3,#30
+ 332 0016 09BF     	 itett eq
+ 333 0018 8B7E     	 ldrbeq r3,[r1,#26]
+ 334 001a 8B69     	 ldrne r3,[r1,#24]
+ 335 001c C3F30013 	 ubfxeq r3,r3,#4,#1
+ 336 0020 1B05     	 lsleq r3,r3,#20
+ 337 0022 8360     	 str r3,[r0,#8]
+ 338 0024 8368     	 ldr r3,[r0,#8]
+ 339 0026 43EA0243 	 orr r3,r3,r2,lsl#16
+ 340 002a 8360     	 str r3,[r0,#8]
+ 341 002c 0B68     	 ldr r3,[r1]
+ 342 002e 0362     	 str r3,[r0,#32]
+ 343 0030 4B68     	 ldr r3,[r1,#4]
+ 344 0032 8362     	 str r3,[r0,#40]
+ 345 0034 7047     	 bx lr
+ 347              	 .section .text.XMC_HRPWM_CSG_SetCMPInput,"ax",%progbits
+ 348              	 .align 1
+ 349              	 .global XMC_HRPWM_CSG_SetCMPInput
+ 350              	 .thumb
+ 351              	 .thumb_func
+ 353              	XMC_HRPWM_CSG_SetCMPInput:
+ 354              	 
+ 355              	 
+ 356              	 
+ 357 0000 036A     	 ldr r3,[r0,#32]
+ 358 0002 11B9     	 cbnz r1,.L47
+ 359 0004 23F48073 	 bic r3,r3,#256
+ 360 0008 01E0     	 b .L49
+ 361              	.L47:
+ 362 000a 43F48073 	 orr r3,r3,#256
+ 363              	.L49:
+ 364 000e 0362     	 str r3,[r0,#32]
+ 365 0010 7047     	 bx lr
+ 367              	 .section .text.XMC_HRPWM_CSG_SelBlankingInput,"ax",%progbits
+ 368              	 .align 1
+ 369              	 .global XMC_HRPWM_CSG_SelBlankingInput
+ 370              	 .thumb
+ 371              	 .thumb_func
+ 373              	XMC_HRPWM_CSG_SelBlankingInput:
+ 374              	 
+ 375              	 
+ 376              	 
+ 377 0000 036A     	 ldr r3,[r0,#32]
+ 378 0002 DA03     	 lsls r2,r3,#15
+ 379 0004 42BF     	 ittt mi
+ 380 0006 0A78     	 ldrbmi r2,[r1]
+ 381 0008 23F00F03 	 bicmi r3,r3,#15
+ 382 000c 1343     	 orrmi r3,r3,r2
+ 383 000e 4A78     	 ldrb r2,[r1,#1]
+ 384 0010 23F44043 	 bic r3,r3,#49152
+ 385 0014 43EA8233 	 orr r3,r3,r2,lsl#14
+ 386 0018 0362     	 str r3,[r0,#32]
+ 387 001a 7047     	 bx lr
+ 389              	 .section .text.XMC_HRPWM_CSG_SelClampingInput,"ax",%progbits
+ 390              	 .align 1
+ 391              	 .global XMC_HRPWM_CSG_SelClampingInput
+ 392              	 .thumb
+ 393              	 .thumb_func
+ 395              	XMC_HRPWM_CSG_SelClampingInput:
+ 396              	 
+ 397              	 
+ 398              	 
+ 399 0000 436A     	 ldr r3,[r0,#36]
+ 400 0002 0A78     	 ldrb r2,[r1]
+ 401 0004 23F44373 	 bic r3,r3,#780
+ 402 0008 23F00303 	 bic r3,r3,#3
+ 403 000c 1343     	 orrs r3,r3,r2
+ 404 000e 8A78     	 ldrb r2,[r1,#2]
+ 405 0010 43EA0223 	 orr r3,r3,r2,lsl#8
+ 406 0014 4362     	 str r3,[r0,#36]
+ 407 0016 7047     	 bx lr
+ 409              	 .section .text.XMC_HRPWM_CSG_StartSlopeGenConfig,"ax",%progbits
+ 410              	 .align 1
+ 411              	 .global XMC_HRPWM_CSG_StartSlopeGenConfig
+ 412              	 .thumb
+ 413              	 .thumb_func
+ 415              	XMC_HRPWM_CSG_StartSlopeGenConfig:
+ 416              	 
+ 417              	 
+ 418              	 
+ 419 0000 0368     	 ldr r3,[r0]
+ 420 0002 0A78     	 ldrb r2,[r1]
+ 421 0004 23F0F003 	 bic r3,r3,#240
+ 422 0008 0360     	 str r3,[r0]
+ 423 000a 0368     	 ldr r3,[r0]
+ 424 000c 43EA0213 	 orr r3,r3,r2,lsl#4
+ 425 0010 0360     	 str r3,[r0]
+ 426 0012 4368     	 ldr r3,[r0,#4]
+ 427 0014 4A78     	 ldrb r2,[r1,#1]
+ 428 0016 23F00C03 	 bic r3,r3,#12
+ 429 001a 4360     	 str r3,[r0,#4]
+ 430 001c 4368     	 ldr r3,[r0,#4]
+ 431 001e 43EA8203 	 orr r3,r3,r2,lsl#2
+ 432 0022 4360     	 str r3,[r0,#4]
+ 433 0024 7047     	 bx lr
+ 435              	 .section .text.XMC_HRPWM_CSG_StopSlopeGenConfig,"ax",%progbits
+ 436              	 .align 1
+ 437              	 .global XMC_HRPWM_CSG_StopSlopeGenConfig
+ 438              	 .thumb
+ 439              	 .thumb_func
+ 441              	XMC_HRPWM_CSG_StopSlopeGenConfig:
+ 442              	 
+ 443              	 
+ 444              	 
+ 445 0000 0368     	 ldr r3,[r0]
+ 446 0002 0A78     	 ldrb r2,[r1]
+ 447 0004 23F47063 	 bic r3,r3,#3840
+ 448 0008 0360     	 str r3,[r0]
+ 449 000a 0368     	 ldr r3,[r0]
+ 450 000c 43EA0223 	 orr r3,r3,r2,lsl#8
+ 451 0010 0360     	 str r3,[r0]
+ 452 0012 4368     	 ldr r3,[r0,#4]
+ 453 0014 4A78     	 ldrb r2,[r1,#1]
+ 454 0016 23F03003 	 bic r3,r3,#48
+ 455 001a 4360     	 str r3,[r0,#4]
+ 456 001c 4368     	 ldr r3,[r0,#4]
+ 457 001e 43EA0213 	 orr r3,r3,r2,lsl#4
+ 458 0022 4360     	 str r3,[r0,#4]
+ 459 0024 7047     	 bx lr
+ 461              	 .section .text.XMC_HRPWM_CSG_TriggerDACConvConfig,"ax",%progbits
+ 462              	 .align 1
+ 463              	 .global XMC_HRPWM_CSG_TriggerDACConvConfig
+ 464              	 .thumb
+ 465              	 .thumb_func
+ 467              	XMC_HRPWM_CSG_TriggerDACConvConfig:
+ 468              	 
+ 469              	 
+ 470              	 
+ 471 0000 0368     	 ldr r3,[r0]
+ 472 0002 0A78     	 ldrb r2,[r1]
+ 473 0004 23F47043 	 bic r3,r3,#61440
+ 474 0008 0360     	 str r3,[r0]
+ 475 000a 0368     	 ldr r3,[r0]
+ 476 000c 43EA0233 	 orr r3,r3,r2,lsl#12
+ 477 0010 0360     	 str r3,[r0]
+ 478 0012 4368     	 ldr r3,[r0,#4]
+ 479 0014 4A78     	 ldrb r2,[r1,#1]
+ 480 0016 23F0C003 	 bic r3,r3,#192
+ 481 001a 4360     	 str r3,[r0,#4]
+ 482 001c 4368     	 ldr r3,[r0,#4]
+ 483 001e 43EA8213 	 orr r3,r3,r2,lsl#6
+ 484 0022 4360     	 str r3,[r0,#4]
+ 485 0024 7047     	 bx lr
+ 487              	 .section .text.XMC_HRPWM_CSG_TriggerShadowXferConfig,"ax",%progbits
+ 488              	 .align 1
+ 489              	 .global XMC_HRPWM_CSG_TriggerShadowXferConfig
+ 490              	 .thumb
+ 491              	 .thumb_func
+ 493              	XMC_HRPWM_CSG_TriggerShadowXferConfig:
+ 494              	 
+ 495              	 
+ 496              	 
+ 497 0000 0368     	 ldr r3,[r0]
+ 498 0002 0A78     	 ldrb r2,[r1]
+ 499 0004 23F47023 	 bic r3,r3,#983040
+ 500 0008 0360     	 str r3,[r0]
+ 501 000a 0368     	 ldr r3,[r0]
+ 502 000c 43EA0243 	 orr r3,r3,r2,lsl#16
+ 503 0010 0360     	 str r3,[r0]
+ 504 0012 4368     	 ldr r3,[r0,#4]
+ 505 0014 4A78     	 ldrb r2,[r1,#1]
+ 506 0016 23F44073 	 bic r3,r3,#768
+ 507 001a 4360     	 str r3,[r0,#4]
+ 508 001c 4368     	 ldr r3,[r0,#4]
+ 509 001e 43EA0223 	 orr r3,r3,r2,lsl#8
+ 510 0022 4360     	 str r3,[r0,#4]
+ 511 0024 7047     	 bx lr
+ 513              	 .section .text.XMC_HRPWM_CSG_DACRefValSwitchingConfig,"ax",%progbits
+ 514              	 .align 1
+ 515              	 .global XMC_HRPWM_CSG_DACRefValSwitchingConfig
+ 516              	 .thumb
+ 517              	 .thumb_func
+ 519              	XMC_HRPWM_CSG_DACRefValSwitchingConfig:
+ 520              	 
+ 521              	 
+ 522              	 
+ 523 0000 0368     	 ldr r3,[r0]
+ 524 0002 0A78     	 ldrb r2,[r1]
+ 525 0004 23F00F03 	 bic r3,r3,#15
+ 526 0008 0360     	 str r3,[r0]
+ 527 000a 0368     	 ldr r3,[r0]
+ 528 000c 1343     	 orrs r3,r3,r2
+ 529 000e 0360     	 str r3,[r0]
+ 530 0010 4368     	 ldr r3,[r0,#4]
+ 531 0012 8A78     	 ldrb r2,[r1,#2]
+ 532 0014 23F00303 	 bic r3,r3,#3
+ 533 0018 4360     	 str r3,[r0,#4]
+ 534 001a 4368     	 ldr r3,[r0,#4]
+ 535 001c 1343     	 orrs r3,r3,r2
+ 536 001e 4360     	 str r3,[r0,#4]
+ 537 0020 7047     	 bx lr
+ 539              	 .section .text.XMC_HRPWM_CSG_SelSlopeGenClkInput,"ax",%progbits
+ 540              	 .align 1
+ 541              	 .global XMC_HRPWM_CSG_SelSlopeGenClkInput
+ 542              	 .thumb
+ 543              	 .thumb_func
+ 545              	XMC_HRPWM_CSG_SelSlopeGenClkInput:
+ 546              	 
+ 547              	 
+ 548              	 
+ 549 0000 0368     	 ldr r3,[r0]
+ 550 0002 23F44013 	 bic r3,r3,#3145728
+ 551 0006 0360     	 str r3,[r0]
+ 552 0008 0368     	 ldr r3,[r0]
+ 553 000a 43EA0151 	 orr r1,r3,r1,lsl#20
+ 554 000e 0160     	 str r1,[r0]
+ 555 0010 7047     	 bx lr
+ 557              	 .section .text.XMC_HRPWM_CSG_SetSRNode,"ax",%progbits
+ 558              	 .align 1
+ 559              	 .global XMC_HRPWM_CSG_SetSRNode
+ 560              	 .thumb
+ 561              	 .thumb_func
+ 563              	XMC_HRPWM_CSG_SetSRNode:
+ 564              	 
+ 565              	 
+ 566              	 
+ 567 0000 1029     	 cmp r1,#16
+ 568 0002 2ED0     	 beq .L64
+ 569 0004 0AD8     	 bhi .L65
+ 570 0006 0229     	 cmp r1,#2
+ 571 0008 1BD0     	 beq .L66
+ 572 000a 02D8     	 bhi .L67
+ 573 000c 0129     	 cmp r1,#1
+ 574 000e 11D0     	 beq .L68
+ 575 0010 7047     	 bx lr
+ 576              	.L67:
+ 577 0012 0429     	 cmp r1,#4
+ 578 0014 1DD0     	 beq .L69
+ 579 0016 0829     	 cmp r1,#8
+ 580 0018 23D0     	 beq .L64
+ 581 001a 7047     	 bx lr
+ 582              	.L65:
+ 583 001c 4029     	 cmp r1,#64
+ 584 001e 30D0     	 beq .L70
+ 585 0020 02D8     	 bhi .L71
+ 586 0022 2029     	 cmp r1,#32
+ 587 0024 25D0     	 beq .L72
+ 588 0026 7047     	 bx lr
+ 589              	.L71:
+ 590 0028 8029     	 cmp r1,#128
+ 591 002a 2AD0     	 beq .L70
+ 592 002c B1F5807F 	 cmp r1,#256
+ 593 0030 2FD0     	 beq .L73
+ 594 0032 7047     	 bx lr
+ 595              	.L68:
+ 596 0034 036B     	 ldr r3,[r0,#48]
+ 597 0036 23F00303 	 bic r3,r3,#3
+ 598 003a 0363     	 str r3,[r0,#48]
+ 599 003c 036B     	 ldr r3,[r0,#48]
+ 600 003e 1A43     	 orrs r2,r2,r3
+ 601 0040 2EE0     	 b .L86
+ 602              	.L66:
+ 603 0042 036B     	 ldr r3,[r0,#48]
+ 604 0044 23F00C03 	 bic r3,r3,#12
+ 605 0048 0363     	 str r3,[r0,#48]
+ 606 004a 036B     	 ldr r3,[r0,#48]
+ 607 004c 43EA8202 	 orr r2,r3,r2,lsl#2
+ 608 0050 26E0     	 b .L86
+ 609              	.L69:
+ 610 0052 036B     	 ldr r3,[r0,#48]
+ 611 0054 23F03003 	 bic r3,r3,#48
+ 612 0058 0363     	 str r3,[r0,#48]
+ 613 005a 036B     	 ldr r3,[r0,#48]
+ 614 005c 43EA0212 	 orr r2,r3,r2,lsl#4
+ 615 0060 1EE0     	 b .L86
+ 616              	.L64:
+ 617 0062 036B     	 ldr r3,[r0,#48]
+ 618 0064 23F0C003 	 bic r3,r3,#192
+ 619 0068 0363     	 str r3,[r0,#48]
+ 620 006a 036B     	 ldr r3,[r0,#48]
+ 621 006c 43EA8212 	 orr r2,r3,r2,lsl#6
+ 622 0070 16E0     	 b .L86
+ 623              	.L72:
+ 624 0072 036B     	 ldr r3,[r0,#48]
+ 625 0074 23F44073 	 bic r3,r3,#768
+ 626 0078 0363     	 str r3,[r0,#48]
+ 627 007a 036B     	 ldr r3,[r0,#48]
+ 628 007c 43EA0222 	 orr r2,r3,r2,lsl#8
+ 629 0080 0EE0     	 b .L86
+ 630              	.L70:
+ 631 0082 036B     	 ldr r3,[r0,#48]
+ 632 0084 23F44063 	 bic r3,r3,#3072
+ 633 0088 0363     	 str r3,[r0,#48]
+ 634 008a 036B     	 ldr r3,[r0,#48]
+ 635 008c 43EA8222 	 orr r2,r3,r2,lsl#10
+ 636 0090 06E0     	 b .L86
+ 637              	.L73:
+ 638 0092 036B     	 ldr r3,[r0,#48]
+ 639 0094 23F44053 	 bic r3,r3,#12288
+ 640 0098 0363     	 str r3,[r0,#48]
+ 641 009a 036B     	 ldr r3,[r0,#48]
+ 642 009c 43EA0232 	 orr r2,r3,r2,lsl#12
+ 643              	.L86:
+ 644 00a0 0263     	 str r2,[r0,#48]
+ 645 00a2 7047     	 bx lr
+ 647              	 .ident "GCC: (GNU Tools for ARM Embedded Processors) 4.9.3 20141119 (release) [ARM/embedded-4_9-branch revision 218278]"
+DEFINED SYMBOLS
+                            *ABS*:00000000 xmc_hrpwm.c
+    {standard input}:17     .text.XMC_HRPWM_lDelay:00000000 $t
+    {standard input}:21     .text.XMC_HRPWM_lDelay:00000000 XMC_HRPWM_lDelay
+    {standard input}:45     .text.XMC_HRPWM_Init:00000000 $t
+    {standard input}:50     .text.XMC_HRPWM_Init:00000000 XMC_HRPWM_Init
+    {standard input}:130    .text.XMC_HRPWM_Init:000000a8 $d
+    {standard input}:141    .text.XMC_HRPWM_EnableGlobalHR:00000000 $t
+    {standard input}:146    .text.XMC_HRPWM_EnableGlobalHR:00000000 XMC_HRPWM_EnableGlobalHR
+    {standard input}:156    .text.XMC_HRPWM_DisableGlobalHR:00000000 $t
+    {standard input}:161    .text.XMC_HRPWM_DisableGlobalHR:00000000 XMC_HRPWM_DisableGlobalHR
+    {standard input}:171    .text.XMC_HRPWM_GetHRGenReadyStatus:00000000 $t
+    {standard input}:176    .text.XMC_HRPWM_GetHRGenReadyStatus:00000000 XMC_HRPWM_GetHRGenReadyStatus
+    {standard input}:187    .text.XMC_HRPWM_HRC_Init:00000000 $t
+    {standard input}:192    .text.XMC_HRPWM_HRC_Init:00000000 XMC_HRPWM_HRC_Init
+    {standard input}:203    .text.XMC_HRPWM_HRC_ConfigSourceSelect0:00000000 $t
+    {standard input}:208    .text.XMC_HRPWM_HRC_ConfigSourceSelect0:00000000 XMC_HRPWM_HRC_ConfigSourceSelect0
+    {standard input}:257    .text.XMC_HRPWM_HRC_ConfigSourceSelect1:00000000 $t
+    {standard input}:262    .text.XMC_HRPWM_HRC_ConfigSourceSelect1:00000000 XMC_HRPWM_HRC_ConfigSourceSelect1
+    {standard input}:312    .text.XMC_HRPWM_CSG_Init:00000000 $t
+    {standard input}:317    .text.XMC_HRPWM_CSG_Init:00000000 XMC_HRPWM_CSG_Init
+    {standard input}:348    .text.XMC_HRPWM_CSG_SetCMPInput:00000000 $t
+    {standard input}:353    .text.XMC_HRPWM_CSG_SetCMPInput:00000000 XMC_HRPWM_CSG_SetCMPInput
+    {standard input}:368    .text.XMC_HRPWM_CSG_SelBlankingInput:00000000 $t
+    {standard input}:373    .text.XMC_HRPWM_CSG_SelBlankingInput:00000000 XMC_HRPWM_CSG_SelBlankingInput
+    {standard input}:390    .text.XMC_HRPWM_CSG_SelClampingInput:00000000 $t
+    {standard input}:395    .text.XMC_HRPWM_CSG_SelClampingInput:00000000 XMC_HRPWM_CSG_SelClampingInput
+    {standard input}:410    .text.XMC_HRPWM_CSG_StartSlopeGenConfig:00000000 $t
+    {standard input}:415    .text.XMC_HRPWM_CSG_StartSlopeGenConfig:00000000 XMC_HRPWM_CSG_StartSlopeGenConfig
+    {standard input}:436    .text.XMC_HRPWM_CSG_StopSlopeGenConfig:00000000 $t
+    {standard input}:441    .text.XMC_HRPWM_CSG_StopSlopeGenConfig:00000000 XMC_HRPWM_CSG_StopSlopeGenConfig
+    {standard input}:462    .text.XMC_HRPWM_CSG_TriggerDACConvConfig:00000000 $t
+    {standard input}:467    .text.XMC_HRPWM_CSG_TriggerDACConvConfig:00000000 XMC_HRPWM_CSG_TriggerDACConvConfig
+    {standard input}:488    .text.XMC_HRPWM_CSG_TriggerShadowXferConfig:00000000 $t
+    {standard input}:493    .text.XMC_HRPWM_CSG_TriggerShadowXferConfig:00000000 XMC_HRPWM_CSG_TriggerShadowXferConfig
+    {standard input}:514    .text.XMC_HRPWM_CSG_DACRefValSwitchingConfig:00000000 $t
+    {standard input}:519    .text.XMC_HRPWM_CSG_DACRefValSwitchingConfig:00000000 XMC_HRPWM_CSG_DACRefValSwitchingConfig
+    {standard input}:540    .text.XMC_HRPWM_CSG_SelSlopeGenClkInput:00000000 $t
+    {standard input}:545    .text.XMC_HRPWM_CSG_SelSlopeGenClkInput:00000000 XMC_HRPWM_CSG_SelSlopeGenClkInput
+    {standard input}:558    .text.XMC_HRPWM_CSG_SetSRNode:00000000 $t
+    {standard input}:563    .text.XMC_HRPWM_CSG_SetSRNode:00000000 XMC_HRPWM_CSG_SetSRNode
+
+UNDEFINED SYMBOLS
+XMC_SCU_RESET_AssertPeripheralReset
+XMC_SCU_RESET_DeassertPeripheralReset
+XMC_SCU_CLOCK_UngatePeripheralClock
+XMC_SCU_CLOCK_GetCcuClockFrequency
+g_hrpwm_char_data

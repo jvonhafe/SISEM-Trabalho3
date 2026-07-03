@@ -223,5 +223,143 @@ void UART_0_RX_HANDLER()
   UART_lReceiveHandler(&UART_0);
 }
 
+/**********************************************************************************************************************
+ * DATA STRUCTURES
+ **********************************************************************************************************************/
+UART_STATUS_t UART_1_init(void);
+
+/*USIC channel configuration*/
+const XMC_UART_CH_CONFIG_t UART_1_channel_config =
+{
+  .baudrate      = 9600U,
+  .data_bits     = 8U,
+  .frame_length  = 8U,
+  .stop_bits     = 1U,
+  .oversampling  = 16U,
+  .parity_mode   = XMC_USIC_CH_PARITY_MODE_NONE
+};
+/*Transmit pin configuration*/
+const XMC_GPIO_CONFIG_t UART_1_tx_pin_config   = 
+{ 
+  .mode             = XMC_GPIO_MODE_OUTPUT_PUSH_PULL_ALT2, 
+  .output_level     = XMC_GPIO_OUTPUT_LEVEL_HIGH,
+  .output_strength  = XMC_GPIO_OUTPUT_STRENGTH_STRONG_SOFT_EDGE
+};
+
+/*Transmit pin configuration used for initializing*/
+const UART_TX_CONFIG_t UART_1_tx_pin = 
+{
+  .port = (XMC_GPIO_PORT_t *)PORT2_BASE,
+  .config = &UART_1_tx_pin_config,
+  .pin = 14U
+};
+
+/*UART APP configuration structure*/
+const UART_CONFIG_t UART_1_config = 
+{
+  .channel_config   = &UART_1_channel_config,
+
+
+  .fptr_uart_config = UART_1_init,
+  .tx_cbhandler = NULL,
+  .rx_cbhandler = NULL,  
+  .sync_error_cbhandler = NULL,  
+  .rx_noise_error_cbhandler = NULL,  
+  .format_error_bit0_cbhandler = NULL,  
+  .format_error_bit1_cbhandler = NULL,  
+  .collision_error_cbhandler = NULL,
+  .tx_pin_config    = &UART_1_tx_pin,
+  .mode             = UART_MODE_FULLDUPLEX,
+  .transmit_mode = UART_TRANSFER_MODE_INTERRUPT,
+  .receive_mode = UART_TRANSFER_MODE_INTERRUPT,
+  .tx_fifo_size     = XMC_USIC_CH_FIFO_SIZE_16WORDS,
+  .rx_fifo_size     = XMC_USIC_CH_FIFO_SIZE_16WORDS,
+  .tx_sr   = 0x1U,
+};
+
+/*Runtime handler*/
+UART_RUNTIME_t UART_1_runtime = 
+{
+  .tx_busy = false,  
+  .rx_busy = false,
+};
+
+/*APP handle structure*/
+UART_t UART_1 = 
+{
+  .channel = XMC_UART1_CH0,
+  .config  = &UART_1_config,
+  .runtime = &UART_1_runtime
+};
+
+/*Receive pin configuration*/
+const XMC_GPIO_CONFIG_t UART_1_rx_pin_config   = {
+  .mode             = XMC_GPIO_MODE_INPUT_TRISTATE,
+  .output_level     = XMC_GPIO_OUTPUT_LEVEL_HIGH,
+  .output_strength  = XMC_GPIO_OUTPUT_STRENGTH_STRONG_SOFT_EDGE
+};
+/**********************************************************************************************************************
+ * API IMPLEMENTATION
+ **********************************************************************************************************************/
+/*Channel initialization function*/
+UART_STATUS_t UART_1_init()
+{
+  UART_STATUS_t status = UART_STATUS_SUCCESS;
+  /*Configure Receive pin*/
+  XMC_GPIO_Init((XMC_GPIO_PORT_t *)PORT2_BASE, 15U, &UART_1_rx_pin_config);
+  /* Initialize USIC channel in UART mode*/
+  XMC_UART_CH_Init(XMC_UART1_CH0, &UART_1_channel_config);
+  /*Set input source path*/
+  XMC_USIC_CH_SetInputSource(XMC_UART1_CH0, XMC_USIC_CH_INPUT_DX0, 2U);
+  /*Configure transmit FIFO*/
+  XMC_USIC_CH_TXFIFO_Configure(XMC_UART1_CH0,
+        16U,
+        XMC_USIC_CH_FIFO_SIZE_16WORDS,
+        1U);
+  /*Configure receive FIFO*/
+  XMC_USIC_CH_RXFIFO_Configure(XMC_UART1_CH0,
+        0U,
+        XMC_USIC_CH_FIFO_SIZE_16WORDS,
+        0U);
+  /* Start UART */
+  XMC_UART_CH_Start(XMC_UART1_CH0);
+
+  /* Initialize UART TX pin */
+  XMC_GPIO_Init((XMC_GPIO_PORT_t *)PORT2_BASE, 14U, &UART_1_tx_pin_config);
+
+  /*Set service request for UART protocol events*/
+  XMC_USIC_CH_SetInterruptNodePointer(XMC_UART1_CH0, XMC_USIC_CH_INTERRUPT_NODE_POINTER_PROTOCOL,
+     2U);
+  /*Set service request for tx FIFO transmit interrupt*/
+  XMC_USIC_CH_TXFIFO_SetInterruptNodePointer(XMC_UART1_CH0, XMC_USIC_CH_TXFIFO_INTERRUPT_NODE_POINTER_STANDARD,
+      1U);
+  /*Set service request for rx FIFO receive interrupt*/
+  XMC_USIC_CH_RXFIFO_SetInterruptNodePointer(XMC_UART1_CH0, XMC_USIC_CH_RXFIFO_INTERRUPT_NODE_POINTER_STANDARD,
+       0x0U);
+  XMC_USIC_CH_RXFIFO_SetInterruptNodePointer(XMC_UART1_CH0, XMC_USIC_CH_RXFIFO_INTERRUPT_NODE_POINTER_ALTERNATE,
+       0x0U);
+  /*Set priority and enable NVIC node for transmit interrupt*/
+  NVIC_SetPriority((IRQn_Type)91, NVIC_EncodePriority(NVIC_GetPriorityGrouping(),
+                        63U, 0U));
+  NVIC_EnableIRQ((IRQn_Type)91);
+  /*Set priority and enable NVIC node for receive interrupt*/
+  NVIC_SetPriority((IRQn_Type)90, NVIC_EncodePriority(NVIC_GetPriorityGrouping(),
+                      63U, 0U));
+  NVIC_EnableIRQ((IRQn_Type)90);
+  return status;
+}
+/*Interrupt handlers*/
+/*Transmit ISR*/
+void UART_1_TX_HANDLER()
+{
+  UART_lTransmitHandler(&UART_1);
+}
+
+/*Receive ISR*/
+void UART_1_RX_HANDLER()
+{
+  UART_lReceiveHandler(&UART_1);
+}
+
 /*CODE_BLOCK_END*/
 

@@ -15,5 +15,8 @@ void LCD_Clear(void);
 void LCD_ShowTemperatureHumidity(void);
 void LCD_ShowCAN(void);
 void LCD_SetPage(uint8_t page);
+void LCD_ShowMessage(char *msg);
+
+uint8_t LCD_GetPage(void);
 
 #endif

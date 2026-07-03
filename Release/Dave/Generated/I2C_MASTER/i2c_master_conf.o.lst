@@ -1,0 +1,216 @@
+   1              	 .syntax unified
+   2              	 .cpu cortex-m4
+   3              	 .eabi_attribute 27,3
+   4              	 .fpu fpv4-sp-d16
+   5              	 .eabi_attribute 20,1
+   6              	 .eabi_attribute 21,1
+   7              	 .eabi_attribute 23,3
+   8              	 .eabi_attribute 24,1
+   9              	 .eabi_attribute 25,1
+  10              	 .eabi_attribute 26,1
+  11              	 .eabi_attribute 30,4
+  12              	 .eabi_attribute 34,1
+  13              	 .eabi_attribute 18,4
+  14              	 .thumb
+  15              	 .file "i2c_master_conf.c"
+  16              	 .section .text.I2C_MASTER_0_disable_io,"ax",%progbits
+  17              	 .align 1
+  18              	 .thumb
+  19              	 .thumb_func
+  21              	I2C_MASTER_0_disable_io:
+  22              	 
+  23              	 
+  24 0000 08B5     	 push {r3,lr}
+  25 0002 0648     	 ldr r0,.L2
+  26 0004 0521     	 movs r1,#5
+  27 0006 0022     	 movs r2,#0
+  28 0008 FFF7FEFF 	 bl XMC_GPIO_SetMode
+  29 000c 0021     	 movs r1,#0
+  30 000e 0448     	 ldr r0,.L2+4
+  31 0010 0A46     	 mov r2,r1
+  32 0012 BDE80840 	 pop {r3,lr}
+  33 0016 FFF7FEBF 	 b XMC_GPIO_SetMode
+  34              	.L3:
+  35 001a 00BF     	 .align 2
+  36              	.L2:
+  37 001c 00820248 	 .word 1208123904
+  38 0020 00830248 	 .word 1208124160
+  40              	 .section .text.I2C_MASTER_0_enable_io,"ax",%progbits
+  41              	 .align 1
+  42              	 .thumb
+  43              	 .thumb_func
+  45              	I2C_MASTER_0_enable_io:
+  46              	 
+  47              	 
+  48 0000 08B5     	 push {r3,lr}
+  49 0002 0648     	 ldr r0,.L5
+  50 0004 0521     	 movs r1,#5
+  51 0006 D022     	 movs r2,#208
+  52 0008 FFF7FEFF 	 bl XMC_GPIO_SetMode
+  53 000c 0448     	 ldr r0,.L5+4
+  54 000e 0021     	 movs r1,#0
+  55 0010 D022     	 movs r2,#208
+  56 0012 BDE80840 	 pop {r3,lr}
+  57 0016 FFF7FEBF 	 b XMC_GPIO_SetMode
+  58              	.L6:
+  59 001a 00BF     	 .align 2
+  60              	.L5:
+  61 001c 00820248 	 .word 1208123904
+  62 0020 00830248 	 .word 1208124160
+  64              	 .section .text.I2C_MASTER_0_init,"ax",%progbits
+  65              	 .align 1
+  66              	 .global I2C_MASTER_0_init
+  67              	 .thumb
+  68              	 .thumb_func
+  70              	I2C_MASTER_0_init:
+  71              	 
+  72              	 
+  73 0000 10B5     	 push {r4,lr}
+  74 0002 204C     	 ldr r4,.L8
+  75 0004 2049     	 ldr r1,.L8+4
+  76 0006 2046     	 mov r0,r4
+  77 0008 0122     	 movs r2,#1
+  78 000a FFF7FEFF 	 bl XMC_I2C_CH_InitEx
+  79 000e E369     	 ldr r3,[r4,#28]
+  80 0010 23F00703 	 bic r3,r3,#7
+  81 0014 43F00103 	 orr r3,r3,#1
+  82 0018 E361     	 str r3,[r4,#28]
+  83 001a 236A     	 ldr r3,[r4,#32]
+  84 001c 23F00703 	 bic r3,r3,#7
+  85 0020 43F00103 	 orr r3,r3,#1
+  86 0024 2362     	 str r3,[r4,#32]
+  87 0026 E369     	 ldr r3,[r4,#28]
+  88 0028 43F02003 	 orr r3,r3,#32
+  89 002c E361     	 str r3,[r4,#28]
+  90 002e E369     	 ldr r3,[r4,#28]
+  91 0030 43F04003 	 orr r3,r3,#64
+  92 0034 E361     	 str r3,[r4,#28]
+  93 0036 236A     	 ldr r3,[r4,#32]
+  94 0038 43F02003 	 orr r3,r3,#32
+  95 003c 2362     	 str r3,[r4,#32]
+  96 003e 236A     	 ldr r3,[r4,#32]
+  97 0040 43F04003 	 orr r3,r3,#64
+  98 0044 2362     	 str r3,[r4,#32]
+  99 0046 2046     	 mov r0,r4
+ 100 0048 1021     	 movs r1,#16
+ 101 004a 0422     	 movs r2,#4
+ 102 004c 0123     	 movs r3,#1
+ 103 004e FFF7FEFF 	 bl XMC_USIC_CH_TXFIFO_Configure
+ 104 0052 2046     	 mov r0,r4
+ 105 0054 0021     	 movs r1,#0
+ 106 0056 0422     	 movs r2,#4
+ 107 0058 0F23     	 movs r3,#15
+ 108 005a FFF7FEFF 	 bl XMC_USIC_CH_RXFIFO_Configure
+ 109 005e 236C     	 ldr r3,[r4,#64]
+ 110 0060 0A48     	 ldr r0,.L8+8
+ 111 0062 0B4A     	 ldr r2,.L8+12
+ 112 0064 23F00F03 	 bic r3,r3,#15
+ 113 0068 43F00403 	 orr r3,r3,#4
+ 114 006c 2364     	 str r3,[r4,#64]
+ 115 006e 0521     	 movs r1,#5
+ 116 0070 FFF7FEFF 	 bl XMC_GPIO_Init
+ 117 0074 0748     	 ldr r0,.L8+16
+ 118 0076 084A     	 ldr r2,.L8+20
+ 119 0078 0021     	 movs r1,#0
+ 120 007a BDE81040 	 pop {r4,lr}
+ 121 007e FFF7FEBF 	 b XMC_GPIO_Init
+ 122              	.L9:
+ 123 0082 00BF     	 .align 2
+ 124              	.L8:
+ 125 0084 00020340 	 .word 1073938944
+ 126 0088 00000000 	 .word .LANCHOR0
+ 127 008c 00820248 	 .word 1208123904
+ 128 0090 00000000 	 .word .LANCHOR1
+ 129 0094 00830248 	 .word 1208124160
+ 130 0098 00000000 	 .word .LANCHOR2
+ 132              	 .global I2C_MASTER_0
+ 133              	 .global I2C_MASTER_0_runtime
+ 134              	 .global I2C_MASTER_0_config
+ 135              	 .global I2C_MASTER_0_channel_config
+ 136              	 .section .rodata.I2C_MASTER_0_sda_pin_config,"a",%progbits
+ 137              	 .align 2
+ 138              	 .set .LANCHOR1,.+0
+ 141              	I2C_MASTER_0_sda_pin_config:
+ 142 0000 D0       	 .byte -48
+ 143 0001 000000   	 .space 3
+ 144 0004 01000000 	 .word 1
+ 145 0008 00000000 	 .space 4
+ 146              	 .section .rodata.I2C_MASTER_0_scl_pin_config,"a",%progbits
+ 147              	 .align 2
+ 148              	 .set .LANCHOR2,.+0
+ 151              	I2C_MASTER_0_scl_pin_config:
+ 152 0000 D0       	 .byte -48
+ 153 0001 000000   	 .space 3
+ 154 0004 01000000 	 .word 1
+ 155 0008 00000000 	 .space 4
+ 156              	 .section .bss.I2C_MASTER_0_runtime,"aw",%nobits
+ 157              	 .align 2
+ 160              	I2C_MASTER_0_runtime:
+ 161 0000 00000000 	 .space 44
+ 161      00000000 
+ 161      00000000 
+ 161      00000000 
+ 161      00000000 
+ 162              	 .section .data.I2C_MASTER_0,"aw",%progbits
+ 163              	 .align 2
+ 166              	I2C_MASTER_0:
+ 167 0000 00020340 	 .word 1073938944
+ 168 0004 00000000 	 .word I2C_MASTER_0_config
+ 169 0008 00000000 	 .word I2C_MASTER_0_runtime
+ 170              	 .section .rodata.I2C_MASTER_0_config,"a",%progbits
+ 171              	 .align 2
+ 174              	I2C_MASTER_0_config:
+ 175 0000 00000000 	 .word I2C_MASTER_0_channel_config
+ 176 0004 00000000 	 .word I2C_MASTER_0_init
+ 177 0008 00000000 	 .word I2C_MASTER_0_enable_io
+ 178 000c 00000000 	 .word I2C_MASTER_0_disable_io
+ 179 0010 00000000 	 .word 0
+ 180 0014 00000000 	 .word 0
+ 181 0018 00000000 	 .word 0
+ 182 001c 00000000 	 .word 0
+ 183 0020 00000000 	 .word 0
+ 184 0024 02       	 .byte 2
+ 185 0025 02       	 .byte 2
+ 186 0026 04       	 .byte 4
+ 187 0027 04       	 .byte 4
+ 188 0028 FF       	 .byte -1
+ 189 0029 FF       	 .byte -1
+ 190 002a 0000     	 .space 2
+ 191              	 .section .rodata.I2C_MASTER_0_channel_config,"a",%progbits
+ 192              	 .align 2
+ 193              	 .set .LANCHOR0,.+0
+ 196              	I2C_MASTER_0_channel_config:
+ 197 0000 A0860100 	 .word 100000
+ 198 0004 0000     	 .space 2
+ 199 0006 0000     	 .short 0
+ 200              	 .ident "GCC: (GNU Tools for ARM Embedded Processors) 4.9.3 20141119 (release) [ARM/embedded-4_9-branch revision 218278]"
+DEFINED SYMBOLS
+                            *ABS*:00000000 i2c_master_conf.c
+    {standard input}:17     .text.I2C_MASTER_0_disable_io:00000000 $t
+    {standard input}:21     .text.I2C_MASTER_0_disable_io:00000000 I2C_MASTER_0_disable_io
+    {standard input}:37     .text.I2C_MASTER_0_disable_io:0000001c $d
+    {standard input}:41     .text.I2C_MASTER_0_enable_io:00000000 $t
+    {standard input}:45     .text.I2C_MASTER_0_enable_io:00000000 I2C_MASTER_0_enable_io
+    {standard input}:61     .text.I2C_MASTER_0_enable_io:0000001c $d
+    {standard input}:65     .text.I2C_MASTER_0_init:00000000 $t
+    {standard input}:70     .text.I2C_MASTER_0_init:00000000 I2C_MASTER_0_init
+    {standard input}:125    .text.I2C_MASTER_0_init:00000084 $d
+    {standard input}:166    .data.I2C_MASTER_0:00000000 I2C_MASTER_0
+    {standard input}:160    .bss.I2C_MASTER_0_runtime:00000000 I2C_MASTER_0_runtime
+    {standard input}:174    .rodata.I2C_MASTER_0_config:00000000 I2C_MASTER_0_config
+    {standard input}:196    .rodata.I2C_MASTER_0_channel_config:00000000 I2C_MASTER_0_channel_config
+    {standard input}:137    .rodata.I2C_MASTER_0_sda_pin_config:00000000 $d
+    {standard input}:141    .rodata.I2C_MASTER_0_sda_pin_config:00000000 I2C_MASTER_0_sda_pin_config
+    {standard input}:147    .rodata.I2C_MASTER_0_scl_pin_config:00000000 $d
+    {standard input}:151    .rodata.I2C_MASTER_0_scl_pin_config:00000000 I2C_MASTER_0_scl_pin_config
+    {standard input}:157    .bss.I2C_MASTER_0_runtime:00000000 $d
+    {standard input}:163    .data.I2C_MASTER_0:00000000 $d
+    {standard input}:171    .rodata.I2C_MASTER_0_config:00000000 $d
+    {standard input}:192    .rodata.I2C_MASTER_0_channel_config:00000000 $d
+
+UNDEFINED SYMBOLS
+XMC_GPIO_SetMode
+XMC_I2C_CH_InitEx
+XMC_USIC_CH_TXFIFO_Configure
+XMC_USIC_CH_RXFIFO_Configure
+XMC_GPIO_Init

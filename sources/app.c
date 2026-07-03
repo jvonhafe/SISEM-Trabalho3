@@ -5,6 +5,7 @@
 #include "aht10.h"
 #include "can_app.h"
 #include "lcd.h"
+#include "bluetooth.h"
 
 void APP_Init(void)
 {
@@ -15,6 +16,8 @@ void APP_Init(void)
     APP_AHT10_Init();
 
     LCD_Init();
+
+    Bluetooth_Init();
 }
 
 void APP_Run(void)
@@ -26,4 +29,6 @@ void APP_Run(void)
     LCD_Task();
 
     APP_CAN_Task();
+
+    Bluetooth_Task();
 }

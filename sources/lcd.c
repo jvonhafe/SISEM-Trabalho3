@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "can_app.h"
+#include "bluetooth.h"
 
 extern I2C_MASTER_t I2C_MASTER_0;
 
@@ -116,15 +117,14 @@ void LCD_Task(void)
         	switch(lcd_page)
         	{
         	    case 0:
-
         	        LCD_ShowTemperatureHumidity();
-
         	        break;
 
         	    case 1:
-
         	        LCD_ShowCAN();
+        	        break;
 
+        	    case 2:
         	        break;
         	}
         }
@@ -181,4 +181,17 @@ void LCD_ShowCAN(void)
 void LCD_SetPage(uint8_t page)
 {
     lcd_page = page;
+}
+
+uint8_t LCD_GetPage(void)
+{
+    return lcd_page;
+}
+
+void LCD_ShowMessage(char *msg)
+{
+    LCD_Clear();
+
+    LCD_Set_Cursor(0,0);
+    LCD_Send_String(msg);
 }

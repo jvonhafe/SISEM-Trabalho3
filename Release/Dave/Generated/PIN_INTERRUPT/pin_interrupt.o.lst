@@ -1,0 +1,160 @@
+   1              	 .syntax unified
+   2              	 .cpu cortex-m4
+   3              	 .eabi_attribute 27,3
+   4              	 .fpu fpv4-sp-d16
+   5              	 .eabi_attribute 20,1
+   6              	 .eabi_attribute 21,1
+   7              	 .eabi_attribute 23,3
+   8              	 .eabi_attribute 24,1
+   9              	 .eabi_attribute 25,1
+  10              	 .eabi_attribute 26,1
+  11              	 .eabi_attribute 30,4
+  12              	 .eabi_attribute 34,1
+  13              	 .eabi_attribute 18,4
+  14              	 .thumb
+  15              	 .file "pin_interrupt.c"
+  16              	 .section .text.PIN_INTERRUPT_GetAppVersion,"ax",%progbits
+  17              	 .align 1
+  18              	 .global PIN_INTERRUPT_GetAppVersion
+  19              	 .thumb
+  20              	 .thumb_func
+  22              	PIN_INTERRUPT_GetAppVersion:
+  23              	 
+  24              	 
+  25              	 
+  26 0000 0022     	 movs r2,#0
+  27 0002 0423     	 movs r3,#4
+  28 0004 1046     	 mov r0,r2
+  29 0006 63F30700 	 bfi r0,r3,#0,#8
+  30 000a 62F30F20 	 bfi r0,r2,#8,#8
+  31 000e 63F31740 	 bfi r0,r3,#16,#8
+  32 0012 82B0     	 sub sp,sp,#8
+  33 0014 02B0     	 add sp,sp,#8
+  34              	 
+  35 0016 7047     	 bx lr
+  37              	 .section .text.PIN_INTERRUPT_Init,"ax",%progbits
+  38              	 .align 1
+  39              	 .global PIN_INTERRUPT_Init
+  40              	 .thumb
+  41              	 .thumb_func
+  43              	PIN_INTERRUPT_Init:
+  44              	 
+  45              	 
+  46 0000 F8B5     	 push {r3,r4,r5,r6,r7,lr}
+  47 0002 0446     	 mov r4,r0
+  48 0004 04F10802 	 add r2,r4,#8
+  49 0008 4068     	 ldr r0,[r0,#4]
+  50 000a 94F82110 	 ldrb r1,[r4,#33]
+  51 000e FFF7FEFF 	 bl XMC_GPIO_Init
+  52 0012 2068     	 ldr r0,[r4]
+  53 0014 E17F     	 ldrb r1,[r4,#31]
+  54 0016 04F11402 	 add r2,r4,#20
+  55 001a FFF7FEFF 	 bl XMC_ERU_ETL_Init
+  56 001e 94F82010 	 ldrb r1,[r4,#32]
+  57 0022 2068     	 ldr r0,[r4]
+  58 0024 0122     	 movs r2,#1
+  59 0026 FFF7FEFF 	 bl XMC_ERU_OGU_SetServiceRequestMode
+  60 002a 224B     	 ldr r3,.L12
+  61 002c 257F     	 ldrb r5,[r4,#28]
+  62 002e D968     	 ldr r1,[r3,#12]
+  63 0030 627F     	 ldrb r2,[r4,#29]
+  64 0032 A77F     	 ldrb r7,[r4,#30]
+  65 0034 C1F30221 	 ubfx r1,r1,#8,#3
+  66 0038 C1F1070E 	 rsb lr,r1,#7
+  67 003c BEF1060F 	 cmp lr,#6
+  68 0040 28BF     	 it cs
+  69 0042 4FF0060E 	 movcs lr,#6
+  70 0046 01B1     	 cbz r1,.L3
+  71 0048 0139     	 subs r1,r1,#1
+  72              	.L3:
+  73 004a 0120     	 movs r0,#1
+  74 004c 00FA01F3 	 lsl r3,r0,r1
+  75 0050 013B     	 subs r3,r3,#1
+  76 0052 00FA0EF0 	 lsl r0,r0,lr
+  77 0056 03EA0706 	 and r6,r3,r7
+  78 005a 431E     	 subs r3,r0,#1
+  79 005c 1340     	 ands r3,r3,r2
+  80 005e 8B40     	 lsls r3,r3,r1
+  81 0060 6AB2     	 sxtb r2,r5
+  82 0062 002A     	 cmp r2,#0
+  83 0064 43EA0603 	 orr r3,r3,r6
+  84 0068 4FEA8303 	 lsl r3,r3,#2
+  85 006c AFBF     	 iteee ge
+  86 006e 02F16042 	 addge r2,r2,#-536870912
+  87 0072 05F00F05 	 andlt r5,r5,#15
+  88 0076 104A     	 ldrlt r2,.L12+4
+  89 0078 DBB2     	 uxtblt r3,r3
+  90 007a A5BF     	 ittet ge
+  91 007c 02F56142 	 addge r2,r2,#57600
+  92 0080 DBB2     	 uxtbge r3,r3
+  93 0082 5355     	 strblt r3,[r2,r5]
+  94 0084 82F80033 	 strbge r3,[r2,#768]
+  95 0088 94F82230 	 ldrb r3,[r4,#34]
+  96 008c 83B1     	 cbz r3,.L6
+  97 008e 227F     	 ldrb r2,[r4,#28]
+  98 0090 53B2     	 sxtb r3,r2
+  99 0092 002B     	 cmp r3,#0
+ 100 0094 0CDB     	 blt .L6
+ 101 0096 5B09     	 lsrs r3,r3,#5
+ 102 0098 9B00     	 lsls r3,r3,#2
+ 103 009a 03F16043 	 add r3,r3,#-536870912
+ 104 009e 02F01F01 	 and r1,r2,#31
+ 105 00a2 03F56143 	 add r3,r3,#57600
+ 106 00a6 0122     	 movs r2,#1
+ 107 00a8 8A40     	 lsls r2,r2,r1
+ 108 00aa C3F88021 	 str r2,[r3,#384]
+ 109 00ae 1A60     	 str r2,[r3]
+ 110              	.L6:
+ 111 00b0 0020     	 movs r0,#0
+ 112 00b2 F8BD     	 pop {r3,r4,r5,r6,r7,pc}
+ 113              	.L13:
+ 114              	 .align 2
+ 115              	.L12:
+ 116 00b4 00ED00E0 	 .word -536810240
+ 117 00b8 14ED00E0 	 .word -536810220
+ 119              	 .section .text.PIN_INTERRUPT_SetEdgeSensitivity,"ax",%progbits
+ 120              	 .align 1
+ 121              	 .global PIN_INTERRUPT_SetEdgeSensitivity
+ 122              	 .thumb
+ 123              	 .thumb_func
+ 125              	PIN_INTERRUPT_SetEdgeSensitivity:
+ 126              	 
+ 127              	 
+ 128              	 
+ 129 0000 0346     	 mov r3,r0
+ 130 0002 0A46     	 mov r2,r1
+ 131 0004 0068     	 ldr r0,[r0]
+ 132 0006 D97F     	 ldrb r1,[r3,#31]
+ 133 0008 FFF7FEBF 	 b XMC_ERU_ETL_SetEdgeDetection
+ 135              	 .section .text.PIN_INTERRUPT_GetEdgeSensitivity,"ax",%progbits
+ 136              	 .align 1
+ 137              	 .global PIN_INTERRUPT_GetEdgeSensitivity
+ 138              	 .thumb
+ 139              	 .thumb_func
+ 141              	PIN_INTERRUPT_GetEdgeSensitivity:
+ 142              	 
+ 143              	 
+ 144              	 
+ 145 0000 0346     	 mov r3,r0
+ 146 0002 0068     	 ldr r0,[r0]
+ 147 0004 D97F     	 ldrb r1,[r3,#31]
+ 148 0006 FFF7FEBF 	 b XMC_ERU_ETL_GetEdgeDetection
+ 150              	 .ident "GCC: (GNU Tools for ARM Embedded Processors) 4.9.3 20141119 (release) [ARM/embedded-4_9-branch revision 218278]"
+DEFINED SYMBOLS
+                            *ABS*:00000000 pin_interrupt.c
+    {standard input}:17     .text.PIN_INTERRUPT_GetAppVersion:00000000 $t
+    {standard input}:22     .text.PIN_INTERRUPT_GetAppVersion:00000000 PIN_INTERRUPT_GetAppVersion
+    {standard input}:38     .text.PIN_INTERRUPT_Init:00000000 $t
+    {standard input}:43     .text.PIN_INTERRUPT_Init:00000000 PIN_INTERRUPT_Init
+    {standard input}:116    .text.PIN_INTERRUPT_Init:000000b4 $d
+    {standard input}:120    .text.PIN_INTERRUPT_SetEdgeSensitivity:00000000 $t
+    {standard input}:125    .text.PIN_INTERRUPT_SetEdgeSensitivity:00000000 PIN_INTERRUPT_SetEdgeSensitivity
+    {standard input}:136    .text.PIN_INTERRUPT_GetEdgeSensitivity:00000000 $t
+    {standard input}:141    .text.PIN_INTERRUPT_GetEdgeSensitivity:00000000 PIN_INTERRUPT_GetEdgeSensitivity
+
+UNDEFINED SYMBOLS
+XMC_GPIO_Init
+XMC_ERU_ETL_Init
+XMC_ERU_OGU_SetServiceRequestMode
+XMC_ERU_ETL_SetEdgeDetection
+XMC_ERU_ETL_GetEdgeDetection

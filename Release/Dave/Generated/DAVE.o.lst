@@ -1,0 +1,96 @@
+   1              	 .syntax unified
+   2              	 .cpu cortex-m4
+   3              	 .eabi_attribute 27,3
+   4              	 .fpu fpv4-sp-d16
+   5              	 .eabi_attribute 20,1
+   6              	 .eabi_attribute 21,1
+   7              	 .eabi_attribute 23,3
+   8              	 .eabi_attribute 24,1
+   9              	 .eabi_attribute 25,1
+  10              	 .eabi_attribute 26,1
+  11              	 .eabi_attribute 30,4
+  12              	 .eabi_attribute 34,1
+  13              	 .eabi_attribute 18,4
+  14              	 .thumb
+  15              	 .file "DAVE.c"
+  16              	 .section .text.DAVE_Init,"ax",%progbits
+  17              	 .align 1
+  18              	 .weak DAVE_Init
+  19              	 .thumb
+  20              	 .thumb_func
+  22              	DAVE_Init:
+  23              	 
+  24              	 
+  25 0000 08B5     	 push {r3,lr}
+  26 0002 1548     	 ldr r0,.L11
+  27 0004 FFF7FEFF 	 bl CLOCK_XMC4_Init
+  28 0008 20BB     	 cbnz r0,.L9
+  29 000a 1448     	 ldr r0,.L11+4
+  30 000c FFF7FEFF 	 bl DIGITAL_IO_Init
+  31 0010 00BB     	 cbnz r0,.L9
+  32 0012 1348     	 ldr r0,.L11+8
+  33 0014 FFF7FEFF 	 bl TIMER_Init
+  34 0018 E0B9     	 cbnz r0,.L9
+  35 001a 1248     	 ldr r0,.L11+12
+  36 001c FFF7FEFF 	 bl INTERRUPT_Init
+  37 0020 C0B9     	 cbnz r0,.L9
+  38 0022 1148     	 ldr r0,.L11+16
+  39 0024 FFF7FEFF 	 bl UART_Init
+  40 0028 A0B9     	 cbnz r0,.L9
+  41 002a 1048     	 ldr r0,.L11+20
+  42 002c FFF7FEFF 	 bl PIN_INTERRUPT_Init
+  43 0030 80B9     	 cbnz r0,.L9
+  44 0032 0F48     	 ldr r0,.L11+24
+  45 0034 FFF7FEFF 	 bl ADC_MEASUREMENT_Init
+  46 0038 60B9     	 cbnz r0,.L9
+  47 003a 0E48     	 ldr r0,.L11+28
+  48 003c FFF7FEFF 	 bl I2C_MASTER_Init
+  49 0040 40B9     	 cbnz r0,.L9
+  50 0042 0D48     	 ldr r0,.L11+32
+  51 0044 FFF7FEFF 	 bl CAN_NODE_Init
+  52 0048 20B9     	 cbnz r0,.L9
+  53 004a 0C48     	 ldr r0,.L11+36
+  54 004c BDE80840 	 pop {r3,lr}
+  55 0050 FFF7FEBF 	 b UART_Init
+  56              	.L9:
+  57 0054 08BD     	 pop {r3,pc}
+  58              	.L12:
+  59 0056 00BF     	 .align 2
+  60              	.L11:
+  61 0058 00000000 	 .word CLOCK_XMC4_0
+  62 005c 00000000 	 .word DIGITAL_IO_0
+  63 0060 00000000 	 .word TIMER_0
+  64 0064 00000000 	 .word INTERRUPT_0
+  65 0068 00000000 	 .word UART_0
+  66 006c 00000000 	 .word PIN_INTERRUPT_0
+  67 0070 00000000 	 .word ADC_MEASUREMENT_0
+  68 0074 00000000 	 .word I2C_MASTER_0
+  69 0078 00000000 	 .word CAN_NODE_0
+  70 007c 00000000 	 .word UART_1
+  72              	 .ident "GCC: (GNU Tools for ARM Embedded Processors) 4.9.3 20141119 (release) [ARM/embedded-4_9-branch revision 218278]"
+DEFINED SYMBOLS
+                            *ABS*:00000000 DAVE.c
+    {standard input}:17     .text.DAVE_Init:00000000 $t
+    {standard input}:22     .text.DAVE_Init:00000000 DAVE_Init
+    {standard input}:61     .text.DAVE_Init:00000058 $d
+
+UNDEFINED SYMBOLS
+CLOCK_XMC4_Init
+DIGITAL_IO_Init
+TIMER_Init
+INTERRUPT_Init
+UART_Init
+PIN_INTERRUPT_Init
+ADC_MEASUREMENT_Init
+I2C_MASTER_Init
+CAN_NODE_Init
+CLOCK_XMC4_0
+DIGITAL_IO_0
+TIMER_0
+INTERRUPT_0
+UART_0
+PIN_INTERRUPT_0
+ADC_MEASUREMENT_0
+I2C_MASTER_0
+CAN_NODE_0
+UART_1

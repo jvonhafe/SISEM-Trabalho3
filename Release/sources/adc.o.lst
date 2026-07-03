@@ -1,0 +1,71 @@
+   1              	 .syntax unified
+   2              	 .cpu cortex-m4
+   3              	 .eabi_attribute 27,3
+   4              	 .fpu fpv4-sp-d16
+   5              	 .eabi_attribute 20,1
+   6              	 .eabi_attribute 21,1
+   7              	 .eabi_attribute 23,3
+   8              	 .eabi_attribute 24,1
+   9              	 .eabi_attribute 25,1
+  10              	 .eabi_attribute 26,1
+  11              	 .eabi_attribute 30,4
+  12              	 .eabi_attribute 34,1
+  13              	 .eabi_attribute 18,4
+  14              	 .thumb
+  15              	 .file "adc.c"
+  16              	 .section .text.ADC_Update,"ax",%progbits
+  17              	 .align 1
+  18              	 .global ADC_Update
+  19              	 .thumb
+  20              	 .thumb_func
+  22              	ADC_Update:
+  23              	 
+  24              	 
+  25 0000 08B5     	 push {r3,lr}
+  26 0002 0348     	 ldr r0,.L2
+  27 0004 FFF7FEFF 	 bl ADC_MEASUREMENT_GetResult
+  28 0008 024B     	 ldr r3,.L2+4
+  29 000a 1880     	 strh r0,[r3]
+  30 000c 08BD     	 pop {r3,pc}
+  31              	.L3:
+  32 000e 00BF     	 .align 2
+  33              	.L2:
+  34 0010 00000000 	 .word ADC_MEASUREMENT_Channel_A_handle
+  35 0014 00000000 	 .word .LANCHOR0
+  37              	 .section .text.ADC_GetValue,"ax",%progbits
+  38              	 .align 1
+  39              	 .global ADC_GetValue
+  40              	 .thumb
+  41              	 .thumb_func
+  43              	ADC_GetValue:
+  44              	 
+  45              	 
+  46              	 
+  47 0000 014B     	 ldr r3,.L5
+  48 0002 1888     	 ldrh r0,[r3]
+  49 0004 7047     	 bx lr
+  50              	.L6:
+  51 0006 00BF     	 .align 2
+  52              	.L5:
+  53 0008 00000000 	 .word .LANCHOR0
+  55              	 .global adc
+  56              	 .section .bss.adc,"aw",%nobits
+  57              	 .align 1
+  58              	 .set .LANCHOR0,.+0
+  61              	adc:
+  62 0000 0000     	 .space 2
+  63              	 .ident "GCC: (GNU Tools for ARM Embedded Processors) 4.9.3 20141119 (release) [ARM/embedded-4_9-branch revision 218278]"
+DEFINED SYMBOLS
+                            *ABS*:00000000 adc.c
+    {standard input}:17     .text.ADC_Update:00000000 $t
+    {standard input}:22     .text.ADC_Update:00000000 ADC_Update
+    {standard input}:34     .text.ADC_Update:00000010 $d
+    {standard input}:38     .text.ADC_GetValue:00000000 $t
+    {standard input}:43     .text.ADC_GetValue:00000000 ADC_GetValue
+    {standard input}:53     .text.ADC_GetValue:00000008 $d
+    {standard input}:61     .bss.adc:00000000 adc
+    {standard input}:57     .bss.adc:00000000 $d
+
+UNDEFINED SYMBOLS
+ADC_MEASUREMENT_GetResult
+ADC_MEASUREMENT_Channel_A_handle

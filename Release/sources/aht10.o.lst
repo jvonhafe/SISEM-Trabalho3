@@ -1,0 +1,217 @@
+   1              	 .syntax unified
+   2              	 .cpu cortex-m4
+   3              	 .eabi_attribute 27,3
+   4              	 .fpu fpv4-sp-d16
+   5              	 .eabi_attribute 20,1
+   6              	 .eabi_attribute 21,1
+   7              	 .eabi_attribute 23,3
+   8              	 .eabi_attribute 24,1
+   9              	 .eabi_attribute 25,1
+  10              	 .eabi_attribute 26,1
+  11              	 .eabi_attribute 30,4
+  12              	 .eabi_attribute 34,1
+  13              	 .eabi_attribute 18,4
+  14              	 .thumb
+  15              	 .file "aht10.c"
+  16              	 .section .text.APP_AHT10_Init,"ax",%progbits
+  17              	 .align 1
+  18              	 .global APP_AHT10_Init
+  19              	 .thumb
+  20              	 .thumb_func
+  22              	APP_AHT10_Init:
+  23              	 
+  24              	 
+  25 0000 7FB5     	 push {r0,r1,r2,r3,r4,r5,r6,lr}
+  26 0002 BA23     	 movs r3,#186
+  27 0004 8DF80B30 	 strb r3,[sp,#11]
+  28 0008 164B     	 ldr r3,.L11
+  29 000a 1748     	 ldr r0,.L11+4
+  30 000c 1A88     	 ldrh r2,[r3]
+  31 000e 9B78     	 ldrb r3,[r3,#2]
+  32 0010 ADF80C20 	 strh r2,[sp,#12]
+  33 0014 0121     	 movs r1,#1
+  34 0016 8DF80E30 	 strb r3,[sp,#14]
+  35 001a 0091     	 str r1,[sp]
+  36 001c 0DF10B03 	 add r3,sp,#11
+  37 0020 0191     	 str r1,[sp,#4]
+  38 0022 7022     	 movs r2,#112
+  39 0024 FFF7FEFF 	 bl I2C_MASTER_Transmit
+  40 0028 0023     	 movs r3,#0
+  41              	.L6:
+  42 002a 0493     	 str r3,[sp,#16]
+  43 002c 049A     	 ldr r2,[sp,#16]
+  44 002e 0F4B     	 ldr r3,.L11+8
+  45 0030 9A42     	 cmp r2,r3
+  46 0032 02D8     	 bhi .L9
+  47 0034 049B     	 ldr r3,[sp,#16]
+  48 0036 0133     	 adds r3,r3,#1
+  49 0038 F7E7     	 b .L6
+  50              	.L9:
+  51 003a 0323     	 movs r3,#3
+  52 003c 0121     	 movs r1,#1
+  53 003e 0093     	 str r3,[sp]
+  54 0040 0191     	 str r1,[sp,#4]
+  55 0042 03AB     	 add r3,sp,#12
+  56 0044 0848     	 ldr r0,.L11+4
+  57 0046 7022     	 movs r2,#112
+  58 0048 FFF7FEFF 	 bl I2C_MASTER_Transmit
+  59 004c 0023     	 movs r3,#0
+  60              	.L7:
+  61 004e 0593     	 str r3,[sp,#20]
+  62 0050 059A     	 ldr r2,[sp,#20]
+  63 0052 064B     	 ldr r3,.L11+8
+  64 0054 9A42     	 cmp r2,r3
+  65 0056 02D8     	 bhi .L10
+  66 0058 059B     	 ldr r3,[sp,#20]
+  67 005a 0133     	 adds r3,r3,#1
+  68 005c F7E7     	 b .L7
+  69              	.L10:
+  70 005e 07B0     	 add sp,sp,#28
+  71              	 
+  72 0060 5DF804FB 	 ldr pc,[sp],#4
+  73              	.L12:
+  74              	 .align 2
+  75              	.L11:
+  76 0064 00000000 	 .word .LANCHOR0
+  77 0068 00000000 	 .word I2C_MASTER_0
+  78 006c DF930400 	 .word 299999
+  80              	 .section .text.APP_AHT10_Read,"ax",%progbits
+  81              	 .align 1
+  82              	 .global APP_AHT10_Read
+  83              	 .thumb
+  84              	 .thumb_func
+  86              	APP_AHT10_Read:
+  87              	 
+  88              	 
+  89 0000 30B5     	 push {r4,r5,lr}
+  90 0002 364B     	 ldr r3,.L27
+  91 0004 3648     	 ldr r0,.L27+4
+  92 0006 1A88     	 ldrh r2,[r3]
+  93 0008 9B78     	 ldrb r3,[r3,#2]
+  94 000a 89B0     	 sub sp,sp,#36
+  95 000c 0121     	 movs r1,#1
+  96 000e 8DF81230 	 strb r3,[sp,#18]
+  97 0012 0323     	 movs r3,#3
+  98 0014 ADF81020 	 strh r2,[sp,#16]
+  99 0018 0093     	 str r3,[sp]
+ 100 001a 0191     	 str r1,[sp,#4]
+ 101 001c 7022     	 movs r2,#112
+ 102 001e 04AB     	 add r3,sp,#16
+ 103 0020 FFF7FEFF 	 bl I2C_MASTER_Transmit
+ 104 0024 08B1     	 cbz r0,.L20
+ 105              	.L18:
+ 106 0026 0020     	 movs r0,#0
+ 107 0028 55E0     	 b .L15
+ 108              	.L20:
+ 109 002a 0A25     	 movs r5,#10
+ 110              	.L14:
+ 111 002c 0023     	 movs r3,#0
+ 112              	.L25:
+ 113 002e 0593     	 str r3,[sp,#20]
+ 114 0030 059A     	 ldr r2,[sp,#20]
+ 115 0032 2C4B     	 ldr r3,.L27+8
+ 116 0034 9A42     	 cmp r2,r3
+ 117 0036 02D8     	 bhi .L26
+ 118 0038 059B     	 ldr r3,[sp,#20]
+ 119 003a 0133     	 adds r3,r3,#1
+ 120 003c F7E7     	 b .L25
+ 121              	.L26:
+ 122 003e 0124     	 movs r4,#1
+ 123 0040 0623     	 movs r3,#6
+ 124 0042 8DE81800 	 stmia sp,{r3,r4}
+ 125 0046 0294     	 str r4,[sp,#8]
+ 126 0048 2548     	 ldr r0,.L27+4
+ 127 004a 2146     	 mov r1,r4
+ 128 004c 7022     	 movs r2,#112
+ 129 004e 06AB     	 add r3,sp,#24
+ 130 0050 FFF7FEFF 	 bl I2C_MASTER_Receive
+ 131 0054 0028     	 cmp r0,#0
+ 132 0056 E6D1     	 bne .L18
+ 133 0058 9DF91830 	 ldrsb r3,[sp,#24]
+ 134 005c 013D     	 subs r5,r5,#1
+ 135 005e 002B     	 cmp r3,#0
+ 136 0060 EDB2     	 uxtb r5,r5
+ 137 0062 02DA     	 bge .L19
+ 138 0064 002D     	 cmp r5,#0
+ 139 0066 E1D1     	 bne .L14
+ 140 0068 DDE7     	 b .L18
+ 141              	.L19:
+ 142 006a 002D     	 cmp r5,#0
+ 143 006c DBD0     	 beq .L18
+ 144 006e 9DF81B50 	 ldrb r5,[sp,#27]
+ 145 0072 9DF81C30 	 ldrb r3,[sp,#28]
+ 146 0076 9DF81D20 	 ldrb r2,[sp,#29]
+ 147 007a 9FED1B7A 	 flds s14,.L27+12
+ 148 007e DFED1B6A 	 flds s13,.L27+16
+ 149 0082 1B48     	 ldr r0,.L27+20
+ 150 0084 42EA0322 	 orr r2,r2,r3,lsl#8
+ 151 0088 05F00F01 	 and r1,r5,#15
+ 152 008c 42EA0141 	 orr r1,r2,r1,lsl#16
+ 153 0090 9DF81920 	 ldrb r2,[sp,#25]
+ 154 0094 9DF81A30 	 ldrb r3,[sp,#26]
+ 155 0098 0472     	 strb r4,[r0,#8]
+ 156 009a 1203     	 lsls r2,r2,#12
+ 157 009c 42EA0313 	 orr r3,r2,r3,lsl#4
+ 158 00a0 43EA1513 	 orr r3,r3,r5,lsr#4
+ 159 00a4 07EE903A 	 fmsr s15,r3
+ 160 00a8 F8EEE77A 	 fsitos s15,s15
+ 161 00ac 67EE877A 	 fmuls s15,s15,s14
+ 162 00b0 9FED107A 	 flds s14,.L27+24
+ 163 00b4 67EEA67A 	 fmuls s15,s15,s13
+ 164 00b8 C0ED017A 	 fsts s15,[r0,#4]
+ 165 00bc 07EE901A 	 fmsr s15,r1
+ 166 00c0 F8EEE77A 	 fsitos s15,s15
+ 167 00c4 67EE877A 	 fmuls s15,s15,s14
+ 168 00c8 9FED0B7A 	 flds s14,.L27+28
+ 169 00cc A7EEA67A 	 vfma.f32 s14,s15,s13
+ 170 00d0 80ED007A 	 fsts s14,[r0]
+ 171 00d4 2046     	 mov r0,r4
+ 172              	.L15:
+ 173 00d6 09B0     	 add sp,sp,#36
+ 174              	 
+ 175 00d8 30BD     	 pop {r4,r5,pc}
+ 176              	.L28:
+ 177 00da 00BF     	 .align 2
+ 178              	.L27:
+ 179 00dc 03000000 	 .word .LANCHOR0+3
+ 180 00e0 00000000 	 .word I2C_MASTER_0
+ 181 00e4 8FD00300 	 .word 249999
+ 182 00e8 0000C842 	 .word 1120403456
+ 183 00ec 00008035 	 .word 897581056
+ 184 00f0 00000000 	 .word .LANCHOR1
+ 185 00f4 00004843 	 .word 1128792064
+ 186 00f8 000048C2 	 .word -1035468800
+ 188              	 .global aht10
+ 189              	 .section .rodata
+ 190              	 .set .LANCHOR0,.+0
+ 191              	.LC0:
+ 192 0000 E1       	 .byte -31
+ 193 0001 08       	 .byte 8
+ 194 0002 00       	 .byte 0
+ 195              	.LC1:
+ 196 0003 AC       	 .byte -84
+ 197 0004 33       	 .byte 51
+ 198 0005 00       	 .byte 0
+ 199              	 .section .bss.aht10,"aw",%nobits
+ 200              	 .align 2
+ 201              	 .set .LANCHOR1,.+0
+ 204              	aht10:
+ 205 0000 00000000 	 .space 12
+ 205      00000000 
+ 205      00000000 
+ 206              	 .ident "GCC: (GNU Tools for ARM Embedded Processors) 4.9.3 20141119 (release) [ARM/embedded-4_9-branch revision 218278]"
+DEFINED SYMBOLS
+                            *ABS*:00000000 aht10.c
+    {standard input}:17     .text.APP_AHT10_Init:00000000 $t
+    {standard input}:22     .text.APP_AHT10_Init:00000000 APP_AHT10_Init
+    {standard input}:76     .text.APP_AHT10_Init:00000064 $d
+    {standard input}:81     .text.APP_AHT10_Read:00000000 $t
+    {standard input}:86     .text.APP_AHT10_Read:00000000 APP_AHT10_Read
+    {standard input}:179    .text.APP_AHT10_Read:000000dc $d
+    {standard input}:204    .bss.aht10:00000000 aht10
+    {standard input}:200    .bss.aht10:00000000 $d
+
+UNDEFINED SYMBOLS
+I2C_MASTER_Transmit
+I2C_MASTER_0
+I2C_MASTER_Receive

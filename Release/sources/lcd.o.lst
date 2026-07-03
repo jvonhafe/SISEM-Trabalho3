@@ -1,0 +1,483 @@
+   1              	 .syntax unified
+   2              	 .cpu cortex-m4
+   3              	 .eabi_attribute 27,3
+   4              	 .fpu fpv4-sp-d16
+   5              	 .eabi_attribute 20,1
+   6              	 .eabi_attribute 21,1
+   7              	 .eabi_attribute 23,3
+   8              	 .eabi_attribute 24,1
+   9              	 .eabi_attribute 25,1
+  10              	 .eabi_attribute 26,1
+  11              	 .eabi_attribute 30,4
+  12              	 .eabi_attribute 34,1
+  13              	 .eabi_attribute 18,4
+  14              	 .thumb
+  15              	 .file "lcd.c"
+  16              	 .section .text.LCD_Send_Cmd,"ax",%progbits
+  17              	 .align 1
+  18              	 .global LCD_Send_Cmd
+  19              	 .thumb
+  20              	 .thumb_func
+  22              	LCD_Send_Cmd:
+  23              	 
+  24              	 
+  25 0000 1FB5     	 push {r0,r1,r2,r3,r4,lr}
+  26 0002 00F0F003 	 and r3,r0,#240
+  27 0006 0001     	 lsls r0,r0,#4
+  28 0008 43F00C02 	 orr r2,r3,#12
+  29 000c C0B2     	 uxtb r0,r0
+  30 000e 43F00803 	 orr r3,r3,#8
+  31 0012 8DF80930 	 strb r3,[sp,#9]
+  32 0016 40F00C03 	 orr r3,r0,#12
+  33 001a 8DF80A30 	 strb r3,[sp,#10]
+  34 001e 40F00800 	 orr r0,r0,#8
+  35 0022 0423     	 movs r3,#4
+  36 0024 0121     	 movs r1,#1
+  37 0026 8DF80820 	 strb r2,[sp,#8]
+  38 002a 8DF80B00 	 strb r0,[sp,#11]
+  39 002e 0093     	 str r3,[sp]
+  40 0030 0191     	 str r1,[sp,#4]
+  41 0032 02AB     	 add r3,sp,#8
+  42 0034 0848     	 ldr r0,.L7
+  43 0036 4E22     	 movs r2,#78
+  44 0038 FFF7FEFF 	 bl I2C_MASTER_Transmit
+  45 003c 0023     	 movs r3,#0
+  46              	.L4:
+  47 003e 0393     	 str r3,[sp,#12]
+  48 0040 039A     	 ldr r2,[sp,#12]
+  49 0042 44F61F63 	 movw r3,#19999
+  50 0046 9A42     	 cmp r2,r3
+  51 0048 02D8     	 bhi .L6
+  52 004a 039B     	 ldr r3,[sp,#12]
+  53 004c 0133     	 adds r3,r3,#1
+  54 004e F6E7     	 b .L4
+  55              	.L6:
+  56 0050 05B0     	 add sp,sp,#20
+  57              	 
+  58 0052 5DF804FB 	 ldr pc,[sp],#4
+  59              	.L8:
+  60 0056 00BF     	 .align 2
+  61              	.L7:
+  62 0058 00000000 	 .word I2C_MASTER_0
+  64              	 .section .text.LCD_Send_Data,"ax",%progbits
+  65              	 .align 1
+  66              	 .global LCD_Send_Data
+  67              	 .thumb
+  68              	 .thumb_func
+  70              	LCD_Send_Data:
+  71              	 
+  72              	 
+  73 0000 1FB5     	 push {r0,r1,r2,r3,r4,lr}
+  74 0002 00F0F003 	 and r3,r0,#240
+  75 0006 0001     	 lsls r0,r0,#4
+  76 0008 43F00D02 	 orr r2,r3,#13
+  77 000c C0B2     	 uxtb r0,r0
+  78 000e 43F00903 	 orr r3,r3,#9
+  79 0012 8DF80930 	 strb r3,[sp,#9]
+  80 0016 40F00D03 	 orr r3,r0,#13
+  81 001a 8DF80A30 	 strb r3,[sp,#10]
+  82 001e 40F00900 	 orr r0,r0,#9
+  83 0022 0423     	 movs r3,#4
+  84 0024 0121     	 movs r1,#1
+  85 0026 8DF80820 	 strb r2,[sp,#8]
+  86 002a 8DF80B00 	 strb r0,[sp,#11]
+  87 002e 0093     	 str r3,[sp]
+  88 0030 0191     	 str r1,[sp,#4]
+  89 0032 02AB     	 add r3,sp,#8
+  90 0034 0848     	 ldr r0,.L14
+  91 0036 4E22     	 movs r2,#78
+  92 0038 FFF7FEFF 	 bl I2C_MASTER_Transmit
+  93 003c 0023     	 movs r3,#0
+  94              	.L12:
+  95 003e 0393     	 str r3,[sp,#12]
+  96 0040 039A     	 ldr r2,[sp,#12]
+  97 0042 44F61F63 	 movw r3,#19999
+  98 0046 9A42     	 cmp r2,r3
+  99 0048 02D8     	 bhi .L13
+ 100 004a 039B     	 ldr r3,[sp,#12]
+ 101 004c 0133     	 adds r3,r3,#1
+ 102 004e F6E7     	 b .L12
+ 103              	.L13:
+ 104 0050 05B0     	 add sp,sp,#20
+ 105              	 
+ 106 0052 5DF804FB 	 ldr pc,[sp],#4
+ 107              	.L15:
+ 108 0056 00BF     	 .align 2
+ 109              	.L14:
+ 110 0058 00000000 	 .word I2C_MASTER_0
+ 112              	 .section .text.LCD_Clear,"ax",%progbits
+ 113              	 .align 1
+ 114              	 .global LCD_Clear
+ 115              	 .thumb
+ 116              	 .thumb_func
+ 118              	LCD_Clear:
+ 119              	 
+ 120              	 
+ 121              	 
+ 122 0000 0120     	 movs r0,#1
+ 123 0002 FFF7FEBF 	 b LCD_Send_Cmd
+ 125              	 .section .text.LCD_Set_Cursor,"ax",%progbits
+ 126              	 .align 1
+ 127              	 .global LCD_Set_Cursor
+ 128              	 .thumb
+ 129              	 .thumb_func
+ 131              	LCD_Set_Cursor:
+ 132              	 
+ 133              	 
+ 134              	 
+ 135 0000 20B1     	 cbz r0,.L19
+ 136 0002 0128     	 cmp r0,#1
+ 137 0004 04D1     	 bne .L18
+ 138 0006 41F0C001 	 orr r1,r1,#192
+ 139 000a 01E0     	 b .L18
+ 140              	.L19:
+ 141 000c 41F08001 	 orr r1,r1,#128
+ 142              	.L18:
+ 143 0010 C8B2     	 uxtb r0,r1
+ 144 0012 FFF7FEBF 	 b LCD_Send_Cmd
+ 146              	 .section .text.LCD_Init,"ax",%progbits
+ 147              	 .align 1
+ 148              	 .global LCD_Init
+ 149              	 .thumb
+ 150              	 .thumb_func
+ 152              	LCD_Init:
+ 153              	 
+ 154              	 
+ 155 0000 07B5     	 push {r0,r1,r2,lr}
+ 156 0002 3320     	 movs r0,#51
+ 157 0004 FFF7FEFF 	 bl LCD_Send_Cmd
+ 158 0008 3220     	 movs r0,#50
+ 159 000a FFF7FEFF 	 bl LCD_Send_Cmd
+ 160 000e 2820     	 movs r0,#40
+ 161 0010 FFF7FEFF 	 bl LCD_Send_Cmd
+ 162 0014 0C20     	 movs r0,#12
+ 163 0016 FFF7FEFF 	 bl LCD_Send_Cmd
+ 164 001a 0120     	 movs r0,#1
+ 165 001c FFF7FEFF 	 bl LCD_Send_Cmd
+ 166 0020 0620     	 movs r0,#6
+ 167 0022 FFF7FEFF 	 bl LCD_Send_Cmd
+ 168 0026 074B     	 ldr r3,.L26
+ 169 0028 0122     	 movs r2,#1
+ 170 002a 1A70     	 strb r2,[r3]
+ 171 002c 0023     	 movs r3,#0
+ 172              	.L24:
+ 173 002e 0193     	 str r3,[sp,#4]
+ 174 0030 019A     	 ldr r2,[sp,#4]
+ 175 0032 054B     	 ldr r3,.L26+4
+ 176 0034 9A42     	 cmp r2,r3
+ 177 0036 02D8     	 bhi .L25
+ 178 0038 019B     	 ldr r3,[sp,#4]
+ 179 003a 0133     	 adds r3,r3,#1
+ 180 003c F7E7     	 b .L24
+ 181              	.L25:
+ 182 003e 03B0     	 add sp,sp,#12
+ 183              	 
+ 184 0040 5DF804FB 	 ldr pc,[sp],#4
+ 185              	.L27:
+ 186              	 .align 2
+ 187              	.L26:
+ 188 0044 00000000 	 .word .LANCHOR0
+ 189 0048 DF930400 	 .word 299999
+ 191              	 .section .text.LCD_Send_String,"ax",%progbits
+ 192              	 .align 1
+ 193              	 .global LCD_Send_String
+ 194              	 .thumb
+ 195              	 .thumb_func
+ 197              	LCD_Send_String:
+ 198              	 
+ 199              	 
+ 200 0000 13B5     	 push {r0,r1,r4,lr}
+ 201 0002 441E     	 subs r4,r0,#1
+ 202              	.L29:
+ 203 0004 14F8010F 	 ldrb r0,[r4,#1]!
+ 204 0008 58B1     	 cbz r0,.L34
+ 205 000a FFF7FEFF 	 bl LCD_Send_Data
+ 206 000e 0023     	 movs r3,#0
+ 207              	.L33:
+ 208 0010 0193     	 str r3,[sp,#4]
+ 209 0012 019A     	 ldr r2,[sp,#4]
+ 210 0014 41F28733 	 movw r3,#4999
+ 211 0018 9A42     	 cmp r2,r3
+ 212 001a F3D8     	 bhi .L29
+ 213 001c 019B     	 ldr r3,[sp,#4]
+ 214 001e 0133     	 adds r3,r3,#1
+ 215 0020 F6E7     	 b .L33
+ 216              	.L34:
+ 217 0022 02B0     	 add sp,sp,#8
+ 218              	 
+ 219 0024 10BD     	 pop {r4,pc}
+ 221              	 .section .text.LCD_ShowTemperatureHumidity,"ax",%progbits
+ 222              	 .align 1
+ 223              	 .global LCD_ShowTemperatureHumidity
+ 224              	 .thumb
+ 225              	 .thumb_func
+ 227              	LCD_ShowTemperatureHumidity:
+ 228              	 
+ 229              	 
+ 230 0000 1E4B     	 ldr r3,.L36
+ 231 0002 9FED1F7A 	 flds s14,.L36+4
+ 232 0006 D3ED007A 	 flds s15,[r3]
+ 233 000a 67EE877A 	 fmuls s15,s15,s14
+ 234 000e 70B5     	 push {r4,r5,r6,lr}
+ 235 0010 FDEEE77A 	 ftosizs s15,s15
+ 236 0014 86B0     	 sub sp,sp,#24
+ 237 0016 17EE904A 	 fmrs r4,s15
+ 238 001a D3ED017A 	 flds s15,[r3,#4]
+ 239 001e 67EE877A 	 fmuls s15,s15,s14
+ 240 0022 8020     	 movs r0,#128
+ 241 0024 FDEEE77A 	 ftosizs s15,s15
+ 242 0028 6425     	 movs r5,#100
+ 243 002a 17EE906A 	 fmrs r6,s15
+ 244 002e FFF7FEFF 	 bl LCD_Send_Cmd
+ 245 0032 8020     	 movs r0,#128
+ 246 0034 FFF7FEFF 	 bl LCD_Send_Cmd
+ 247 0038 94FBF5F2 	 sdiv r2,r4,r5
+ 248 003c 05FB1243 	 mls r3,r5,r2,r4
+ 249 0040 002B     	 cmp r3,#0
+ 250 0042 B8BF     	 it lt
+ 251 0044 5B42     	 rsblt r3,r3,#0
+ 252 0046 0F49     	 ldr r1,.L36+8
+ 253 0048 01A8     	 add r0,sp,#4
+ 254 004a FFF7FEFF 	 bl sprintf
+ 255 004e 01A8     	 add r0,sp,#4
+ 256 0050 FFF7FEFF 	 bl LCD_Send_String
+ 257 0054 C020     	 movs r0,#192
+ 258 0056 FFF7FEFF 	 bl LCD_Send_Cmd
+ 259 005a 96FBF5F2 	 sdiv r2,r6,r5
+ 260 005e 05FB1263 	 mls r3,r5,r2,r6
+ 261 0062 002B     	 cmp r3,#0
+ 262 0064 0849     	 ldr r1,.L36+12
+ 263 0066 B8BF     	 it lt
+ 264 0068 5B42     	 rsblt r3,r3,#0
+ 265 006a 01A8     	 add r0,sp,#4
+ 266 006c FFF7FEFF 	 bl sprintf
+ 267 0070 01A8     	 add r0,sp,#4
+ 268 0072 FFF7FEFF 	 bl LCD_Send_String
+ 269 0076 06B0     	 add sp,sp,#24
+ 270              	 
+ 271 0078 70BD     	 pop {r4,r5,r6,pc}
+ 272              	.L37:
+ 273 007a 00BF     	 .align 2
+ 274              	.L36:
+ 275 007c 00000000 	 .word aht10
+ 276 0080 0000C842 	 .word 1120403456
+ 277 0084 00000000 	 .word .LC0
+ 278 0088 0E000000 	 .word .LC1
+ 280              	 .section .text.LCD_ShowCAN,"ax",%progbits
+ 281              	 .align 1
+ 282              	 .global LCD_ShowCAN
+ 283              	 .thumb
+ 284              	 .thumb_func
+ 286              	LCD_ShowCAN:
+ 287              	 
+ 288              	 
+ 289 0000 7FB5     	 push {r0,r1,r2,r3,r4,r5,r6,lr}
+ 290 0002 8020     	 movs r0,#128
+ 291 0004 FFF7FEFF 	 bl LCD_Send_Cmd
+ 292 0008 104B     	 ldr r3,.L42
+ 293 000a 1149     	 ldr r1,.L42+4
+ 294 000c 1A88     	 ldrh r2,[r3]
+ 295 000e 01A8     	 add r0,sp,#4
+ 296 0010 92B2     	 uxth r2,r2
+ 297 0012 FFF7FEFF 	 bl sprintf
+ 298 0016 01A8     	 add r0,sp,#4
+ 299 0018 FFF7FEFF 	 bl LCD_Send_String
+ 300 001c C020     	 movs r0,#192
+ 301 001e FFF7FEFF 	 bl LCD_Send_Cmd
+ 302 0022 0C4B     	 ldr r3,.L42+8
+ 303 0024 1B78     	 ldrb r3,[r3]
+ 304 0026 0BB1     	 cbz r3,.L39
+ 305 0028 0B48     	 ldr r0,.L42+12
+ 306 002a 09E0     	 b .L41
+ 307              	.L39:
+ 308 002c 8020     	 movs r0,#128
+ 309 002e FFF7FEFF 	 bl LCD_Send_Cmd
+ 310 0032 0A48     	 ldr r0,.L42+16
+ 311 0034 FFF7FEFF 	 bl LCD_Send_String
+ 312 0038 C020     	 movs r0,#192
+ 313 003a FFF7FEFF 	 bl LCD_Send_Cmd
+ 314 003e 0848     	 ldr r0,.L42+20
+ 315              	.L41:
+ 316 0040 FFF7FEFF 	 bl LCD_Send_String
+ 317 0044 07B0     	 add sp,sp,#28
+ 318              	 
+ 319 0046 5DF804FB 	 ldr pc,[sp],#4
+ 320              	.L43:
+ 321 004a 00BF     	 .align 2
+ 322              	.L42:
+ 323 004c 00000000 	 .word can_rx_id
+ 324 0050 1D000000 	 .word .LC2
+ 325 0054 00000000 	 .word can_rx_flag
+ 326 0058 25000000 	 .word .LC3
+ 327 005c 2C000000 	 .word .LC4
+ 328 0060 33000000 	 .word .LC5
+ 330              	 .section .text.LCD_Task,"ax",%progbits
+ 331              	 .align 1
+ 332              	 .global LCD_Task
+ 333              	 .thumb
+ 334              	 .thumb_func
+ 336              	LCD_Task:
+ 337              	 
+ 338              	 
+ 339              	 
+ 340 0000 0B4A     	 ldr r2,.L53
+ 341 0002 0C49     	 ldr r1,.L53+4
+ 342 0004 1368     	 ldr r3,[r2]
+ 343 0006 0133     	 adds r3,r3,#1
+ 344 0008 8B42     	 cmp r3,r1
+ 345 000a 01D8     	 bhi .L45
+ 346 000c 1360     	 str r3,[r2]
+ 347 000e 7047     	 bx lr
+ 348              	.L45:
+ 349 0010 0023     	 movs r3,#0
+ 350 0012 1360     	 str r3,[r2]
+ 351 0014 084B     	 ldr r3,.L53+8
+ 352 0016 1B7A     	 ldrb r3,[r3,#8]
+ 353 0018 4BB1     	 cbz r3,.L44
+ 354 001a 084B     	 ldr r3,.L53+12
+ 355 001c 1B78     	 ldrb r3,[r3]
+ 356 001e 13B1     	 cbz r3,.L48
+ 357 0020 012B     	 cmp r3,#1
+ 358 0022 02D0     	 beq .L49
+ 359 0024 7047     	 bx lr
+ 360              	.L48:
+ 361 0026 FFF7FEBF 	 b LCD_ShowTemperatureHumidity
+ 362              	.L49:
+ 363 002a FFF7FEBF 	 b LCD_ShowCAN
+ 364              	.L44:
+ 365 002e 7047     	 bx lr
+ 366              	.L54:
+ 367              	 .align 2
+ 368              	.L53:
+ 369 0030 00000000 	 .word .LANCHOR1
+ 370 0034 1FA10700 	 .word 499999
+ 371 0038 00000000 	 .word aht10
+ 372 003c 00000000 	 .word .LANCHOR0
+ 374              	 .section .text.LCD_SetPage,"ax",%progbits
+ 375              	 .align 1
+ 376              	 .global LCD_SetPage
+ 377              	 .thumb
+ 378              	 .thumb_func
+ 380              	LCD_SetPage:
+ 381              	 
+ 382              	 
+ 383              	 
+ 384 0000 014B     	 ldr r3,.L56
+ 385 0002 1870     	 strb r0,[r3]
+ 386 0004 7047     	 bx lr
+ 387              	.L57:
+ 388 0006 00BF     	 .align 2
+ 389              	.L56:
+ 390 0008 00000000 	 .word .LANCHOR0
+ 392              	 .section .text.LCD_GetPage,"ax",%progbits
+ 393              	 .align 1
+ 394              	 .global LCD_GetPage
+ 395              	 .thumb
+ 396              	 .thumb_func
+ 398              	LCD_GetPage:
+ 399              	 
+ 400              	 
+ 401              	 
+ 402 0000 014B     	 ldr r3,.L59
+ 403 0002 1878     	 ldrb r0,[r3]
+ 404 0004 7047     	 bx lr
+ 405              	.L60:
+ 406 0006 00BF     	 .align 2
+ 407              	.L59:
+ 408 0008 00000000 	 .word .LANCHOR0
+ 410              	 .section .text.LCD_ShowMessage,"ax",%progbits
+ 411              	 .align 1
+ 412              	 .global LCD_ShowMessage
+ 413              	 .thumb
+ 414              	 .thumb_func
+ 416              	LCD_ShowMessage:
+ 417              	 
+ 418              	 
+ 419 0000 10B5     	 push {r4,lr}
+ 420 0002 0446     	 mov r4,r0
+ 421 0004 FFF7FEFF 	 bl LCD_Clear
+ 422 0008 8020     	 movs r0,#128
+ 423 000a FFF7FEFF 	 bl LCD_Send_Cmd
+ 424 000e 2046     	 mov r0,r4
+ 425 0010 BDE81040 	 pop {r4,lr}
+ 426 0014 FFF7FEBF 	 b LCD_Send_String
+ 428              	 .section .rodata.str1.1,"aMS",%progbits,1
+ 429              	.LC0:
+ 430 0000 54656D70 	 .ascii "Temp:%d.%02dC\000"
+ 430      3A25642E 
+ 430      25303264 
+ 430      4300
+ 431              	.LC1:
+ 432 000e 48756D20 	 .ascii "Hum :%d.%02d%%\000"
+ 432      3A25642E 
+ 432      25303264 
+ 432      252500
+ 433              	.LC2:
+ 434 001d 43414E3A 	 .ascii "CAN:%4u\000"
+ 434      25347500 
+ 435              	.LC3:
+ 436 0025 52583A20 	 .ascii "RX: OK\000"
+ 436      4F4B00
+ 437              	.LC4:
+ 438 002c 43414E20 	 .ascii "CAN RX\000"
+ 438      525800
+ 439              	.LC5:
+ 440 0033 57616974 	 .ascii "Waiting...\000"
+ 440      696E672E 
+ 440      2E2E00
+ 441              	 .section .bss.counter.12225,"aw",%nobits
+ 442              	 .align 2
+ 443              	 .set .LANCHOR1,.+0
+ 446              	counter.12225:
+ 447 0000 00000000 	 .space 4
+ 448              	 .section .bss.lcd_page,"aw",%nobits
+ 449              	 .set .LANCHOR0,.+0
+ 452              	lcd_page:
+ 453 0000 00       	 .space 1
+ 454              	 .ident "GCC: (GNU Tools for ARM Embedded Processors) 4.9.3 20141119 (release) [ARM/embedded-4_9-branch revision 218278]"
+DEFINED SYMBOLS
+                            *ABS*:00000000 lcd.c
+    {standard input}:17     .text.LCD_Send_Cmd:00000000 $t
+    {standard input}:22     .text.LCD_Send_Cmd:00000000 LCD_Send_Cmd
+    {standard input}:62     .text.LCD_Send_Cmd:00000058 $d
+    {standard input}:65     .text.LCD_Send_Data:00000000 $t
+    {standard input}:70     .text.LCD_Send_Data:00000000 LCD_Send_Data
+    {standard input}:110    .text.LCD_Send_Data:00000058 $d
+    {standard input}:113    .text.LCD_Clear:00000000 $t
+    {standard input}:118    .text.LCD_Clear:00000000 LCD_Clear
+    {standard input}:126    .text.LCD_Set_Cursor:00000000 $t
+    {standard input}:131    .text.LCD_Set_Cursor:00000000 LCD_Set_Cursor
+    {standard input}:147    .text.LCD_Init:00000000 $t
+    {standard input}:152    .text.LCD_Init:00000000 LCD_Init
+    {standard input}:188    .text.LCD_Init:00000044 $d
+    {standard input}:192    .text.LCD_Send_String:00000000 $t
+    {standard input}:197    .text.LCD_Send_String:00000000 LCD_Send_String
+    {standard input}:222    .text.LCD_ShowTemperatureHumidity:00000000 $t
+    {standard input}:227    .text.LCD_ShowTemperatureHumidity:00000000 LCD_ShowTemperatureHumidity
+    {standard input}:275    .text.LCD_ShowTemperatureHumidity:0000007c $d
+    {standard input}:281    .text.LCD_ShowCAN:00000000 $t
+    {standard input}:286    .text.LCD_ShowCAN:00000000 LCD_ShowCAN
+    {standard input}:323    .text.LCD_ShowCAN:0000004c $d
+    {standard input}:331    .text.LCD_Task:00000000 $t
+    {standard input}:336    .text.LCD_Task:00000000 LCD_Task
+    {standard input}:369    .text.LCD_Task:00000030 $d
+    {standard input}:375    .text.LCD_SetPage:00000000 $t
+    {standard input}:380    .text.LCD_SetPage:00000000 LCD_SetPage
+    {standard input}:390    .text.LCD_SetPage:00000008 $d
+    {standard input}:393    .text.LCD_GetPage:00000000 $t
+    {standard input}:398    .text.LCD_GetPage:00000000 LCD_GetPage
+    {standard input}:408    .text.LCD_GetPage:00000008 $d
+    {standard input}:411    .text.LCD_ShowMessage:00000000 $t
+    {standard input}:416    .text.LCD_ShowMessage:00000000 LCD_ShowMessage
+    {standard input}:442    .bss.counter.12225:00000000 $d
+    {standard input}:446    .bss.counter.12225:00000000 counter.12225
+    {standard input}:452    .bss.lcd_page:00000000 lcd_page
+    {standard input}:453    .bss.lcd_page:00000000 $d
+
+UNDEFINED SYMBOLS
+I2C_MASTER_Transmit
+I2C_MASTER_0
+sprintf
+aht10
+can_rx_id
+can_rx_flag

@@ -1,0 +1,439 @@
+   1              	 .syntax unified
+   2              	 .cpu cortex-m4
+   3              	 .eabi_attribute 27,3
+   4              	 .fpu fpv4-sp-d16
+   5              	 .eabi_attribute 20,1
+   6              	 .eabi_attribute 21,1
+   7              	 .eabi_attribute 23,3
+   8              	 .eabi_attribute 24,1
+   9              	 .eabi_attribute 25,1
+  10              	 .eabi_attribute 26,1
+  11              	 .eabi_attribute 30,4
+  12              	 .eabi_attribute 34,1
+  13              	 .eabi_attribute 18,4
+  14              	 .thumb
+  15              	 .file "uart.c"
+  16              	 .section .text.APP_UART_SendString,"ax",%progbits
+  17              	 .align 1
+  18              	 .global APP_UART_SendString
+  19              	 .thumb
+  20              	 .thumb_func
+  22              	APP_UART_SendString:
+  23              	 
+  24              	 
+  25 0000 10B5     	 push {r4,lr}
+  26 0002 0446     	 mov r4,r0
+  27 0004 FFF7FEFF 	 bl strlen
+  28 0008 2146     	 mov r1,r4
+  29 000a 0246     	 mov r2,r0
+  30 000c 0648     	 ldr r0,.L2
+  31 000e FFF7FEFF 	 bl UART_Transmit
+  32 0012 2046     	 mov r0,r4
+  33 0014 FFF7FEFF 	 bl strlen
+  34 0018 2146     	 mov r1,r4
+  35 001a 0246     	 mov r2,r0
+  36 001c BDE81040 	 pop {r4,lr}
+  37 0020 0248     	 ldr r0,.L2+4
+  38 0022 FFF7FEBF 	 b UART_Transmit
+  39              	.L3:
+  40 0026 00BF     	 .align 2
+  41              	.L2:
+  42 0028 00000000 	 .word UART_0
+  43 002c 00000000 	 .word UART_1
+  45              	 .section .text.APP_UART_Init,"ax",%progbits
+  46              	 .align 1
+  47              	 .global APP_UART_Init
+  48              	 .thumb
+  49              	 .thumb_func
+  51              	APP_UART_Init:
+  52              	 
+  53              	 
+  54              	 
+  55 0000 0148     	 ldr r0,.L5
+  56 0002 FFF7FEBF 	 b APP_UART_SendString
+  57              	.L6:
+  58 0006 00BF     	 .align 2
+  59              	.L5:
+  60 0008 00000000 	 .word .LC0
+  62              	 .section .text.APP_UART_ProcessCommand,"ax",%progbits
+  63              	 .align 1
+  64              	 .global APP_UART_ProcessCommand
+  65              	 .thumb
+  66              	 .thumb_func
+  68              	APP_UART_ProcessCommand:
+  69              	 
+  70              	 
+  71 0000 30B5     	 push {r4,r5,lr}
+  72 0002 2B28     	 cmp r0,#43
+  73 0004 87B0     	 sub sp,sp,#28
+  74 0006 03D1     	 bne .L8
+  75 0008 6C4C     	 ldr r4,.L39
+  76 000a 6068     	 ldr r0,[r4,#4]
+  77 000c 6430     	 adds r0,r0,#100
+  78 000e 07E0     	 b .L34
+  79              	.L8:
+  80 0010 2D28     	 cmp r0,#45
+  81 0012 0CD1     	 bne .L10
+  82 0014 694B     	 ldr r3,.L39
+  83 0016 5868     	 ldr r0,[r3,#4]
+  84 0018 6428     	 cmp r0,#100
+  85 001a 1C46     	 mov r4,r3
+  86 001c 02D9     	 bls .L11
+  87 001e 6438     	 subs r0,r0,#100
+  88              	.L34:
+  89 0020 FFF7FEFF 	 bl LED_SetSpeed
+  90              	.L11:
+  91 0024 6648     	 ldr r0,.L39+4
+  92 0026 674A     	 ldr r2,.L39+8
+  93 0028 6368     	 ldr r3,[r4,#4]
+  94 002a 8021     	 movs r1,#128
+  95 002c 13E0     	 b .L33
+  96              	.L10:
+  97 002e 6C28     	 cmp r0,#108
+  98 0030 0AD1     	 bne .L13
+  99 0032 FFF7FEFF 	 bl LED_ButtonTask
+ 100 0036 614B     	 ldr r3,.L39
+ 101 0038 1B78     	 ldrb r3,[r3]
+ 102 003a 0BB1     	 cbz r3,.L14
+ 103 003c 6248     	 ldr r0,.L39+12
+ 104 003e 00E0     	 b .L31
+ 105              	.L14:
+ 106 0040 6248     	 ldr r0,.L39+16
+ 107              	.L31:
+ 108 0042 FFF7FEFF 	 bl APP_UART_SendString
+ 109 0046 B2E0     	 b .L9
+ 110              	.L13:
+ 111 0048 6228     	 cmp r0,#98
+ 112 004a 08D1     	 bne .L15
+ 113 004c 5B4B     	 ldr r3,.L39
+ 114 004e 5C48     	 ldr r0,.L39+4
+ 115 0050 5C4A     	 ldr r2,.L39+8
+ 116 0052 5B68     	 ldr r3,[r3,#4]
+ 117 0054 8021     	 movs r1,#128
+ 118              	.L33:
+ 119 0056 FFF7FEFF 	 bl snprintf
+ 120 005a 5948     	 ldr r0,.L39+4
+ 121 005c F1E7     	 b .L31
+ 122              	.L15:
+ 123 005e 6128     	 cmp r0,#97
+ 124 0060 08D1     	 bne .L16
+ 125 0062 FFF7FEFF 	 bl ADC_GetValue
+ 126 0066 8021     	 movs r1,#128
+ 127 0068 0346     	 mov r3,r0
+ 128 006a 594A     	 ldr r2,.L39+20
+ 129 006c 5448     	 ldr r0,.L39+4
+ 130 006e FFF7FEFF 	 bl snprintf
+ 131 0072 85E0     	 b .L35
+ 132              	.L16:
+ 133 0074 7428     	 cmp r0,#116
+ 134 0076 1CD1     	 bne .L17
+ 135 0078 FFF7FEFF 	 bl APP_AHT10_Read
+ 136 007c B8B1     	 cbz r0,.L18
+ 137 007e 554B     	 ldr r3,.L39+24
+ 138 0080 9FED557A 	 flds s14,.L39+28
+ 139 0084 D3ED007A 	 flds s15,[r3]
+ 140 0088 4D48     	 ldr r0,.L39+4
+ 141 008a 67EE877A 	 fmuls s15,s15,s14
+ 142 008e 6422     	 movs r2,#100
+ 143 0090 FDEEE77A 	 ftosizs s15,s15
+ 144 0094 17EE901A 	 fmrs r1,s15
+ 145 0098 91FBF2F3 	 sdiv r3,r1,r2
+ 146 009c 02FB1312 	 mls r2,r2,r3,r1
+ 147 00a0 002A     	 cmp r2,#0
+ 148 00a2 B8BF     	 it lt
+ 149 00a4 5242     	 rsblt r2,r2,#0
+ 150 00a6 0092     	 str r2,[sp]
+ 151 00a8 8021     	 movs r1,#128
+ 152 00aa 4C4A     	 ldr r2,.L39+32
+ 153 00ac 66E0     	 b .L36
+ 154              	.L18:
+ 155 00ae 4C48     	 ldr r0,.L39+36
+ 156 00b0 7EE0     	 b .L32
+ 157              	.L17:
+ 158 00b2 6828     	 cmp r0,#104
+ 159 00b4 1BD1     	 bne .L19
+ 160 00b6 FFF7FEFF 	 bl APP_AHT10_Read
+ 161 00ba 0028     	 cmp r0,#0
+ 162 00bc F7D0     	 beq .L18
+ 163 00be 454B     	 ldr r3,.L39+24
+ 164 00c0 9FED457A 	 flds s14,.L39+28
+ 165 00c4 D3ED017A 	 flds s15,[r3,#4]
+ 166 00c8 3D48     	 ldr r0,.L39+4
+ 167 00ca 67EE877A 	 fmuls s15,s15,s14
+ 168 00ce 6422     	 movs r2,#100
+ 169 00d0 FDEEE77A 	 ftosizs s15,s15
+ 170 00d4 17EE901A 	 fmrs r1,s15
+ 171 00d8 91FBF2F3 	 sdiv r3,r1,r2
+ 172 00dc 02FB1312 	 mls r2,r2,r3,r1
+ 173 00e0 002A     	 cmp r2,#0
+ 174 00e2 B8BF     	 it lt
+ 175 00e4 5242     	 rsblt r2,r2,#0
+ 176 00e6 0092     	 str r2,[sp]
+ 177 00e8 8021     	 movs r1,#128
+ 178 00ea 3E4A     	 ldr r2,.L39+40
+ 179 00ec 46E0     	 b .L36
+ 180              	.L19:
+ 181 00ee 6328     	 cmp r0,#99
+ 182 00f0 31D1     	 bne .L20
+ 183 00f2 FFF7FEFF 	 bl APP_AHT10_Read
+ 184 00f6 374B     	 ldr r3,.L39+24
+ 185 00f8 DFED376A 	 flds s13,.L39+28
+ 186 00fc 93ED007A 	 flds s14,[r3]
+ 187 0100 27EE267A 	 fmuls s14,s14,s13
+ 188 0104 FDEEC77A 	 ftosizs s15,s14
+ 189 0108 17EE905A 	 fmrs r5,s15
+ 190 010c D3ED017A 	 flds s15,[r3,#4]
+ 191 0110 67EEA67A 	 fmuls s15,s15,s13
+ 192 0114 FDEEE77A 	 ftosizs s15,s15
+ 193 0118 17EE904A 	 fmrs r4,s15
+ 194 011c FFF7FEFF 	 bl APP_CAN_GetTxID
+ 195 0120 0346     	 mov r3,r0
+ 196 0122 0090     	 str r0,[sp]
+ 197 0124 6420     	 movs r0,#100
+ 198 0126 95FBF0F1 	 sdiv r1,r5,r0
+ 199 012a 0191     	 str r1,[sp,#4]
+ 200 012c 00FB1151 	 mls r1,r0,r1,r5
+ 201 0130 94FBF0F2 	 sdiv r2,r4,r0
+ 202 0134 0029     	 cmp r1,#0
+ 203 0136 0392     	 str r2,[sp,#12]
+ 204 0138 00FB1242 	 mls r2,r0,r2,r4
+ 205 013c B8BF     	 it lt
+ 206 013e 4942     	 rsblt r1,r1,#0
+ 207 0140 002A     	 cmp r2,#0
+ 208 0142 B8BF     	 it lt
+ 209 0144 5242     	 rsblt r2,r2,#0
+ 210 0146 0291     	 str r1,[sp,#8]
+ 211 0148 0492     	 str r2,[sp,#16]
+ 212 014a 8021     	 movs r1,#128
+ 213 014c 264A     	 ldr r2,.L39+44
+ 214 014e 1C48     	 ldr r0,.L39+4
+ 215 0150 FFF7FEFF 	 bl snprintf
+ 216 0154 14E0     	 b .L35
+ 217              	.L20:
+ 218 0156 6E28     	 cmp r0,#110
+ 219 0158 02D1     	 bne .L21
+ 220 015a FFF7FEFF 	 bl APP_CAN_NextTxID
+ 221 015e 03E0     	 b .L37
+ 222              	.L21:
+ 223 0160 7028     	 cmp r0,#112
+ 224 0162 0FD1     	 bne .L22
+ 225 0164 FFF7FEFF 	 bl APP_CAN_PrevTxID
+ 226              	.L37:
+ 227 0168 FFF7FEFF 	 bl APP_CAN_GetTxID
+ 228 016c 0446     	 mov r4,r0
+ 229 016e FFF7FEFF 	 bl APP_CAN_GetTxID
+ 230 0172 1E4A     	 ldr r2,.L39+48
+ 231 0174 0090     	 str r0,[sp]
+ 232 0176 1248     	 ldr r0,.L39+4
+ 233 0178 8021     	 movs r1,#128
+ 234 017a 2346     	 mov r3,r4
+ 235              	.L36:
+ 236 017c FFF7FEFF 	 bl snprintf
+ 237              	.L35:
+ 238 0180 0F48     	 ldr r0,.L39+4
+ 239 0182 15E0     	 b .L32
+ 240              	.L22:
+ 241 0184 3128     	 cmp r0,#49
+ 242 0186 04D1     	 bne .L23
+ 243 0188 0020     	 movs r0,#0
+ 244 018a FFF7FEFF 	 bl LCD_SetPage
+ 245 018e 1848     	 ldr r0,.L39+52
+ 246 0190 0EE0     	 b .L32
+ 247              	.L23:
+ 248 0192 3228     	 cmp r0,#50
+ 249 0194 04D1     	 bne .L24
+ 250 0196 0120     	 movs r0,#1
+ 251 0198 FFF7FEFF 	 bl LCD_SetPage
+ 252 019c 1548     	 ldr r0,.L39+56
+ 253 019e 07E0     	 b .L32
+ 254              	.L24:
+ 255 01a0 3328     	 cmp r0,#51
+ 256 01a2 04D1     	 bne .L9
+ 257 01a4 0220     	 movs r0,#2
+ 258 01a6 FFF7FEFF 	 bl LCD_SetPage
+ 259 01aa 1348     	 ldr r0,.L39+60
+ 260 01ac 00E0     	 b .L32
+ 261              	.L9:
+ 262 01ae 1348     	 ldr r0,.L39+64
+ 263              	.L32:
+ 264 01b0 07B0     	 add sp,sp,#28
+ 265              	 
+ 266 01b2 BDE83040 	 pop {r4,r5,lr}
+ 267 01b6 FFF7FEBF 	 b APP_UART_SendString
+ 268              	.L40:
+ 269 01ba 00BF     	 .align 2
+ 270              	.L39:
+ 271 01bc 00000000 	 .word led
+ 272 01c0 01000000 	 .word .LANCHOR0+1
+ 273 01c4 2E000000 	 .word .LC1
+ 274 01c8 3F000000 	 .word .LC2
+ 275 01cc 50000000 	 .word .LC3
+ 276 01d0 5B000000 	 .word .LC4
+ 277 01d4 00000000 	 .word aht10
+ 278 01d8 0000C842 	 .word 1120403456
+ 279 01dc 66000000 	 .word .LC5
+ 280 01e0 79000000 	 .word .LC6
+ 281 01e4 86000000 	 .word .LC7
+ 282 01e8 99000000 	 .word .LC8
+ 283 01ec D2000000 	 .word .LC9
+ 284 01f0 F1000000 	 .word .LC10
+ 285 01f4 06010000 	 .word .LC11
+ 286 01f8 13010000 	 .word .LC12
+ 287 01fc 26010000 	 .word .LC13
+ 289              	 .section .text.APP_UART_Task,"ax",%progbits
+ 290              	 .align 1
+ 291              	 .global APP_UART_Task
+ 292              	 .thumb
+ 293              	 .thumb_func
+ 295              	APP_UART_Task:
+ 296              	 
+ 297              	 
+ 298 0000 38B5     	 push {r3,r4,r5,lr}
+ 299 0002 074C     	 ldr r4,.L46
+ 300 0004 0748     	 ldr r0,.L46+4
+ 301 0006 2146     	 mov r1,r4
+ 302 0008 0122     	 movs r2,#1
+ 303 000a FFF7FEFF 	 bl UART_Receive
+ 304 000e 0546     	 mov r5,r0
+ 305 0010 20B9     	 cbnz r0,.L41
+ 306 0012 2078     	 ldrb r0,[r4]
+ 307 0014 10B1     	 cbz r0,.L41
+ 308 0016 FFF7FEFF 	 bl APP_UART_ProcessCommand
+ 309 001a 2570     	 strb r5,[r4]
+ 310              	.L41:
+ 311 001c 38BD     	 pop {r3,r4,r5,pc}
+ 312              	.L47:
+ 313 001e 00BF     	 .align 2
+ 314              	.L46:
+ 315 0020 00000000 	 .word .LANCHOR0
+ 316 0024 00000000 	 .word UART_0
+ 318              	 .global uart_data
+ 319              	 .section .rodata.str1.1,"aMS",%progbits,1
+ 320              	.LC0:
+ 321 0000 47727570 	 .ascii "Grupo 08\015\012Gustavo - 1241402\015\012Joao - 124"
+ 321      6F203038 
+ 321      0D0A4775 
+ 321      73746176 
+ 321      6F202D20 
+ 322 0027 31323337 	 .ascii "1237\015\012\000"
+ 322      0D0A00
+ 323              	.LC1:
+ 324 002e 426C696E 	 .ascii "Blink = %lu ms\015\012\000"
+ 324      6B203D20 
+ 324      256C7520 
+ 324      6D730D0A 
+ 324      00
+ 325              	.LC2:
+ 326 003f 4C454420 	 .ascii "LED = blinking\015\012\000"
+ 326      3D20626C 
+ 326      696E6B69 
+ 326      6E670D0A 
+ 326      00
+ 327              	.LC3:
+ 328 0050 4C454420 	 .ascii "LED = ON\015\012\000"
+ 328      3D204F4E 
+ 328      0D0A00
+ 329              	.LC4:
+ 330 005b 41444320 	 .ascii "ADC = %d\015\012\000"
+ 330      3D202564 
+ 330      0D0A00
+ 331              	.LC5:
+ 332 0066 54656D70 	 .ascii "Temp = %d.%02d C\015\012\000"
+ 332      203D2025 
+ 332      642E2530 
+ 332      32642043 
+ 332      0D0A00
+ 333              	.LC6:
+ 334 0079 4572726F 	 .ascii "Erro AHT10\015\012\000"
+ 334      20414854 
+ 334      31300D0A 
+ 334      00
+ 335              	.LC7:
+ 336 0086 48756D20 	 .ascii "Hum = %d.%02d %%\015\012\000"
+ 336      3D202564 
+ 336      2E253032 
+ 336      64202525 
+ 336      0D0A00
+ 337              	.LC8:
+ 338 0099 43414E20 	 .ascii "CAN ID %u / 0x%03X\015\012Temp = %d.%02d C\015\012H"
+ 338      49442025 
+ 338      75202F20 
+ 338      30782530 
+ 338      33580D0A 
+ 339 00c0 756D203D 	 .ascii "um = %d.%02d %%\015\012\000"
+ 339      2025642E 
+ 339      25303264 
+ 339      2025250D 
+ 339      0A00
+ 340              	.LC9:
+ 341 00d2 4E6F766F 	 .ascii "Novo CAN TX ID = %u / 0x%03X\015\012\000"
+ 341      2043414E 
+ 341      20545820 
+ 341      4944203D 
+ 341      20257520 
+ 342              	.LC10:
+ 343 00f1 50616769 	 .ascii "Pagina Temperatura\015\012\000"
+ 343      6E612054 
+ 343      656D7065 
+ 343      72617475 
+ 343      72610D0A 
+ 344              	.LC11:
+ 345 0106 50616769 	 .ascii "Pagina CAN\015\012\000"
+ 345      6E612043 
+ 345      414E0D0A 
+ 345      00
+ 346              	.LC12:
+ 347 0113 50616769 	 .ascii "Pagina Bluetooth\015\012\000"
+ 347      6E612042 
+ 347      6C756574 
+ 347      6F6F7468 
+ 347      0D0A00
+ 348              	.LC13:
+ 349 0126 436F6D61 	 .ascii "Comando invalido\015\012\000"
+ 349      6E646F20 
+ 349      696E7661 
+ 349      6C69646F 
+ 349      0D0A00
+ 350              	 .section .bss.uart_data,"aw",%nobits
+ 351              	 .set .LANCHOR0,.+0
+ 354              	uart_data:
+ 355 0000 00000000 	 .space 129
+ 355      00000000 
+ 355      00000000 
+ 355      00000000 
+ 355      00000000 
+ 356              	 .ident "GCC: (GNU Tools for ARM Embedded Processors) 4.9.3 20141119 (release) [ARM/embedded-4_9-branch revision 218278]"
+DEFINED SYMBOLS
+                            *ABS*:00000000 uart.c
+    {standard input}:17     .text.APP_UART_SendString:00000000 $t
+    {standard input}:22     .text.APP_UART_SendString:00000000 APP_UART_SendString
+    {standard input}:42     .text.APP_UART_SendString:00000028 $d
+    {standard input}:46     .text.APP_UART_Init:00000000 $t
+    {standard input}:51     .text.APP_UART_Init:00000000 APP_UART_Init
+    {standard input}:60     .text.APP_UART_Init:00000008 $d
+    {standard input}:63     .text.APP_UART_ProcessCommand:00000000 $t
+    {standard input}:68     .text.APP_UART_ProcessCommand:00000000 APP_UART_ProcessCommand
+    {standard input}:271    .text.APP_UART_ProcessCommand:000001bc $d
+    {standard input}:290    .text.APP_UART_Task:00000000 $t
+    {standard input}:295    .text.APP_UART_Task:00000000 APP_UART_Task
+    {standard input}:315    .text.APP_UART_Task:00000020 $d
+    {standard input}:354    .bss.uart_data:00000000 uart_data
+    {standard input}:355    .bss.uart_data:00000000 $d
+
+UNDEFINED SYMBOLS
+strlen
+UART_Transmit
+UART_0
+UART_1
+LED_SetSpeed
+LED_ButtonTask
+snprintf
+ADC_GetValue
+APP_AHT10_Read
+APP_CAN_GetTxID
+APP_CAN_NextTxID
+APP_CAN_PrevTxID
+LCD_SetPage
+led
+aht10
+UART_Receive

@@ -13,7 +13,13 @@ UART_DATA_t uart_data = {0};
 
 void APP_UART_SendString(char *msg)
 {
-    UART_Transmit(&UART_0, (uint8_t*)msg, strlen(msg));
+    UART_Transmit(&UART_0,
+                  (uint8_t*)msg,
+                  strlen(msg));
+
+    UART_Transmit(&UART_1,
+                  (uint8_t*)msg,
+                  strlen(msg));
 }
 
 void APP_UART_Init(void)
@@ -228,11 +234,20 @@ void APP_UART_ProcessCommand(uint8_t cmd)
 
         APP_UART_SendString("Pagina Temperatura\r\n");
     }
-
     else if(cmd == '2')
     {
         LCD_SetPage(1);
 
         APP_UART_SendString("Pagina CAN\r\n");
+    }
+    else if(cmd == '3')
+    {
+        LCD_SetPage(2);
+
+        APP_UART_SendString("Pagina Bluetooth\r\n");
+    }
+    else
+    {
+        APP_UART_SendString("Comando invalido\r\n");
     }
 }

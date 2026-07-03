@@ -1,0 +1,508 @@
+   1              	 .syntax unified
+   2              	 .cpu cortex-m4
+   3              	 .eabi_attribute 27,3
+   4              	 .fpu fpv4-sp-d16
+   5              	 .eabi_attribute 20,1
+   6              	 .eabi_attribute 21,1
+   7              	 .eabi_attribute 23,3
+   8              	 .eabi_attribute 24,1
+   9              	 .eabi_attribute 25,1
+  10              	 .eabi_attribute 26,1
+  11              	 .eabi_attribute 30,4
+  12              	 .eabi_attribute 34,1
+  13              	 .eabi_attribute 18,4
+  14              	 .thumb
+  15              	 .file "i2c_master.c"
+  16              	 .section .text.I2C_MASTER_lSendStart_Or_RepeatedStart,"ax",%progbits
+  17              	 .align 1
+  18              	 .thumb
+  19              	 .thumb_func
+  21              	I2C_MASTER_lSendStart_Or_RepeatedStart:
+  22              	 
+  23              	 
+  24 0000 10B5     	 push {r4,lr}
+  25 0002 0446     	 mov r4,r0
+  26 0004 0068     	 ldr r0,[r0]
+  27 0006 C36C     	 ldr r3,[r0,#76]
+  28 0008 43F00C03 	 orr r3,r3,#12
+  29 000c C364     	 str r3,[r0,#76]
+  30 000e A368     	 ldr r3,[r4,#8]
+  31 0010 93F82840 	 ldrb r4,[r3,#40]
+  32 0014 89B2     	 uxth r1,r1
+  33 0016 3CB1     	 cbz r4,.L2
+  34 0018 C36C     	 ldr r3,[r0,#76]
+  35 001a 43F00803 	 orr r3,r3,#8
+  36 001e C364     	 str r3,[r0,#76]
+  37 0020 BDE81040 	 pop {r4,lr}
+  38 0024 FFF7FEBF 	 b XMC_I2C_CH_MasterRepeatedStart
+  39              	.L2:
+  40 0028 0124     	 movs r4,#1
+  41 002a 83F82840 	 strb r4,[r3,#40]
+  42 002e C36C     	 ldr r3,[r0,#76]
+  43 0030 43F00403 	 orr r3,r3,#4
+  44 0034 C364     	 str r3,[r0,#76]
+  45 0036 BDE81040 	 pop {r4,lr}
+  46 003a FFF7FEBF 	 b XMC_I2C_CH_MasterStart
+  48              	 .section .text.I2C_MASTER_GetAppVersion,"ax",%progbits
+  49              	 .align 1
+  50              	 .global I2C_MASTER_GetAppVersion
+  51              	 .thumb
+  52              	 .thumb_func
+  54              	I2C_MASTER_GetAppVersion:
+  55              	 
+  56              	 
+  57              	 
+  58 0000 0423     	 movs r3,#4
+  59 0002 0020     	 movs r0,#0
+  60 0004 63F30700 	 bfi r0,r3,#0,#8
+  61 0008 0123     	 movs r3,#1
+  62 000a 63F30F20 	 bfi r0,r3,#8,#8
+  63 000e 2223     	 movs r3,#34
+  64 0010 63F31740 	 bfi r0,r3,#16,#8
+  65 0014 82B0     	 sub sp,sp,#8
+  66 0016 02B0     	 add sp,sp,#8
+  67              	 
+  68 0018 7047     	 bx lr
+  70              	 .section .text.I2C_MASTER_Init,"ax",%progbits
+  71              	 .align 1
+  72              	 .global I2C_MASTER_Init
+  73              	 .thumb
+  74              	 .thumb_func
+  76              	I2C_MASTER_Init:
+  77              	 
+  78              	 
+  79 0000 08B5     	 push {r3,lr}
+  80 0002 20B1     	 cbz r0,.L7
+  81 0004 4368     	 ldr r3,[r0,#4]
+  82 0006 5B68     	 ldr r3,[r3,#4]
+  83 0008 9847     	 blx r3
+  84 000a 0020     	 movs r0,#0
+  85 000c 08BD     	 pop {r3,pc}
+  86              	.L7:
+  87 000e 0120     	 movs r0,#1
+  88 0010 08BD     	 pop {r3,pc}
+  90              	 .section .text.I2C_MASTER_GetFlagStatus,"ax",%progbits
+  91              	 .align 1
+  92              	 .global I2C_MASTER_GetFlagStatus
+  93              	 .thumb
+  94              	 .thumb_func
+  96              	I2C_MASTER_GetFlagStatus:
+  97              	 
+  98              	 
+  99              	 
+ 100 0000 0368     	 ldr r3,[r0]
+ 101 0002 986C     	 ldr r0,[r3,#72]
+ 102 0004 0840     	 ands r0,r0,r1
+ 103 0006 7047     	 bx lr
+ 105              	 .section .text.I2C_MASTER_ClearFlag,"ax",%progbits
+ 106              	 .align 1
+ 107              	 .global I2C_MASTER_ClearFlag
+ 108              	 .thumb
+ 109              	 .thumb_func
+ 111              	I2C_MASTER_ClearFlag:
+ 112              	 
+ 113              	 
+ 114              	 
+ 115 0000 0268     	 ldr r2,[r0]
+ 116 0002 D36C     	 ldr r3,[r2,#76]
+ 117 0004 1943     	 orrs r1,r1,r3
+ 118 0006 D164     	 str r1,[r2,#76]
+ 119 0008 7047     	 bx lr
+ 121              	 .section .text.I2C_MASTER_ProtocolHandler,"ax",%progbits
+ 122              	 .align 1
+ 123              	 .global I2C_MASTER_ProtocolHandler
+ 124              	 .thumb
+ 125              	 .thumb_func
+ 127              	I2C_MASTER_ProtocolHandler:
+ 128              	 
+ 129              	 
+ 130 0000 70B5     	 push {r4,r5,r6,lr}
+ 131 0002 0368     	 ldr r3,[r0]
+ 132 0004 9D6C     	 ldr r5,[r3,#72]
+ 133 0006 4368     	 ldr r3,[r0,#4]
+ 134 0008 9B69     	 ldr r3,[r3,#24]
+ 135 000a 0446     	 mov r4,r0
+ 136 000c 3BB1     	 cbz r3,.L11
+ 137 000e AA06     	 lsls r2,r5,#26
+ 138 0010 05D5     	 bpl .L11
+ 139 0012 2021     	 movs r1,#32
+ 140 0014 FFF7FEFF 	 bl I2C_MASTER_ClearFlag
+ 141 0018 6368     	 ldr r3,[r4,#4]
+ 142 001a 9B69     	 ldr r3,[r3,#24]
+ 143 001c 9847     	 blx r3
+ 144              	.L11:
+ 145 001e 6368     	 ldr r3,[r4,#4]
+ 146 0020 DB69     	 ldr r3,[r3,#28]
+ 147 0022 43B1     	 cbz r3,.L12
+ 148 0024 6B06     	 lsls r3,r5,#25
+ 149 0026 06D5     	 bpl .L12
+ 150 0028 2046     	 mov r0,r4
+ 151 002a 4021     	 movs r1,#64
+ 152 002c FFF7FEFF 	 bl I2C_MASTER_ClearFlag
+ 153 0030 6368     	 ldr r3,[r4,#4]
+ 154 0032 DB69     	 ldr r3,[r3,#28]
+ 155 0034 9847     	 blx r3
+ 156              	.L12:
+ 157 0036 6368     	 ldr r3,[r4,#4]
+ 158 0038 1B6A     	 ldr r3,[r3,#32]
+ 159 003a 63B1     	 cbz r3,.L10
+ 160 003c 15F4817F 	 tst r5,#258
+ 161 0040 09D0     	 beq .L10
+ 162 0042 2046     	 mov r0,r4
+ 163 0044 4FF48071 	 mov r1,#256
+ 164 0048 FFF7FEFF 	 bl I2C_MASTER_ClearFlag
+ 165 004c 6368     	 ldr r3,[r4,#4]
+ 166 004e BDE87040 	 pop {r4,r5,r6,lr}
+ 167 0052 1B6A     	 ldr r3,[r3,#32]
+ 168 0054 1847     	 bx r3
+ 169              	.L10:
+ 170 0056 70BD     	 pop {r4,r5,r6,pc}
+ 172              	 .section .text.I2C_MASTER_AbortTransmit,"ax",%progbits
+ 173              	 .align 1
+ 174              	 .global I2C_MASTER_AbortTransmit
+ 175              	 .thumb
+ 176              	 .thumb_func
+ 178              	I2C_MASTER_AbortTransmit:
+ 179              	 
+ 180              	 
+ 181              	 
+ 182 0000 4368     	 ldr r3,[r0,#4]
+ 183 0002 93F82410 	 ldrb r1,[r3,#36]
+ 184 0006 0368     	 ldr r3,[r0]
+ 185 0008 DA6C     	 ldr r2,[r3,#76]
+ 186 000a 42F00202 	 orr r2,r2,#2
+ 187 000e DA64     	 str r2,[r3,#76]
+ 188 0010 0129     	 cmp r1,#1
+ 189 0012 4FF00202 	 mov r2,#2
+ 190 0016 9A66     	 str r2,[r3,#104]
+ 191 0018 94BF     	 ite ls
+ 192 001a 0020     	 movls r0,#0
+ 193 001c 0120     	 movhi r0,#1
+ 194 001e 7047     	 bx lr
+ 196              	 .section .text.I2C_MASTER_Transmit,"ax",%progbits
+ 197              	 .align 1
+ 198              	 .global I2C_MASTER_Transmit
+ 199              	 .thumb
+ 200              	 .thumb_func
+ 202              	I2C_MASTER_Transmit:
+ 203              	 
+ 204              	 
+ 205 0000 2DE9F843 	 push {r3,r4,r5,r6,r7,r8,r9,lr}
+ 206 0004 1D46     	 mov r5,r3
+ 207 0006 4368     	 ldr r3,[r0,#4]
+ 208 0008 089F     	 ldr r7,[sp,#32]
+ 209 000a 93F82430 	 ldrb r3,[r3,#36]
+ 210 000e 9DF82480 	 ldrb r8,[sp,#36]
+ 211 0012 012B     	 cmp r3,#1
+ 212 0014 0446     	 mov r4,r0
+ 213 0016 1646     	 mov r6,r2
+ 214 0018 70D9     	 bls .L51
+ 215 001a 21B9     	 cbnz r1,.L35
+ 216 001c 8368     	 ldr r3,[r0,#8]
+ 217 001e 93F82830 	 ldrb r3,[r3,#40]
+ 218 0022 002B     	 cmp r3,#0
+ 219 0024 6DD0     	 beq .L54
+ 220              	.L35:
+ 221 0026 002D     	 cmp r5,#0
+ 222 0028 6BD0     	 beq .L54
+ 223 002a 002F     	 cmp r7,#0
+ 224 002c 69D0     	 beq .L54
+ 225 002e F1B1     	 cbz r1,.L36
+ 226 0030 A368     	 ldr r3,[r4,#8]
+ 227 0032 93F82830 	 ldrb r3,[r3,#40]
+ 228 0036 03F0FF02 	 and r2,r3,#255
+ 229 003a C3B9     	 cbnz r3,.L36
+ 230 003c 2046     	 mov r0,r4
+ 231 003e 3146     	 mov r1,r6
+ 232 0040 FFF7FEFF 	 bl I2C_MASTER_lSendStart_Or_RepeatedStart
+ 233 0044 2368     	 ldr r3,[r4]
+ 234              	.L37:
+ 235 0046 9A6C     	 ldr r2,[r3,#72]
+ 236 0048 12F4087F 	 tst r2,#544
+ 237 004c FBD0     	 beq .L37
+ 238 004e 9B6C     	 ldr r3,[r3,#72]
+ 239 0050 9806     	 lsls r0,r3,#26
+ 240 0052 07D5     	 bpl .L38
+ 241              	.L42:
+ 242 0054 2046     	 mov r0,r4
+ 243 0056 2021     	 movs r1,#32
+ 244 0058 FFF7FEFF 	 bl I2C_MASTER_ClearFlag
+ 245 005c 2046     	 mov r0,r4
+ 246 005e FFF7FEFF 	 bl I2C_MASTER_AbortTransmit
+ 247 0062 4EE0     	 b .L54
+ 248              	.L38:
+ 249 0064 2046     	 mov r0,r4
+ 250 0066 4FF40071 	 mov r1,#512
+ 251 006a FFF7FEFF 	 bl I2C_MASTER_ClearFlag
+ 252              	.L36:
+ 253 006e 6368     	 ldr r3,[r4,#4]
+ 254 0070 93F82630 	 ldrb r3,[r3,#38]
+ 255 0074 0BBB     	 cbnz r3,.L55
+ 256 0076 2F44     	 add r7,r7,r5
+ 257              	.L40:
+ 258 0078 BD42     	 cmp r5,r7
+ 259 007a 17D0     	 beq .L50
+ 260 007c 2068     	 ldr r0,[r4]
+ 261 007e 15F8011B 	 ldrb r1,[r5],#1
+ 262 0082 FFF7FEFF 	 bl XMC_I2C_CH_MasterTransmit
+ 263 0086 2368     	 ldr r3,[r4]
+ 264              	.L41:
+ 265 0088 9A6C     	 ldr r2,[r3,#72]
+ 266 008a 12F4087F 	 tst r2,#544
+ 267 008e FBD0     	 beq .L41
+ 268 0090 9B6C     	 ldr r3,[r3,#72]
+ 269 0092 9906     	 lsls r1,r3,#26
+ 270 0094 DED4     	 bmi .L42
+ 271 0096 2046     	 mov r0,r4
+ 272 0098 4FF40071 	 mov r1,#512
+ 273 009c FFF7FEFF 	 bl I2C_MASTER_ClearFlag
+ 274 00a0 EAE7     	 b .L40
+ 275              	.L47:
+ 276 00a2 2268     	 ldr r2,[r4]
+ 277              	.L49:
+ 278 00a4 D2F81431 	 ldr r3,[r2,#276]
+ 279 00a8 1B05     	 lsls r3,r3,#20
+ 280 00aa FBD5     	 bpl .L49
+ 281              	.L50:
+ 282 00ac 0025     	 movs r5,#0
+ 283 00ae B8F1000F 	 cmp r8,#0
+ 284 00b2 16D1     	 bne .L44
+ 285 00b4 4046     	 mov r0,r8
+ 286 00b6 BDE8F883 	 pop {r3,r4,r5,r6,r7,r8,r9,pc}
+ 287              	.L55:
+ 288 00ba 0023     	 movs r3,#0
+ 289              	.L39:
+ 290 00bc BB42     	 cmp r3,r7
+ 291 00be F0D2     	 bcs .L47
+ 292 00c0 EE18     	 adds r6,r5,r3
+ 293 00c2 05EB0709 	 add r9,r5,r7
+ 294              	.L48:
+ 295 00c6 2068     	 ldr r0,[r4]
+ 296 00c8 D0F81421 	 ldr r2,[r0,#276]
+ 297 00cc D204     	 lsls r2,r2,#19
+ 298 00ce A6EB0503 	 sub r3,r6,r5
+ 299 00d2 F3D4     	 bmi .L39
+ 300 00d4 4E45     	 cmp r6,r9
+ 301 00d6 F1D0     	 beq .L39
+ 302 00d8 16F8011B 	 ldrb r1,[r6],#1
+ 303 00dc FFF7FEFF 	 bl XMC_I2C_CH_MasterTransmit
+ 304 00e0 F1E7     	 b .L48
+ 305              	.L44:
+ 306 00e2 A368     	 ldr r3,[r4,#8]
+ 307 00e4 2068     	 ldr r0,[r4]
+ 308 00e6 83F82850 	 strb r5,[r3,#40]
+ 309 00ea C36C     	 ldr r3,[r0,#76]
+ 310 00ec 43F01003 	 orr r3,r3,#16
+ 311 00f0 C364     	 str r3,[r0,#76]
+ 312 00f2 FFF7FEFF 	 bl XMC_I2C_CH_MasterStop
+ 313 00f6 2846     	 mov r0,r5
+ 314 00f8 BDE8F883 	 pop {r3,r4,r5,r6,r7,r8,r9,pc}
+ 315              	.L51:
+ 316 00fc 0220     	 movs r0,#2
+ 317 00fe BDE8F883 	 pop {r3,r4,r5,r6,r7,r8,r9,pc}
+ 318              	.L54:
+ 319 0102 0120     	 movs r0,#1
+ 320 0104 BDE8F883 	 pop {r3,r4,r5,r6,r7,r8,r9,pc}
+ 322              	 .section .text.I2C_MASTER_Receive,"ax",%progbits
+ 323              	 .align 1
+ 324              	 .global I2C_MASTER_Receive
+ 325              	 .thumb
+ 326              	 .thumb_func
+ 328              	I2C_MASTER_Receive:
+ 329              	 
+ 330              	 
+ 331 0000 2DE9F74F 	 push {r0,r1,r2,r4,r5,r6,r7,r8,r9,r10,fp,lr}
+ 332 0004 1E46     	 mov r6,r3
+ 333 0006 4368     	 ldr r3,[r0,#4]
+ 334 0008 0C9F     	 ldr r7,[sp,#48]
+ 335 000a 93F82530 	 ldrb r3,[r3,#37]
+ 336 000e 9DF83490 	 ldrb r9,[sp,#52]
+ 337 0012 9DF838A0 	 ldrb r10,[sp,#56]
+ 338 0016 012B     	 cmp r3,#1
+ 339 0018 0446     	 mov r4,r0
+ 340 001a 40F28F80 	 bls .L88
+ 341 001e 29B9     	 cbnz r1,.L67
+ 342 0020 8368     	 ldr r3,[r0,#8]
+ 343 0022 93F82830 	 ldrb r3,[r3,#40]
+ 344 0026 002B     	 cmp r3,#0
+ 345 0028 00F08A80 	 beq .L91
+ 346              	.L67:
+ 347 002c 002E     	 cmp r6,#0
+ 348 002e 00F08780 	 beq .L91
+ 349 0032 002F     	 cmp r7,#0
+ 350 0034 00F08480 	 beq .L91
+ 351 0038 C1B1     	 cbz r1,.L68
+ 352 003a 1146     	 mov r1,r2
+ 353 003c 2046     	 mov r0,r4
+ 354 003e 0122     	 movs r2,#1
+ 355 0040 FFF7FEFF 	 bl I2C_MASTER_lSendStart_Or_RepeatedStart
+ 356 0044 2368     	 ldr r3,[r4]
+ 357              	.L69:
+ 358 0046 9A6C     	 ldr r2,[r3,#72]
+ 359 0048 12F4087F 	 tst r2,#544
+ 360 004c FBD0     	 beq .L69
+ 361 004e 9B6C     	 ldr r3,[r3,#72]
+ 362 0050 9906     	 lsls r1,r3,#26
+ 363 0052 2046     	 mov r0,r4
+ 364 0054 06D5     	 bpl .L70
+ 365 0056 2021     	 movs r1,#32
+ 366 0058 FFF7FEFF 	 bl I2C_MASTER_ClearFlag
+ 367 005c 2046     	 mov r0,r4
+ 368 005e FFF7FEFF 	 bl I2C_MASTER_AbortTransmit
+ 369 0062 6DE0     	 b .L91
+ 370              	.L70:
+ 371 0064 4FF40071 	 mov r1,#512
+ 372 0068 FFF7FEFF 	 bl I2C_MASTER_ClearFlag
+ 373              	.L68:
+ 374 006c 6368     	 ldr r3,[r4,#4]
+ 375 006e 93F82650 	 ldrb r5,[r3,#38]
+ 376 0072 55BB     	 cbnz r5,.L92
+ 377 0074 013E     	 subs r6,r6,#1
+ 378              	.L76:
+ 379 0076 0135     	 adds r5,r5,#1
+ 380 0078 BD42     	 cmp r5,r7
+ 381 007a 2068     	 ldr r0,[r4]
+ 382 007c 05D1     	 bne .L72
+ 383 007e BAF1000F 	 cmp r10,#0
+ 384 0082 02D0     	 beq .L72
+ 385 0084 FFF7FEFF 	 bl XMC_I2C_CH_MasterReceiveNack
+ 386 0088 01E0     	 b .L73
+ 387              	.L72:
+ 388 008a FFF7FEFF 	 bl XMC_I2C_CH_MasterReceiveAck
+ 389              	.L73:
+ 390 008e 2368     	 ldr r3,[r4]
+ 391              	.L75:
+ 392 0090 9A6C     	 ldr r2,[r3,#72]
+ 393 0092 1204     	 lsls r2,r2,#16
+ 394 0094 02D4     	 bmi .L74
+ 395 0096 9A6C     	 ldr r2,[r3,#72]
+ 396 0098 5004     	 lsls r0,r2,#17
+ 397 009a F9D5     	 bpl .L75
+ 398              	.L74:
+ 399 009c 2046     	 mov r0,r4
+ 400 009e 4FF40041 	 mov r1,#32768
+ 401 00a2 FFF7FEFF 	 bl I2C_MASTER_ClearFlag
+ 402 00a6 2046     	 mov r0,r4
+ 403 00a8 4FF48041 	 mov r1,#16384
+ 404 00ac FFF7FEFF 	 bl I2C_MASTER_ClearFlag
+ 405 00b0 2068     	 ldr r0,[r4]
+ 406 00b2 FFF7FEFF 	 bl XMC_I2C_CH_GetReceivedData
+ 407 00b6 BD42     	 cmp r5,r7
+ 408 00b8 06F8010F 	 strb r0,[r6,#1]!
+ 409 00bc DBD1     	 bne .L76
+ 410              	.L86:
+ 411 00be 0025     	 movs r5,#0
+ 412 00c0 B9F1000F 	 cmp r9,#0
+ 413 00c4 2ED1     	 bne .L77
+ 414 00c6 4846     	 mov r0,r9
+ 415 00c8 3BE0     	 b .L66
+ 416              	.L92:
+ 417 00ca 4FF00008 	 mov r8,#0
+ 418 00ce C346     	 mov fp,r8
+ 419              	.L71:
+ 420 00d0 B845     	 cmp r8,r7
+ 421 00d2 F4D2     	 bcs .L86
+ 422 00d4 4546     	 mov r5,r8
+ 423              	.L87:
+ 424 00d6 2068     	 ldr r0,[r4]
+ 425 00d8 D0F81431 	 ldr r3,[r0,#276]
+ 426 00dc D904     	 lsls r1,r3,#19
+ 427 00de 01D4     	 bmi .L108
+ 428 00e0 BD42     	 cmp r5,r7
+ 429 00e2 03D3     	 bcc .L78
+ 430              	.L108:
+ 431 00e4 A846     	 mov r8,r5
+ 432 00e6 06EB0B03 	 add r3,r6,fp
+ 433 00ea 17E0     	 b .L79
+ 434              	.L78:
+ 435 00ec 0135     	 adds r5,r5,#1
+ 436 00ee BD42     	 cmp r5,r7
+ 437 00f0 05D1     	 bne .L80
+ 438 00f2 BAF1000F 	 cmp r10,#0
+ 439 00f6 02D0     	 beq .L80
+ 440 00f8 FFF7FEFF 	 bl XMC_I2C_CH_MasterReceiveNack
+ 441 00fc EBE7     	 b .L87
+ 442              	.L80:
+ 443 00fe FFF7FEFF 	 bl XMC_I2C_CH_MasterReceiveAck
+ 444 0102 E8E7     	 b .L87
+ 445              	.L84:
+ 446 0104 D0F81421 	 ldr r2,[r0,#276]
+ 447 0108 1207     	 lsls r2,r2,#28
+ 448 010a FBD4     	 bmi .L84
+ 449 010c 0193     	 str r3,[sp,#4]
+ 450 010e FFF7FEFF 	 bl XMC_I2C_CH_GetReceivedData
+ 451 0112 019B     	 ldr r3,[sp,#4]
+ 452 0114 03F8010B 	 strb r0,[r3],#1
+ 453 0118 0BF1010B 	 add fp,fp,#1
+ 454              	.L79:
+ 455 011c AB45     	 cmp fp,r5
+ 456 011e D7D2     	 bcs .L71
+ 457 0120 2068     	 ldr r0,[r4]
+ 458 0122 EFE7     	 b .L84
+ 459              	.L77:
+ 460 0124 A368     	 ldr r3,[r4,#8]
+ 461 0126 2068     	 ldr r0,[r4]
+ 462 0128 83F82850 	 strb r5,[r3,#40]
+ 463 012c C36C     	 ldr r3,[r0,#76]
+ 464 012e 43F01003 	 orr r3,r3,#16
+ 465 0132 C364     	 str r3,[r0,#76]
+ 466 0134 FFF7FEFF 	 bl XMC_I2C_CH_MasterStop
+ 467 0138 2846     	 mov r0,r5
+ 468 013a 02E0     	 b .L66
+ 469              	.L88:
+ 470 013c 0220     	 movs r0,#2
+ 471 013e 00E0     	 b .L66
+ 472              	.L91:
+ 473 0140 0120     	 movs r0,#1
+ 474              	.L66:
+ 475 0142 03B0     	 add sp,sp,#12
+ 476              	 
+ 477 0144 BDE8F08F 	 pop {r4,r5,r6,r7,r8,r9,r10,fp,pc}
+ 479              	 .section .text.I2C_MASTER_AbortReceive,"ax",%progbits
+ 480              	 .align 1
+ 481              	 .global I2C_MASTER_AbortReceive
+ 482              	 .thumb
+ 483              	 .thumb_func
+ 485              	I2C_MASTER_AbortReceive:
+ 486              	 
+ 487              	 
+ 488              	 
+ 489 0000 4368     	 ldr r3,[r0,#4]
+ 490 0002 93F82500 	 ldrb r0,[r3,#37]
+ 491 0006 0128     	 cmp r0,#1
+ 492 0008 94BF     	 ite ls
+ 493 000a 0020     	 movls r0,#0
+ 494 000c 0120     	 movhi r0,#1
+ 495 000e 7047     	 bx lr
+ 497              	 .ident "GCC: (GNU Tools for ARM Embedded Processors) 4.9.3 20141119 (release) [ARM/embedded-4_9-branch revision 218278]"
+DEFINED SYMBOLS
+                            *ABS*:00000000 i2c_master.c
+    {standard input}:17     .text.I2C_MASTER_lSendStart_Or_RepeatedStart:00000000 $t
+    {standard input}:21     .text.I2C_MASTER_lSendStart_Or_RepeatedStart:00000000 I2C_MASTER_lSendStart_Or_RepeatedStart
+    {standard input}:49     .text.I2C_MASTER_GetAppVersion:00000000 $t
+    {standard input}:54     .text.I2C_MASTER_GetAppVersion:00000000 I2C_MASTER_GetAppVersion
+    {standard input}:71     .text.I2C_MASTER_Init:00000000 $t
+    {standard input}:76     .text.I2C_MASTER_Init:00000000 I2C_MASTER_Init
+    {standard input}:91     .text.I2C_MASTER_GetFlagStatus:00000000 $t
+    {standard input}:96     .text.I2C_MASTER_GetFlagStatus:00000000 I2C_MASTER_GetFlagStatus
+    {standard input}:106    .text.I2C_MASTER_ClearFlag:00000000 $t
+    {standard input}:111    .text.I2C_MASTER_ClearFlag:00000000 I2C_MASTER_ClearFlag
+    {standard input}:122    .text.I2C_MASTER_ProtocolHandler:00000000 $t
+    {standard input}:127    .text.I2C_MASTER_ProtocolHandler:00000000 I2C_MASTER_ProtocolHandler
+    {standard input}:173    .text.I2C_MASTER_AbortTransmit:00000000 $t
+    {standard input}:178    .text.I2C_MASTER_AbortTransmit:00000000 I2C_MASTER_AbortTransmit
+    {standard input}:197    .text.I2C_MASTER_Transmit:00000000 $t
+    {standard input}:202    .text.I2C_MASTER_Transmit:00000000 I2C_MASTER_Transmit
+    {standard input}:323    .text.I2C_MASTER_Receive:00000000 $t
+    {standard input}:328    .text.I2C_MASTER_Receive:00000000 I2C_MASTER_Receive
+    {standard input}:480    .text.I2C_MASTER_AbortReceive:00000000 $t
+    {standard input}:485    .text.I2C_MASTER_AbortReceive:00000000 I2C_MASTER_AbortReceive
+
+UNDEFINED SYMBOLS
+XMC_I2C_CH_MasterRepeatedStart
+XMC_I2C_CH_MasterStart
+XMC_I2C_CH_MasterTransmit
+XMC_I2C_CH_MasterStop
+XMC_I2C_CH_MasterReceiveNack
+XMC_I2C_CH_MasterReceiveAck
+XMC_I2C_CH_GetReceivedData

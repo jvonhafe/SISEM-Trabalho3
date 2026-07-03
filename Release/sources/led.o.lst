@@ -1,0 +1,142 @@
+   1              	 .syntax unified
+   2              	 .cpu cortex-m4
+   3              	 .eabi_attribute 27,3
+   4              	 .fpu fpv4-sp-d16
+   5              	 .eabi_attribute 20,1
+   6              	 .eabi_attribute 21,1
+   7              	 .eabi_attribute 23,3
+   8              	 .eabi_attribute 24,1
+   9              	 .eabi_attribute 25,1
+  10              	 .eabi_attribute 26,1
+  11              	 .eabi_attribute 30,4
+  12              	 .eabi_attribute 34,1
+  13              	 .eabi_attribute 18,4
+  14              	 .thumb
+  15              	 .file "led.c"
+  16              	 .section .text.LED_Init,"ax",%progbits
+  17              	 .align 1
+  18              	 .global LED_Init
+  19              	 .thumb
+  20              	 .thumb_func
+  22              	LED_Init:
+  23              	 
+  24              	 
+  25              	 
+  26 0000 044B     	 ldr r3,.L2
+  27 0002 0122     	 movs r2,#1
+  28 0004 1A70     	 strb r2,[r3]
+  29 0006 4FF4FA72 	 mov r2,#500
+  30 000a 5A60     	 str r2,[r3,#4]
+  31 000c 0022     	 movs r2,#0
+  32 000e 9A60     	 str r2,[r3,#8]
+  33 0010 7047     	 bx lr
+  34              	.L3:
+  35 0012 00BF     	 .align 2
+  36              	.L2:
+  37 0014 00000000 	 .word .LANCHOR0
+  39              	 .section .text.LED_TimerTask,"ax",%progbits
+  40              	 .align 1
+  41              	 .global LED_TimerTask
+  42              	 .thumb
+  43              	 .thumb_func
+  45              	LED_TimerTask:
+  46              	 
+  47              	 
+  48              	 
+  49 0000 094B     	 ldr r3,.L9
+  50 0002 1A78     	 ldrb r2,[r3]
+  51 0004 72B1     	 cbz r2,.L4
+  52 0006 9A68     	 ldr r2,[r3,#8]
+  53 0008 5968     	 ldr r1,[r3,#4]
+  54 000a 6432     	 adds r2,r2,#100
+  55 000c 8A42     	 cmp r2,r1
+  56 000e 9A60     	 str r2,[r3,#8]
+  57 0010 08D3     	 bcc .L4
+  58 0012 064A     	 ldr r2,.L9+4
+  59 0014 107C     	 ldrb r0,[r2,#16]
+  60 0016 1168     	 ldr r1,[r2]
+  61 0018 4FF00112 	 mov r2,#65537
+  62 001c 8240     	 lsls r2,r2,r0
+  63 001e 4A60     	 str r2,[r1,#4]
+  64 0020 0022     	 movs r2,#0
+  65 0022 9A60     	 str r2,[r3,#8]
+  66              	.L4:
+  67 0024 7047     	 bx lr
+  68              	.L10:
+  69 0026 00BF     	 .align 2
+  70              	.L9:
+  71 0028 00000000 	 .word .LANCHOR0
+  72 002c 00000000 	 .word DIGITAL_IO_0
+  74              	 .section .text.LED_ButtonTask,"ax",%progbits
+  75              	 .align 1
+  76              	 .global LED_ButtonTask
+  77              	 .thumb
+  78              	 .thumb_func
+  80              	LED_ButtonTask:
+  81              	 
+  82              	 
+  83              	 
+  84 0000 064A     	 ldr r2,.L13
+  85 0002 1378     	 ldrb r3,[r2]
+  86 0004 B3FA83F3 	 clz r3,r3
+  87 0008 5B09     	 lsrs r3,r3,#5
+  88 000a 1370     	 strb r3,[r2]
+  89 000c 2BB9     	 cbnz r3,.L11
+  90 000e 044B     	 ldr r3,.L13+4
+  91 0010 197C     	 ldrb r1,[r3,#16]
+  92 0012 1A68     	 ldr r2,[r3]
+  93 0014 0123     	 movs r3,#1
+  94 0016 8B40     	 lsls r3,r3,r1
+  95 0018 5360     	 str r3,[r2,#4]
+  96              	.L11:
+  97 001a 7047     	 bx lr
+  98              	.L14:
+  99              	 .align 2
+ 100              	.L13:
+ 101 001c 00000000 	 .word .LANCHOR0
+ 102 0020 00000000 	 .word DIGITAL_IO_0
+ 104              	 .section .text.LED_SetSpeed,"ax",%progbits
+ 105              	 .align 1
+ 106              	 .global LED_SetSpeed
+ 107              	 .thumb
+ 108              	 .thumb_func
+ 110              	LED_SetSpeed:
+ 111              	 
+ 112              	 
+ 113              	 
+ 114 0000 014B     	 ldr r3,.L16
+ 115 0002 5860     	 str r0,[r3,#4]
+ 116 0004 7047     	 bx lr
+ 117              	.L17:
+ 118 0006 00BF     	 .align 2
+ 119              	.L16:
+ 120 0008 00000000 	 .word .LANCHOR0
+ 122              	 .global led
+ 123              	 .section .data.led,"aw",%progbits
+ 124              	 .align 2
+ 125              	 .set .LANCHOR0,.+0
+ 128              	led:
+ 129 0000 01       	 .byte 1
+ 130 0001 000000   	 .space 3
+ 131 0004 F4010000 	 .word 500
+ 132 0008 00000000 	 .word 0
+ 133              	 .ident "GCC: (GNU Tools for ARM Embedded Processors) 4.9.3 20141119 (release) [ARM/embedded-4_9-branch revision 218278]"
+DEFINED SYMBOLS
+                            *ABS*:00000000 led.c
+    {standard input}:17     .text.LED_Init:00000000 $t
+    {standard input}:22     .text.LED_Init:00000000 LED_Init
+    {standard input}:37     .text.LED_Init:00000014 $d
+    {standard input}:40     .text.LED_TimerTask:00000000 $t
+    {standard input}:45     .text.LED_TimerTask:00000000 LED_TimerTask
+    {standard input}:71     .text.LED_TimerTask:00000028 $d
+    {standard input}:75     .text.LED_ButtonTask:00000000 $t
+    {standard input}:80     .text.LED_ButtonTask:00000000 LED_ButtonTask
+    {standard input}:101    .text.LED_ButtonTask:0000001c $d
+    {standard input}:105    .text.LED_SetSpeed:00000000 $t
+    {standard input}:110    .text.LED_SetSpeed:00000000 LED_SetSpeed
+    {standard input}:120    .text.LED_SetSpeed:00000008 $d
+    {standard input}:128    .data.led:00000000 led
+    {standard input}:124    .data.led:00000000 $d
+
+UNDEFINED SYMBOLS
+DIGITAL_IO_0

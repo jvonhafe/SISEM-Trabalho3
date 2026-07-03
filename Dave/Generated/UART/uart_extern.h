@@ -67,6 +67,8 @@ extern "C" {
 /*Extern declaration for callback functions and UART APP instance handles*/
 
   extern UART_t UART_0; 
+
+  extern UART_t UART_1; 
                     
 #ifdef __cplusplus
 }

@@ -111,6 +111,11 @@ __WEAK DAVE_STATUS_t DAVE_Init(void)
   {
 	 /**  Initialization of CAN_NODE APP instance CAN_NODE_0 */
 	 init_status = (DAVE_STATUS_t)CAN_NODE_Init(&CAN_NODE_0); 
+   } 
+  if (init_status == DAVE_STATUS_SUCCESS)
+  {
+	 /**  Initialization of UART APP instance UART_1 */
+	 init_status = (DAVE_STATUS_t)UART_Init(&UART_1); 
    }  
   return init_status;
 } /**  End of function DAVE_Init */
